@@ -40,7 +40,7 @@ Create a file ~/.wordpressrc with following entry
 
   $./wordpress.py --update filename.blog 
 
-4. Creating a new post 
+4. Creating or update a post 
 ----------------------
 
   You have to write a file in similar format as the blogs you got after fetch.
@@ -51,4 +51,7 @@ Create a file ~/.wordpressrc with following entry
     $./wordpress.py --post file.blog 
 
   You can now delete file.blog .
+
+
+See repo for some poorly written blogs fetched from by blog.
 
