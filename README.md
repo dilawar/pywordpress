@@ -51,7 +51,7 @@ Create a file ~/.wordpressrc with following entry
 
     $./wordpress.py --update filename.blog 
 
-5. Creating or update a post 
+5. Creat or update a post 
 ----------------------
 
   You have to write a file in similar format as the blogs you got after fetch.
