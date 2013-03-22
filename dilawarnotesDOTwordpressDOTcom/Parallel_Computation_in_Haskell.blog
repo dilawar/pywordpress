@@ -1,0 +1,119 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>440</ID>
+<TITLE>
+Parallel Computation in Haskell
+</TITLE>
+
+<CONTENT>
+A parallel program is an multi-threaded program designed to work on a multi-processor of multi-core processor. You will be a moron to write a multi-threaded program for a single-core processor. Doing this will not only reduce the performance but also make the program&nbsp;unnecessarily&nbsp;complicated.
+
+In multi-threaded programs, each thread do some computationally extensive tasks in parallel with other thread. Ideally, one should design these tasks to be sent to different cores to be equally time consuming else one thread has to wait till other finishes. These are complicated issues and problems in program design.
+
+Haskell is a different language. Unlike most of the other languages, the thread is not created when we demands. Rather a <strong>spark</strong> is created. This spark is changed into threads when the <em>Haskell Run Time</em> system finds that a unit in CPU is free and can be utilized. <em>par</em> and <em>pseq</em> are immensely useful for making your thread behave in a way you like.
+
+This blog is not a tutorial. For tutorial purpose, one has have a look at this discussion <a href="http://stackoverflow.com/questions/2763864/multithreaded-haskell">thread</a>. I personally recommend tutorial by Satnam and Jones.
+
+Here is a code with which you can play around. This code is taken from the tutorial.
+
+[sourcecode language="scala"]
+import Control.Parallel
+import System.Time
+
+{--- FUNCTION
+ - Following function take a number and return its Fibonacci series number.
+ -}
+fib :: Int -&gt; Int
+fib 0 = 0
+fib 1 = 1
+fib n = fib (n-1) + fib (n-2)
+
+{-
+ - Another function which takes a list and create a list of corresponding
+ - Fibonacci series number.
+ - NOTE : For tutorial purpose, [1..28] is a good value.
+ -}
+fibList :: [Int] -&gt; [Int]
+fibList [] = []
+fibList (x:xs) = fib x : fibList (xs)
+
+
+{--- FUNCTION
+ - Another function is sumEuler function which returns the number of element in
+ - a list which are co-prime to the a number (in our case, it is the largest
+ - number in the list.
+ -}
+
+mkList :: Int -&gt; [Int]
+mkList n = [1..n-1] -- there is no need to test upto the last element.
+
+coprime :: Int -&gt; Int -&gt; Bool
+coprime x y = gcd x y == 1
+
+euler :: Int -&gt; Int
+euler  n=  length . filter (coprime n) $ mkList n
+
+sumEuler :: Int -&gt; Int
+sumEuler = sum . (map euler) . mkList
+
+
+{--- FUNCTION
+ -}
+sumFibEuler :: Int -&gt; Int -&gt; Int
+sumFibEuler a b = fib a + sumEuler b
+
+{--- FUNCTION
+ - This function is a parallel version of above function, sumFibEuler.
+ -}
+parSumFibEuler :: Int -&gt; Int -&gt; Int
+parSumFibEuler a b
+	=	par f (pseq e (e + f)) where -- It says compute (f + e) with f sparked off!
+		f = fib a
+		e = sumEuler b
+
+
+{--- FUNTION
+ - Performance measurement functions.
+ -}
+secDiff :: ClockTime -&gt; ClockTime -&gt; Float
+secDiff (TOD sec1 psec1) (TOD sec2 psec2)
+	= fromInteger (psec2 - psec1) / 1e12 + fromInteger (sec2 - sec1)
+
+r1 :: Int
+r1 = parSumFibEuler 38 5300
+
+r2 :: Int
+r2 = fib 38
+
+r3 :: Int
+r3 = sumEuler 5300
+
+main :: IO ()
+main
+  = do
+    t0 &lt;- getClockTime
+    pseq r1 (return ())
+    t1 &lt;- getClockTime
+    putStrLn (&quot;Sum: &quot; ++ show r1)
+    putStrLn (&quot;Time: &quot; ++ show (secDiff t0 t1) ++ &quot; seconds&quot;)
+
+{-RESULTS
+ - On my machine with Intel i3 (2 core processors, following results were
+ - obtained.
+ -
+ - fib 38 took 22.36 sec
+ - sumEuler took 20.67 seconds
+ - parSumFibEuler took approx 41 seconds.
+ - IRRESPECTIVE OF CHANGE MADE IN main .
+ -}
+[/sourcecode]
+
+</CONTENT>
+
+<POST_TAG ID="90">concurrency in haskell</POST_TAG>
+
+<CATEGORY ID="88">Haskell</CATEGORY>
+
+<POST_TAG ID="89">Haskell</POST_TAG>
+
+<CATEGORY ID="11">Programming</CATEGORY>

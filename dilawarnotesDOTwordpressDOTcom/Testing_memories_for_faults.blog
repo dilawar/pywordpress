@@ -1,0 +1,863 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>298</ID>
+<TITLE>
+Testing memories for faults
+</TITLE>
+
+<CONTENT>
+As the VLSI memories are shrinking in their size, the density of cells which holds data is increasing exponentially. If one is making a living out of manufacturing them then he must make sure product he is releasing in the market is fault free. So he must hire some trained person to test memories of how much they are faulty. <b>I wish I could do that with my natural memory </b>. So at least he can make an informed decision whether he should sell his faulty product. In memories many kind of faults can occur. Most prominent of those are <b>stuck-at faults </b> (when some bit is permanently stuck to 0 or 1 value); <b>coupling faults </b> (write in in one location of memory can change the values at some other location), and <b>Pattern Sensitive Faults </b> (a certain pattern in some locations of memory will not allow to write at some address.) Another kind of faults are <b>Decoder faults</b> in which decoder itself have some faults (thus more than one addresses are mapped onto one address and any write will write at multiple locations). Not all of these faults can be test by a single test. Testing for all the faults are time consuming because they are so many of them. However if certain combination of tests, will limited yet sufficient coverage, does not detect faults in memory then one can be pretty sure that this memory does not contain many faults which are undetected. <a href="http://digitalelectronics.blogspot.com/2009/01/memories-memory-faults-part-4.html" target="_blanck"> See this</a> 
+
+Here in this post, We give some primitive tests &nbsp;to detect these faults. Lets say following is my memory block.
+
+[sourcecode language="text"]
+entity MemBlock is 
+	generic(has_decoder_fault, has_stuck_at_fault, has_psf, has_cf: boolean := false);
+	port(addr, data_in: in bit_vector(7 downto 0);
+			read_en, write_en: in bit;
+			data_out: out bit_vector(7 downto 0));
+end entity;
+
+architecture Behave of MemBlock is
+  	type MemArray is array (natural range &lt;&gt;) of bit_vector(7 downto 0);
+    	-- procedure that models the update of the memory array,
+	-- given an incoming word (data_in) and a row index (I)
+	procedure Update_Mem(signal mem_array: inout MemArray;I: in integer; data_in: in bit_vector(7 downto 0)) is
+		variable cword: bit_vector(7 downto 0);
+		variable uI, dI: integer;
+		variable aflag : boolean; -- set true when write is over.
+	begin
+
+		aflag := false;
+
+		-- PSF
+		if(I = 128 and has_psf) then 
+ 			uI := 129;
+			dI := 127;	
+			cword := mem_array(I);
+			for J in 7 downto 0 loop
+				-- here is the PSF
+				if not ( mem_array(uI)(J) = '1' and mem_array(dI)(J) = '1') then
+					mem_array(I)(J) &lt;= data_in(J);
+				end if; 
+			end loop;
+			aflag := true;
+		end if;
+
+		if(I=127 and has_cf) then
+			if(mem_array(127)(0) = '0' and data_in(0) = '1') then
+				mem_array(128)(0) &lt;= '1';
+			end if;
+			mem_array(127) &lt;= data_in;
+			aflag := true;
+		end if;
+
+		if(I=129 and has_cf) then
+			if(mem_array(129)(0) = '0' and data_in(0) = '1') then
+				mem_array(128)(0) &lt;= '0';
+			end if;
+			mem_array(129) &lt;= data_in;
+			aflag := true;
+		end if;
+
+		if(not aflag) then
+			mem_array(I) &lt;= data_in;
+		end if;
+
+		if(has_stuck_at_fault) then
+			mem_array(129)(0) &lt;= '1';
+			mem_array(128)(0) &lt;= '0';
+		end if;
+
+	end procedure;
+	
+
+  -- converts bit vector to a natural number
+  function To_Natural(x: bit_vector) return natural is
+	variable ret_var : natural := 0;
+	alias lx: bit_vector(x'length downto 1) is x;
+  begin
+	for I in 1 to lx'length loop
+		if(lx(I) = '1') then
+			ret_var := ret_var + (2**(I-1));
+		end if;
+	end loop;
+ 	return(ret_var);	
+  end To_Natural;
+
+  -- output of the decoder
+  signal decode_sig: bit_vector(255 downto 0);
+
+  -- memory array
+  signal mem_array: MemArray(0 to 255);
+
+begin
+  
+   -- decoder process
+   process(addr)
+   begin
+	decode_sig &lt;= (others =&gt; '0');
+	for I in 0 to 255 loop
+		if(I=To_Natural(addr)) then
+			decode_sig(I) &lt;= '1';
+			if(I=128 and has_decoder_fault) then
+				decode_sig(I+1) &lt;= '1';
+			end if;
+		end if;
+	end loop;
+
+   end process;
+
+   -- memory array access process
+   process(addr, data_in, read_en, write_en)
+	variable data_out_var: bit_vector(7 downto 0);	
+   begin
+	data_out_var := (others =&gt; '0');
+	for I in 0 to 255 loop
+	    if decode_sig(I) = '1' then
+		if(read_en = '1') then
+			data_out_var := data_out_var or mem_array(I); -- Wired OR
+		elsif write_en = '1' then
+			Update_Mem(mem_array,I,data_in);
+		end if;	
+	    end if;
+	end loop;
+	data_out &lt;= data_out_var;
+   end process;
+
+end Behave;
+[/sourcecode]
+
+Now here is another file which instantiate these memory blocks with faults in it.
+[sourcecode language="text"]
+
+entity MemTest is
+end entity MemTest;
+
+architecture Behave of MemTest is
+
+	-- utility function: to increment an address
+	function Increment(x: bit_vector) return bit_vector is
+		alias lx: bit_vector(1 to x'length) is x;
+		variable ret_var: bit_vector(1 to x'length);
+		variable carry: bit;
+	begin
+		carry := '1';
+		for I in x'length downto 1 loop
+			ret_var(I) := lx(I) xor carry;
+			carry := carry and lx(I);
+		end loop;
+		return(ret_var);
+	end Increment;
+
+	signal addr, data_in, data_out_df, data_out_saf, data_out_psf,data_out_cf : bit_vector(7 downto 0);	
+	signal read_en, write_en: bit;
+
+	-- memory block
+	-- array of 8 bit words, with 8 bit address.
+	-- with the following behaviour.
+	-- 
+	-- if read_en = '1' then
+	--      data_out = memory_contents(addr);
+	-- elsif write_en = '1' then
+	--      memory_contents(addr) = data_in;
+        -- 
+	component MemBlock 
+		generic(has_decoder_fault, has_stuck_at_fault, has_psf, has_cf: boolean := false);
+		port(addr, data_in: in bit_vector(7 downto 0);
+				read_en, write_en: in bit;
+				data_out: out bit_vector(7 downto 0));
+	end component;
+
+	constant zero8: bit_vector(7 downto 0) := (others =&gt; '0');
+
+
+	
+	-- utility procedures
+
+	-- Write addr/data pair into memory using write_en
+	procedure Write(signal addr: out bit_vector(7 downto 0);
+			signal data: out bit_vector(7 downto 0);
+			signal write_en: out bit;
+			addr_var: in bit_vector(7 downto 0);
+			data_var: in bit_vector(7 downto 0)) is
+	begin
+			addr &lt;= addr_var;
+			data &lt;= data_var;
+			
+			wait for 1 ns;	
+			write_en &lt;= '1';
+
+			wait for 1 ns;
+			write_en &lt;= '0';
+
+			wait for 1 ns;
+	end procedure;
+
+	-- Read data from memory using read_en, addr.
+	-- NOTE: data must be present on data_out signal on
+	--       completion of procedure.
+	procedure Read(signal addr: out bit_vector(7 downto 0);
+		signal read_en: out bit;
+		addr_var: bit_vector(7 downto 0)) is
+	begin
+		addr &lt;= addr_var;
+		wait for 1 ns;
+		read_en &lt;= '1';
+		wait for 1 ns;
+		read_en &lt;= '0';
+	end procedure;
+			
+				
+begin
+
+
+	-- four memory blocks, each of which has one type of fault in it.
+
+
+	-- this has a decoder-fault
+	mb_df: MemBlock generic map(has_decoder_fault =&gt; true, has_stuck_at_fault =&gt; false, 
+					has_psf =&gt; false, has_cf =&gt; false)
+			port map(addr =&gt; addr, data_in =&gt; data_in, 
+				data_out =&gt; data_out_df, read_en =&gt; read_en,
+				write_en =&gt; write_en);
+
+	-- this has stuck-at-faults in the array
+	mb_saf: MemBlock generic map(has_decoder_fault =&gt; false, has_stuck_at_fault =&gt; true, 
+					has_psf =&gt; false, has_cf =&gt; false)
+			port map(addr =&gt; addr, data_in =&gt; data_in, 
+				data_out =&gt; data_out_saf, read_en =&gt; read_en,
+				write_en =&gt; write_en);
+
+	-- this has a pattern-sensitive-fault in the array.  The neighbourhood for the
+	-- fault is adjacent bits in the same column of the array.
+	mb_psf: MemBlock generic map(has_decoder_fault =&gt; false, has_stuck_at_fault =&gt; false, 
+					has_psf =&gt; true, has_cf =&gt; false)
+			port map(addr =&gt; addr, data_in =&gt; data_in, 
+				data_out =&gt; data_out_psf, read_en =&gt; read_en,
+				write_en =&gt; write_en);
+
+	-- this has some coupling faults in the array
+	mb_cf: MemBlock generic map(has_decoder_fault =&gt; false, has_stuck_at_fault =&gt; false, 
+					has_psf =&gt; false, has_cf =&gt; true)
+			port map(addr =&gt; addr, data_in =&gt; data_in, 
+				data_out =&gt; data_out_cf, read_en =&gt; read_en,
+				write_en =&gt; write_en);
+
+	-------------  test process ------------------------------------------------
+	process
+		variable curr_addr, next_addr: bit_vector(7 downto 0);
+		variable err_flag : boolean := false;
+	begin
+
+		----------------------------------------------------------------------------------------
+		--                          TEST SEQUENCE STARTS HERE 
+		----------------------------------------------------------------------------------------
+		read_en &lt;= '0'; write_en &lt;= '0';
+
+		wait for 1 ns;
+		curr_addr := (others =&gt; '0');
+		
+		while true loop
+
+			-- write followed by read
+			Write(addr,data_in,write_en,curr_addr,curr_addr);
+			Read(addr,read_en,curr_addr);
+
+			-- check data_out
+			assert (data_out_df = curr_addr) report
+				&quot;Data mismatch in memory with decoder fault&quot; severity ERROR;
+			assert (data_out_saf = curr_addr) report
+				&quot;Data mismatch in memory with stuck-at-fault&quot; severity ERROR;
+			assert (data_out_psf = curr_addr) report
+				&quot;Data mismatch in memory with pattern-sensitive-fault&quot; severity ERROR;
+			assert (data_out_cf = curr_addr) report
+				&quot;Data mismatch in memory with coupling-fault&quot; severity ERROR;
+
+
+			err_flag := err_flag or (data_out_df /= curr_addr) or (data_out_saf /= curr_addr) or
+					(data_out_psf /= curr_addr) or (data_out_cf /= curr_addr);
+
+			next_addr := Increment(addr);
+			if(next_addr = zero8) then
+				exit;
+			end if;
+			curr_addr := next_addr;
+		end loop;
+
+
+		----------------------------------------------------------------------------------------
+		--                               TEST SEQUENCE ENDS HERE
+		----------------------------------------------------------------------------------------
+
+		assert not err_flag report &quot;Test Failed&quot; severity ERROR;
+		assert err_flag report &quot;Test Passed&quot; severity NOTE;
+		wait;
+
+	end process;
+	
+end Behave;
+[/sourcecode]
+
+<b>If you run the simulation using the algorithm in this existing test bench, the memory block seems to be functioning correctly. However, each of the memory blocks has faults present in it (as you can verify by examining the VHDL code). Why did the test fail to detect the errors? Now one needs to modify the test-bench to use a single test (sequence of reads and writes) that can detect any decoder/stuck-at/coupling/pattern-sensitive fault in MemBlock. Pattern-sensitive faults may be assumed to be for a neighbourhood which consists of adjacent bits in the same column of the 256x8 array. Conﬁrm that this modiﬁed test-bench detects that each of the MemBlock instances is faulty. </b>
+
+
+This was given as an assignment in <i>Verification and Testing of VLSI</i> course offered by <b>Prof M. P. Desai</b> at IIT Bombay. 
+
+Attached is the detailed solution to this problem. We attach the VHDL code which is my solution. However, in my solution, I make an assumption that only adjacent cells can cause coupling/pattern sensitive/decoder faults. In practice, situation is much worse than that. We have used <b>ghdl</b> compiler to test it.
+
+<a href='http://dilawarnotes.files.wordpress.com/2010/11/solution.pdf'>solution_memory_testing</a>
+
+[sourcecode language="text"]
+use std.textio.all;
+
+entity MemTest is
+end entity MemTest;
+
+architecture Behave of MemTest is
+
+    -- utility function: to increment an address
+    function Increment(x: bit_vector) return bit_vector is
+        alias lx: bit_vector(1 to x'length) is x;
+        variable ret_var: bit_vector(1 to x'length);
+        variable carry: bit;
+    begin
+        carry := '1';
+        for I in x'length downto 1 loop
+            ret_var(I) := lx(I) xor carry;
+            carry := carry and lx(I);
+        end loop;
+        return(ret_var);
+    end Increment;
+
+    signal addr, addr2, data_in, data_out_df, data_out_saf, data_out_psf,data_out_cf : bit_vector(7 downto 0);	
+    signal read_en, write_en: bit;
+ 
+    component MemBlock 
+        generic(has_decoder_fault, has_stuck_at_fault, has_psf, has_cf: boolean := false);
+        port(addr, data_in: in bit_vector(7 downto 0);
+            read_en, write_en: in bit;
+            data_out: out bit_vector(7 downto 0));
+    end component;
+
+    constant zero8: bit_vector(7 downto 0) := (others =&gt; '0');
+
+
+
+    -- utility procedures
+
+    -- Write addr/data pair into memory using write_en
+    procedure Write(signal addr: out bit_vector(7 downto 0);
+        signal data: out bit_vector(7 downto 0);
+        signal write_en: out bit;
+        addr_var: in bit_vector(7 downto 0);
+        data_var: in bit_vector(7 downto 0)) is
+        begin
+            addr &lt;= addr_var;
+            data &lt;= data_var;
+
+            wait for 1 ns;	
+            write_en &lt;= '1';
+
+            wait for 1 ns;
+            write_en &lt;= '0';
+
+            wait for 1 ns;
+        end procedure;
+
+        -- Read data from memory using read_en, addr.
+        -- NOTE: data must be present on data_out signal on
+        --       completion of procedure.
+        procedure Read(signal addr: out bit_vector(7 downto 0);
+            signal read_en: out bit; addr_var: bit_vector(7 downto 0)) is
+            begin
+                addr &lt;= addr_var;
+                wait for 1 ns;
+                read_en &lt;= '1';
+                wait for 1 ns;
+                read_en &lt;= '0';
+            end procedure;
+
+
+        begin
+
+
+            -- four memory blocks, each of which has one type of fault in it.
+
+
+            -- this has a decoder-fault
+            mb_df: MemBlock generic map(has_decoder_fault =&gt; true, has_stuck_at_fault =&gt; false, 
+                has_psf =&gt; false, has_cf =&gt; false)
+            port map(addr =&gt; addr, data_in =&gt; data_in, 
+                data_out =&gt; data_out_df, read_en =&gt; read_en,
+                write_en =&gt; write_en);
+
+            -- this has stuck-at-faults in the array
+            mb_saf: MemBlock generic map(has_decoder_fault =&gt; false, has_stuck_at_fault =&gt; true, 
+                has_psf =&gt; false, has_cf =&gt; false)
+            port map(addr =&gt; addr, data_in =&gt; data_in, 
+                data_out =&gt; data_out_saf, read_en =&gt; read_en,
+                write_en =&gt; write_en);
+
+            -- this has a pattern-sensitive-fault in the array.  The neighbourhood for the
+            -- fault is adjacent bits in the same column of the array.
+            mb_psf: MemBlock generic map(has_decoder_fault =&gt; false, has_stuck_at_fault =&gt; false, 
+                has_psf =&gt; true, has_cf =&gt; false)
+            port map(addr =&gt; addr, data_in =&gt; data_in, 
+                data_out =&gt; data_out_psf, read_en =&gt; read_en,
+                write_en =&gt; write_en);
+
+            -- this has some coupling faults in the array
+            mb_cf: MemBlock generic map(has_decoder_fault =&gt; false, has_stuck_at_fault =&gt; false, 
+                has_psf =&gt; false, has_cf =&gt; true)
+            port map(addr =&gt; addr, data_in =&gt; data_in, 
+                data_out =&gt; data_out_cf, read_en =&gt; read_en,
+                write_en =&gt; write_en);
+
+            -------------  test process ------------------------------------------------
+            process
+            variable curr_addr, next_addr, temp_n_addr, temp_nn_addr, temp_data, next_data: bit_vector(7 downto 0);
+            variable err_flag : boolean := false;
+            variable err_add, l_psf, l_df, l_saf, l_cf : line;
+        begin
+
+            -----------------------------------------------------------
+            --        TEST SEQUENCE STARTS HERE 
+            -----------------------------------------------------------
+            read_en &lt;= '0'; write_en &lt;= '0';
+
+            wait for 1 ns;
+            curr_addr := (others =&gt; '0');
+
+            while true loop
+
+                -----------------------------------------------------
+                --  This test will test the stuck at 1/0 faults.
+                -----------------------------------------------------    
+
+                temp_data := (others =&gt; '0');	
+                next_data := (others =&gt; '1');
+
+                -- test for s-a-1 faults.
+                Write(addr, data_in, write_en, curr_addr, temp_data);
+                Read(addr, read_en, curr_addr);
+
+                -- assert yourself.
+                assert (data_out_saf = temp_data) report
+                &quot;Data mismatch in memory with stuck-at-1-fault&quot; severity ERROR;
+
+                -- log this error.
+                if data_out_saf /= temp_data then 
+                    write(l_saf, String'(&quot;A: &quot;));
+                    write(l_saf, curr_addr);
+                    write(l_saf, String'(&quot; D: &quot;));
+                    write(l_saf, temp_data);
+                    write(l_saf, String'(&quot; saf1: &quot;));
+                    write(l_saf, data_out_saf);
+                    writeline(output, l_saf);
+                end if;
+
+                Write(addr, data_in, write_en, curr_addr, next_data);
+                Read(addr, read_en, curr_addr);
+
+                -- assert yourself.
+                assert (data_out_saf = next_data) report
+                &quot;Data mismatch in memory with stuck-at-0-fault&quot; severity ERROR;
+
+                -- log this error.
+                if data_out_saf /= next_data then 
+                    write(l_saf, String'(&quot;A: &quot;));
+                    write(l_saf, curr_addr);
+                    write(l_saf, String'(&quot; D: &quot;));
+                    write(l_saf, next_data);
+                    write(l_saf, String'(&quot; saf0: &quot;));
+                    write(l_saf, data_out_saf);
+                    writeline(output, l_saf);
+                -- NOTE : Must reset this cell while doing cf testing. Else
+                --    problem might occur in first and last cells. 
+                end if;
+               --            while true loop
+                temp_data := (others =&gt; '0');
+                next_data := (others =&gt; '1');
+
+                temp_n_addr := Increment(curr_addr);
+                -- reset the cell we are going to test.
+                Write(addr, data_in, write_en, temp_n_addr, temp_data);
+
+                -- give an up-transition at left location and read data. If there isa
+                -- coupling faults. This should change the value of cell from 0 to 1
+
+                Write(addr, data_in, write_en, curr_addr, temp_data);
+                Write(addr, data_in, write_en, curr_addr, next_data);
+                Read(addr, read_en, temp_n_addr); -- read the next address. 
+
+                -- Assert yourserf if you got it right.
+                assert (data_out_cf = temp_data) report
+                &quot;Data mismatch in memory with coupling l_at_0_u faults&quot; severity ERROR; 
+
+                -- log this error.
+                if data_out_cf /= temp_data then
+                    write(l_cf, String'(&quot;A: &quot;));
+                    write(l_cf, temp_n_addr);
+                    write(l_cf, String'(&quot; 0lu &quot;));
+                    write(l_cf, data_out_cf);
+                    writeline(output, l_cf);
+                    -- reset the memory cell.
+                    Write(addr, data_in, write_en, temp_n_addr, temp_data);
+                end if;
+
+                -- give a low transition at left location and read data. If there is a
+                -- coupling fault then this should change the value of cell from 0 to 1 
+                Write(addr, data_in, write_en, curr_addr, temp_data); 
+                Read(addr, read_en, temp_n_addr); -- read the next address.
+
+                -- Assert yourserf if you got it right.
+                assert (data_out_cf = temp_data) report
+                &quot;Data mismatch in memory with coupling l_at_0_d faults&quot; severity ERROR; 
+
+                -- log this error.
+                if data_out_cf /= temp_data then 
+                    write(l_cf, String'(&quot;A: &quot;));
+                    write(l_cf, temp_n_addr);
+                    write(l_cf, String'(&quot; 0ld &quot;));
+                    write(l_cf, data_out_cf);
+                    writeline(output, l_cf);
+                    -- reset the memory cell.
+                    Write(addr, data_in, write_en, temp_n_addr, temp_data);
+                end if;
+
+
+                -- REPEAT IT FROM RIGHT SIDE
+                temp_nn_addr := Increment(temp_n_addr);
+                -- give an up-transition at right location and read data. If there isa
+                -- coupling faults. This should change the value of cell from 0 to 1
+                Write(addr, data_in, write_en, temp_nn_addr, next_data);
+                Read(addr, read_en, temp_n_addr); -- read the next address. 
+                assert (data_out_cf = temp_data) report
+                &quot;Data mismatch in memory with coupling r_at_0_u faults&quot; severity ERROR; 
+                -- log this error.
+                if data_out_cf /= temp_data then 
+                    write(l_cf, String'(&quot;A: &quot;));
+                    write(l_cf, temp_n_addr);
+                    write(l_cf, String'(&quot; 0ru &quot;));
+                    write(l_cf, data_out_cf);
+                    writeline(output, l_cf);
+                    -- reset the memory cell.
+                    Write(addr, data_in, write_en, temp_n_addr, temp_data);
+                end if;
+
+                -- give a low transition at right location and read data. If there is a
+                -- coupling fault then this should change the value of cell from 0 to 1 
+                Write(addr, data_in, write_en, temp_nn_addr, temp_data); 
+                Read(addr, read_en, temp_n_addr); -- read the next address. 
+                -- Assert yourserf if you are right.
+                assert (data_out_cf = temp_data) report
+                &quot;Data mismatch in memory with coupling r_at_0_d faults&quot; severity ERROR;   
+                -- log this error.
+                if data_out_cf /= temp_data then 
+                    write(l_cf, String'(&quot;A: &quot;));
+                    write(l_cf, temp_n_addr);
+                    write(l_cf, String'(&quot; 0rd &quot;));
+                    write(l_cf, data_out_cf);
+                    writeline(output, l_cf);
+                    -- reset the memory cell.
+                    Write(addr, data_in, write_en, temp_n_addr, temp_data);
+                end if; 
+
+                temp_data := &quot;00000000&quot;;
+                next_data := &quot;11111111&quot;;
+                temp_n_addr := Increment(curr_addr);
+                temp_nn_addr := Increment(temp_n_addr);
+
+                -- Following line will write 1 in next adress.
+                Write(addr, data_in, write_en, temp_n_addr, next_data);
+
+                -- Give an up transition at left location and read for fault.
+                Write(addr, data_in, write_en, curr_addr, next_data);
+                Read(addr, read_en, temp_n_addr);
+                -- assert it.
+                assert (data_out_cf = next_data) report
+                &quot;Data mismatch in memory with coupling l_at_1_u faults&quot; severity ERROR;
+
+                -- log this error.
+                if data_out_cf /= next_data then
+                    write(l_cf, String'(&quot;A: &quot;));
+                    write(l_cf, temp_n_addr);
+                    write(l_cf, String'(&quot; 1lu &quot;));
+                    write(l_cf, data_out_cf);
+                    -- reset the memory cell.
+                    Write(addr, data_in, write_en, temp_n_addr, next_data);
+                end if;
+
+                -- Give a down transition at left location. And read for faults.
+                Write(addr, data_in, write_en, curr_addr, temp_data);
+                Read(addr, read_en, temp_n_addr); 
+
+                -- Assert yourserf if you are right.
+                assert (data_out_cf = next_data) report
+                &quot;Data mismatch in memory with coupling l_at_1_d faults&quot; severity ERROR;
+
+                -- log this error.
+                if data_out_cf /= next_data then
+                    write(l_cf, String'(&quot;A: &quot;));
+                    write(l_cf, temp_n_addr);
+                    write(l_cf, String'(&quot; 1lu &quot;));
+                    write(l_cf, data_out_cf);
+                    -- reset the memory cell.
+                    Write(addr, data_in, write_en, temp_n_addr, next_data);
+                end if;
+
+                -- Give an up transition at right location.
+                Write(addr, data_in, write_en, temp_nn_addr, next_data);
+                Read(addr, read_en, temp_n_addr); 
+
+                -- Assert yourserf if you are right.
+                assert (data_out_cf = next_data) report
+                &quot;Data mismatch in memory with coupling r_at_1_u faults&quot; severity ERROR;
+
+                -- log this error.
+                if data_out_cf /= next_data then
+                    write(l_cf, String'(&quot;A: &quot;));
+                    write(l_cf, temp_n_addr);
+                    write(l_cf, String'(&quot; 1ru &quot;));
+                    write(l_cf, data_out_cf);
+                    writeline(output, l_cf);
+                    -- reset the memory cell.
+                    Write(addr, data_in, write_en, temp_n_addr, next_data);
+                end if;
+
+                -- Give a down transition at right location.
+                Write(addr, data_in, write_en, temp_nn_addr, temp_data);
+                Read(addr, read_en, temp_n_addr); 
+
+                -- Assert yourserf if you are right.
+                assert (data_out_cf = next_data) report
+                &quot;Data mismatch in memory with coupling r_at_1_d faults&quot; severity ERROR;
+
+                -- log this error.
+                if data_out_cf /= next_data then
+                    write(l_cf, String'(&quot;A: &quot;));
+                    write(l_cf, temp_n_addr);
+                    write(l_cf, String'(&quot; 1rd &quot;));
+                    write(l_cf, data_out_cf);
+                    -- reset the memory cell.
+                    Write(addr, data_in, write_en, temp_n_addr, next_data);
+                end if;
+
+                ----------------------------------------------
+                -- Test pattern for Pattern Sensitive Faults. 
+                ----------------------------------------------
+                temp_data := (others =&gt; '0');
+                next_data := (others =&gt; '1');
+
+                temp_n_addr := Increment(curr_addr);
+                temp_nn_addr := Increment(temp_n_addr);
+
+                -- reset the cell we are going to test.
+                Write(addr, data_in, write_en, temp_n_addr, temp_data);
+
+                ------- case 1 
+                -- Write 1 in left and 0 in right and check for PSF.
+                Write(addr, data_in, write_en, curr_addr, next_data);
+                Write(addr, data_in, write_en, temp_nn_addr, temp_data);
+                -- Now write 1 in the cell and read the same value.
+                Write(addr, data_in, write_en, temp_n_addr, next_data);
+                Read(addr, read_en, temp_n_addr);
+                assert (data_out_psf = next_data) report
+                &quot;Data can not be written due to l1r0 PSF.&quot; severity ERROR;
+                -- log this error.
+                if data_out_psf /= next_data then
+                    write(l_psf, String'(&quot;A &quot;));
+                    write(l_psf, temp_n_addr);
+                    write(l_psf, String'(&quot; l1r0 &quot;));
+                    write(l_psf, data_out_psf);
+                    writeline(output, l_psf);
+                end if;
+
+                -- write 0 in the cell and check for the PSF. 
+                Write(addr, data_in, write_en, temp_n_addr, temp_data);
+                Read(addr, read_en, temp_n_addr);
+                assert (data_out_psf = temp_data) report
+                &quot;Data can not be written due to l1r0 PSF.&quot; severity ERROR;
+                -- log this error.
+                if data_out_psf /= temp_data then
+                    write(l_psf, String'(&quot;A &quot;));
+                    write(l_psf, temp_n_addr);
+                    write(l_psf, String'(&quot; l1r0 &quot;));
+                    write(l_psf, data_out_psf);
+                    writeline(output, l_psf);
+                end if;
+
+                -------- case 2
+                -- Write 1 in left and 1 in right and check for PSF
+                Write(addr, data_in, write_en, curr_addr, next_data);
+                Write(addr, data_in, write_en, temp_nn_addr, next_data);
+                -- Now write 1 in the cell and read the same value.
+                Write(addr, data_in, write_en, temp_n_addr, next_data);
+                Read(addr, read_en, temp_n_addr);
+                assert (data_out_psf = next_data) report
+                &quot;Data can not be written due to l1r1 PSF.&quot; severity ERROR;
+                -- log this error.
+                if data_out_psf /= next_data then
+                    write(l_psf, String'(&quot;A &quot;));
+                    write(l_psf, temp_n_addr);
+                    write(l_psf, String'(&quot; l1r1 &quot;));
+                    write(l_psf, data_out_psf);
+                    writeline(output, l_psf);
+                end if;
+
+                -- write 0 in the cell and check for the PSF. 
+                Write(addr, data_in, write_en, temp_n_addr, temp_data);
+                Read(addr, read_en, temp_n_addr);
+                assert (data_out_psf = temp_data) report
+                &quot;Data can not be written due to l1r1 PSF.&quot; severity ERROR;
+                -- log this error.
+                if data_out_psf /= temp_data then
+                    write(l_psf, String'(&quot;A &quot;));
+                    write(l_psf, temp_n_addr);
+                    write(l_psf, String'(&quot; l1r1 &quot;));
+                    write(l_psf, data_out_psf);
+                    writeline(output, l_psf);
+                end if;
+                -------- case 3
+                -- Write 0 in left and 1 in right and check for PSF
+                Write(addr, data_in, write_en, curr_addr, temp_data);
+                Write(addr, data_in, write_en, temp_nn_addr, next_data);
+                -- Now write 1 in the cell and read the same value.
+                Write(addr, data_in, write_en, temp_n_addr, next_data);
+                Read(addr, read_en, temp_n_addr);
+                assert (data_out_psf = next_data) report
+                &quot;Data can not be written due to l0r1 PSF.&quot; severity ERROR;
+                -- log this error.
+                if data_out_psf /= next_data then
+                    write(l_psf, String'(&quot;A &quot;));
+                    write(l_psf, temp_n_addr);
+                    write(l_psf, String'(&quot; l1r1 &quot;));
+                    write(l_psf, data_out_psf);
+                    writeline(output, l_psf);
+                end if;
+
+                -- write 0 in the cell and check for the PSF. 
+                Write(addr, data_in, write_en, temp_n_addr, temp_data);
+                Read(addr, read_en, temp_n_addr);
+                assert (data_out_psf = temp_data) report
+                &quot;Data can not be written due to l0r1 PSF.&quot; severity ERROR;
+                -- log this error.
+                if data_out_psf /= temp_data then
+                    write(l_psf, String'(&quot;A &quot;));
+                    write(l_psf, temp_n_addr);
+                    write(l_psf, String'(&quot; l0r1 &quot;));
+                    write(l_psf, data_out_psf);
+                    writeline(output, l_psf);
+                end if;
+
+                -------- case 4
+                -- Write 0 in left and 0 in right and check for PSF
+                Write(addr, data_in, write_en, curr_addr, temp_data);
+                Write(addr, data_in, write_en, temp_nn_addr, temp_data);
+                -- Now write 1 in the cell and read the same value.
+                Write(addr, data_in, write_en, temp_n_addr, next_data);
+                Read(addr, read_en, temp_n_addr);
+                assert (data_out_psf = next_data) report
+                &quot;Data can not be written due to l0r0 PSF.&quot; severity ERROR;
+                -- log this error.
+                if data_out_psf /= next_data then
+                    write(l_psf, String'(&quot;A &quot;));
+                    write(l_psf, temp_n_addr);
+                    write(l_psf, String'(&quot; l0r0 &quot;));
+                    write(l_psf, data_out_psf);
+                    writeline(output, l_psf);
+                end if;
+
+                -- write 0 in the cell and check for the PSF. 
+                Write(addr, data_in, write_en, temp_n_addr, temp_data);
+                Read(addr, read_en, temp_n_addr);
+                assert (data_out_psf = temp_data) report
+                &quot;Data can not be written due to l0r0 PSF.&quot; severity ERROR;
+                -- log this error.
+                if data_out_psf /= temp_data then
+                    write(l_psf, String'(&quot;A &quot;));
+                    write(l_psf, temp_n_addr);
+                    write(l_psf, String'(&quot; l0r0 &quot;));
+                    write(l_psf, data_out_psf);
+                    writeline(output, l_psf);
+                end if;
+
+                -------------------------------------
+                -- Decoder fault.
+                ------------------------------------
+                -- NOTE : Ideally one should write 0 to a cell and write 1 to
+                -- all the cells which are 1 hamming distance away to cover all
+                -- the stuck-at-fautls in decoder. Here, we check immediate left
+                -- and right cell for fautls.
+                Write(addr, data_in, write_en, temp_n_addr, next_data);
+                -- write all 1 in left and right cell.
+                Write(addr, data_in, write_en, curr_addr, temp_data);
+                Write(addr, data_in, write_en, temp_nn_addr, temp_data);
+                Read(addr, read_en, temp_n_addr);
+                assert (data_out_df = next_data) report
+                &quot;Decoder fault - value written into some adjacent cell.&quot; severity ERROR;
+
+                -- log this error
+                if data_out_df /= next_data then
+                    write(l_df, String'(&quot;To &quot;));
+                    write(l_df, temp_n_addr);
+                    write(l_df, String'(&quot; From &quot;));
+                    write(l_df, curr_addr);
+                    write(l_df, String'(&quot; DF &quot;));
+                    write(l_df, data_out_df);
+                    writeline(output, l_df);
+                -- reset cells for next test.
+                    Write(addr, data_in, write_en, temp_n_addr, temp_data);
+                    Write(addr, data_in, write_en, temp_nn_addr, temp_data);
+                    -- to make sure this does not interfere with other test.
+                    Write(addr, data_in, write_en, curr_addr, temp_data);
+
+                end if;
+
+                next_addr := temp_n_addr;
+                -- if all addresses have been reached, exit
+                if(next_addr = &quot;11111111&quot;) then
+                    exit;
+                end if;
+                curr_addr := next_addr; 
+
+            end loop;
+
+            assert false report &quot;Test completed.&quot; severity NOTE;
+            wait;
+
+        end process;
+
+    end Behave;
+[/sourcecode]
+
+<h2>Solution </h2>
+Use following commands to run the test.
+[sourcecode language="text"]
+ghdl -i *.vhd
+ghdl -m memtest
+ghdl -r memtest --stop-time=40ms --vcd=dilawar.vcd
+[/sourcecode]
+
+
+
+</CONTENT>
+
+<POST_TAG ID="56">ghdl</POST_TAG>
+
+<POST_TAG ID="53">Memory testing</POST_TAG>
+
+<POST_TAG ID="54">Pattern sensitive faults</POST_TAG>
+
+<CATEGORY ID="13">Semiconductor Devices</CATEGORY>
+
+<POST_TAG ID="55">stuck at faults</POST_TAG>
+
+<CATEGORY ID="5">Technology and Engineering</CATEGORY>
+
+<POST_TAG ID="32">verification</POST_TAG>
+
+<POST_TAG ID="36">vhdl</POST_TAG>
+
+<CATEGORY ID="9">VLSI</CATEGORY>

@@ -1,0 +1,43 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>593</ID>
+<TITLE>
+Quine McClusky algorithm in Haskell
+</TITLE>
+
+<CONTENT>
+A small program tingu is implemented in haskell. It reads minterms from a file and produce the output on console. It is hosted on <a href="https://github.com/dilawar/ee677/tree/master/Assignment01/haskell">github</a>. You can use it like 
+<pre>
+ ./tingu -i minterms 
+</pre>
+ Your minterms should be described in a file like following 
+<pre>
+ vars = 4
+minterms = 1,2,5,7,8,9,10,13,15, 
+</pre>
+ Then output of program is 
+<pre>
+ Hello, I am Tingu, the mighty crab! And I like tea. You should call me $./tingu -i filename from your terminal. 
+** I have found the essential prime implicants of your function. 
+  0-01 
+  -001 
+  010- 
+  10-- 
+  1-1- 
+** Verifying my answers. It may take some time.... 
++++ OK, passed 100 tests. Peace!! 
+
+</pre>
+ Peace !!
+
+</CONTENT>
+
+<CATEGORY ID="38">Algorithms</CATEGORY>
+
+<CATEGORY ID="72">Boolean-algebra</CATEGORY>
+
+<CATEGORY ID="88">Haskell</CATEGORY>
+
+<POST_TAG ID="128">Quine McClusky</POST_TAG>
+
+<POST_TAG ID="129">Quine-McClusky algorithm in haskell</POST_TAG>

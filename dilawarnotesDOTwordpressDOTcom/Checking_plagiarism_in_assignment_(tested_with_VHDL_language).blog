@@ -1,0 +1,35 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>548</ID>
+<TITLE>
+Checking plagiarism in assignment (tested with VHDL language)
+</TITLE>
+
+<CONTENT>
+I have developed some python scripts available <a href="https://github.com/dilawar/MyPublic/tree/master/MoodleIITB">here</a>. I have used them in EE705 (VHDL, verilog) and found them very useful. It generates detailed log (which file matches which file) and sent emails to offenders with an archive of all file which were matched. It is integrated with my moodle-application (automatic download, extract, compare, sending-emails.)
+
+It also generates graphs (using python graph-tool) which shows the level of copying in the assignments. Few graphs are attached in this post.
+
+Thickness of edge (and hotness of edge color) shows the level of similarity. This gives a quite a picture of the class.
+
+[caption id="attachment_559" align="aligncenter" width="522" caption="Graph shows suspects of plagiarism. Each edge represent a pair of files containing significant matching. Edge thickness (and hotness of color) is the amount of similarity.<a href='http://dilawarnotes.files.wordpress.com/2012/03/copy_all.png'><img class='aligncenter size-full wp-image-560' title='copy_all' src='http://dilawarnotes.files.wordpress.com/2012/03/copy_all.png' alt='' width='640' height='907' /></a>Similar to previous one. But it shows the the level of interaction among students. As usually heavy and red - edges shows significant copying while light blue edges shows that fragments of text was similar (which may shows the level of discussion).<a href='http://dilawarnotes.files.wordpress.com/2012/03/detailed.png'><img class='aligncenter size-full wp-image-564' title='detailed' src='http://dilawarnotes.files.wordpress.com/2012/03/detailed.png' alt='' width='399' height='685' /></a>This is the dirty and detailed graph. It shows a overall interaction between codes submitted by student. Many students have more than 1 file which mathces (parallel edge)"]<a href="http://dilawarnotes.files.wordpress.com/2012/03/copy_suspect.png"><img class="size-full wp-image-559" title="copy_suspect" src="http://dilawarnotes.files.wordpress.com/2012/03/copy_suspect.png" alt="" width="522" height="492" /></a>[/caption]
+
+</CONTENT>
+
+<CATEGORY ID="27">Graph Theory</CATEGORY>
+
+<POST_TAG ID="119">graph-tool python</POST_TAG>
+
+<POST_TAG ID="112">moodle</POST_TAG>
+
+<POST_TAG ID="115">plagiarism detection</POST_TAG>
+
+<CATEGORY ID="86">Python</CATEGORY>
+
+<POST_TAG ID="118">python scripts</POST_TAG>
+
+<POST_TAG ID="113">python-moodle</POST_TAG>
+
+<POST_TAG ID="117">similarity checking in vhdl codes</POST_TAG>
+
+<POST_TAG ID="116">similarity in codes</POST_TAG>

@@ -1,0 +1,52 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>692</ID>
+<TITLE>
+Getting caught in a loop while traversing a (directed acyclic) graph
+</TITLE>
+
+<CONTENT>
+How to detect if you are getting caught inside a loop when you are traversing a directed graph. This is equivalent of checking if you graph is a <a class="zem_slink" title="Directed acyclic graph" href="http://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank" rel="wikipedia">Directed Acyclic Graph</a> (DAG).
+
+Assume that each vertex of graph has a label such as A, B, C, etc. While you are traversing the graph, you keep your labels of traversed vertices on a stack or in a vector. If you construct a string out of this traversal, you will get a pattern like the following one.
+
+<pre>
+ A,B,D,E,F,D,E,F,D,E,F
+</pre>
+
+Whenever you are caught in a loop, a path will repeat itself. We have <tt>D,E,F</tt> repeating itself. Now there are two ways to detect this. One is a classical graph based method which is efficient $latex O(E+V)$. The second one, about which I am going to talk about now, is not as efficient as first but but it is very easy to code. It is based on <a class="zem_slink" title="Regular expression" href="http://en.wikipedia.org/wiki/Regular_expression" target="_blank" rel="wikipedia">regular expressions</a>.
+
+All we have to do is  construct a string out of the data-structure which holds the vertex traversal order and match it against a regular-pattern which looks for the repeated substrings.
+
+Here is one such pattern written using boost regex library.
+
+<pre>
+ boost::regex rx ("^([0-9a-zA-Z_@]+,)+(?[0-9a-zA-Z@_,]+)(g{cycle})$", boost::regex::perl);
+</pre>
+
+Care has to be taken while using this regex. First, I have special character <tt>@</tt> in the label of vertex. And this pattern assumes that if there is a single repetition such as <tt>A,B,A,B</tt> or <tt>A,B,B</tt> etc, then it must lead to a loop. In my case it is justified. You should think if this is the behavior you want. And again, it is not as efficient as standard graph algorithms to detect loop (which uses <a class="zem_slink" title="Depth-first search" href="http://en.wikipedia.org/wiki/Depth-first_search" target="_blank" rel="wikipedia">Depth First Search</a>). But for writing quick tests, it is a good approach.
+
+I have used boost regex library. I am already using boost graph library therefore I need not look for other libraries. I have heard a some good things about GNU-regex library but have never used myself. Also, my gcc (4.6) does not support 2011C++ fully e.g. regex is not implemented fully. Have a look at its status page before writing any regex using <tt> </tt> header &lt;regex&gt;.
+
+--
+
+Dilawar
+<h6 class="zemanta-related-title" style="font-size:1em;">Related articles</h6>
+<ul class="zemanta-article-ul">
+	<li class="zemanta-article-ul-li"><a href="http://www.stoimen.com/blog/2012/12/10/computer-algorithms-topological-sort-revisited/" target="_blank">Computer Algorithms: Topological Sort Revisited</a> (stoimen.com)</li>
+	<li class="zemanta-article-ul-li"><a href="http://cs.stackexchange.com/questions/7216/find-the-simple-cycles-in-a-directed-graph" target="_blank">Find the Simple Cycles in a Directed Graph</a> (cs.stackexchange.com)</li>
+</ul>
+
+</CONTENT>
+
+<CATEGORY ID="38">Algorithms</CATEGORY>
+
+<POST_TAG ID="146">Boost C++ Libraries</POST_TAG>
+
+<POST_TAG ID="144">boost regex</POST_TAG>
+
+<CATEGORY ID="27">Graph Theory</CATEGORY>
+
+<POST_TAG ID="145">loop in graph</POST_TAG>
+
+<POST_TAG ID="147">Regular expression</POST_TAG>

@@ -1,0 +1,115 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>524</ID>
+<TITLE>
+Debugger Insight (gdb) having problems with tcl/tk ?
+</TITLE>
+
+<CONTENT>
+You may get following error on your linux machine while invoking <a href="http://sourceware.org/insight/">insight debugger</a>, <br>
+
+
+<pre>
+Tk_Init failed: Can't find a usable tk.tcl in the following directories: <br>
+
+/usr/local/share/tk8.4 /usr/local/lib/tk8.4 /usr/lib/tk8.4 /usr/local/library /usr/library /usr/tk8.4.1/library /tk8.4.1/library <br>
+
+ <br>
+
+/usr/local/share/tk8.4/tk.tcl: no event type or button # or keysym <br>
+
+no event type or button # or keysym <br>
+
+while executing <br>
+
+"bind Text { <br>
+
+%W yview scroll [expr {- (%D / 120) * 4}] units <br>
+
+}" <br>
+
+(file "/usr/local/share/tk8.4/text.tcl" line 461) <br>
+
+invoked from within <br>
+
+"source /usr/local/share/tk8.4/text.tcl" <br>
+
+(in namespace eval "::" script line 1) <br>
+
+invoked from within <br>
+
+"namespace eval :: [list source [file join $::tk_library $file.tcl]]" <br>
+
+(procedure "SourceLibFile" line 2) <br>
+
+invoked from within <br>
+
+"SourceLibFile text" <br>
+
+(in namespace eval "::tk" script line 10) <br>
+
+invoked from within <br>
+
+"namespace eval ::tk { <br>
+
+SourceLibFile button <br>
+
+SourceLibFile entry <br>
+
+SourceLibFile listbox <br>
+
+SourceLibFile menu <br>
+
+SourceLibFile panedwindow <br>
+
+SourceLibFile ..." <br>
+
+invoked from within <br>
+
+"if {$::tk_library ne ""} { <br>
+
+if {[string equal $tcl_platform(platform) "macintosh"]} { <br>
+
+proc ::tk::SourceLibFile {file} { <br>
+
+if {[catch { <br>
+
+namesp..." <br>
+
+(file "/usr/local/share/tk8.4/tk.tcl" line 393) <br>
+
+invoked from within <br>
+
+"source /usr/local/share/tk8.4/tk.tcl" <br>
+
+("uplevel" body line 1) <br>
+
+invoked from within <br>
+
+"uplevel #0 [list source $file]" <br>
+
+ <br>
+
+This probably means that tk wasn't installed properly.
+</pre>
+ <br>
+
+The proximate cause is "MouseWheel" event type is not recognized. One fix, if you don't care about the crazy MouseWheel, is to comment out the entire "bind" for MouseWheel events. This happens at lines 178 through 198 of "listbox.tcl", and lines 453 through 474 of "text.tcl". These lines location may be different in your library. Both files in the tk support directory path listed in the error message. <br>
+
+ <br>
+
+After I have commented them out, my application is launching without any problem.Interestingly, these files "text.tcl" and "listbox.tcl", mention that these "MouseWheel" events may not work on linux. <br>
+
+ <br>
+
+Stupid mouse! Who cares about mouse, I use xmonad.
+
+</CONTENT>
+
+<POST_TAG ID="108">gdb</POST_TAG>
+
+<POST_TAG ID="107">insight debugger</POST_TAG>
+
+<POST_TAG ID="109">tcl tk and insight debugger</POST_TAG>
+
+<CATEGORY ID="1">Uncategorized</CATEGORY>

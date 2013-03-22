@@ -1,0 +1,34 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>408</ID>
+<TITLE>
+Open source resources on Verilog
+</TITLE>
+
+<CONTENT>
+<div>Followings are two prominent simulators available as open-source.&nbsp;
+<ul>
+	<li> Icarus -<a href="http://icarus.com/eda/verilog/"> http://icarus.com/eda/verilog/</a></li>
+	<li> Verilator - <a href="http://www.veripool.org/wiki/verilator">http://www.veripool.org/wiki/verilator</a></li>
+</ul>
+</div>
+<div></div>
+<div>Icarus  is still being developed but it can be used for advanced assignments. I am not sure whether it support full 'synthesis-able subset' of Verilog.  Verilator is more advanced (to my knowledge), it can easily be  integrated with C++/SystemC/Matlab.</div>
+<div>Have a look at this crazy place also <a href="http://www.opencollector.org/">http://www.opencollector.org/</a></div>
+<div></div>
+<div></div>
+<div>An informative article can be found in Linux Journal about open source  softwares used in 'Electronic design automation' . Link is here <a href="http://www.linuxjournal.com/article/4428">http://www.linuxjournal.com/article/4428</a></div>
+
+</CONTENT>
+
+<CATEGORY ID="76">HDL</CATEGORY>
+
+<POST_TAG ID="78">Open source resources</POST_TAG>
+
+<CATEGORY ID="5">Technology and Engineering</CATEGORY>
+
+<POST_TAG ID="79">verilator</POST_TAG>
+
+<POST_TAG ID="77">Verilog</POST_TAG>
+
+<CATEGORY ID="9">VLSI</CATEGORY>

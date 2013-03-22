@@ -1,0 +1,25 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>777</ID>
+<TITLE>
+Search users on iitb-ldap 
+</TITLE>
+
+<CONTENT>
+This <a href="https://github.com/dilawar/Scripts/blob/master/mutt/mutt-ldap.py">python scripts </a>searches iitb ldap for users. It is a modified version of some other scripts. Script header is not modified and original author still holds the copyright.
+
+You need to install python-ldap. I use it with my mutt to search emails of students.
+
+</CONTENT>
+
+<CATEGORY ID="163">IIT Bombay</CATEGORY>
+
+<POST_TAG ID="62">mutt</POST_TAG>
+
+<CATEGORY ID="133">mutt</CATEGORY>
+
+<POST_TAG ID="156">NoGuiNoMouseNoProblem</POST_TAG>
+
+<CATEGORY ID="157">NoGuiNoMouseNoProblem</CATEGORY>
+
+<CATEGORY ID="132">Utility</CATEGORY>

@@ -1,0 +1,17 @@
+<TYPE>post</TYPE>
+<STATUS>draft</STATUS>
+<ID>716</ID>
+<TITLE>
+A simple parser in python-ply 
+</TITLE>
+
+<CONTENT>
+<p>
+
+Python has a good library PLY to do parsing. There are many other libraries available in python for parsing, but this one well-documented and stable. I wrote a simple parser to parse</p>
+
+
+
+</CONTENT>
+
+<CATEGORY ID="1">Uncategorized</CATEGORY>

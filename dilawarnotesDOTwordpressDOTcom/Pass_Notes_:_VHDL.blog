@@ -1,0 +1,54 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>817</ID>
+<TITLE>
+Pass Notes : VHDL
+</TITLE>
+
+<CONTENT>
+<strong>Age</strong>  At least 2 years older than me.
+
+<b>Appearace</b> Like a programming language.
+
+<b>So it's not exactly a programming language? </b> No, no. I did not mean that way. It is definitely a programming language. It got its own grammar. But it has a different purpose.
+
+<b>And that is? </b> To describe and simulate <a class="zem_slink" title="Digital electronics" href="http://en.wikipedia.org/wiki/Digital_electronics" target="_blank" rel="wikipedia">digital systems</a>. It can also be used to verify the functionality of a digital system. It is not suitable for number crunching like C.
+
+<b>Should I be concerned?</b> Not at all unless you are (planning to be) an engineer who will make a living by designing large VLSI systems. But if you are not an (a would be) engineer you shouldn't be reading it.
+
+<b>Eh, never mind! I am an undergraduate. What can I do with it?</b> You definitely can not solve global warming or make India a safer place for women. Nor it is not going to make you popular with girls or boys. But you it can help you design large digital systems.
+
+<strong>How large?</strong> As large as the amount of (correct) coding you can do.
+
+<b>It can help me more than <a class="zem_slink" title="Verilog" href="http://en.wikipedia.org/wiki/Verilog" target="_blank" rel="wikipedia">Verilog</a>?</b>  It has more advance <a class="zem_slink" title="Type system" href="http://en.wikipedia.org/wiki/Type_system" target="_blank" rel="wikipedia">type system</a> so it can catch more bugs somewhat earlier than Verilog and it has got equally good tool-chains too.
+
+<b>How a strong type system helps me?</b> Ok, lets have two qunatity in C program : <tt>int speed</tt> and <tt>int acceleration</tt> representing speed and acceleration. Now adding speed into acceleration does not make sense but you can do it in C.
+
+<b>Oh I see! Then why Verilog is still popular? </b> Verilog is older than <a class="zem_slink" title="VHDL" href="http://www.eda.org/vasg/" target="_blank" rel="homepage">VHDL</a>. A lot of legacy designs are already available in Verilog. Plus, people don't want to learn new language. Industry has already invested a lot in Verilog etc. etc. It's really not something we should be concerned. It is something those people in two-piece suits are concerned about.
+
+<b>So a stronger type-system is all it got! And you don't have to worry about blocking and non-blocking statement mixing. </b>Yes isn't it great!<b>
+</b>
+
+<strong>Not really but this is somewhat cool. I never really understood type theory. So what it has instead of blocking and non-blocking statements?</strong> It's  a note. Not a tutorial. Read a book you sophomore!
+
+<b>No tutorial, Eh! Tell me something cool and I'll be on my way. </b> It has a free simulator called GHDL now. You can use it to learn it.
+
+<strong>Do say</strong>  With a strong type-system and a free simulator, I am doing to design the most innovative system ever.
+
+<strong>Don't say</strong> Big deal! I did not use Verilog and neither I am going to use it. Where are those 'how to start a startup'? Learning languages doesn't make anyone rich!
+
+--
+
+Dilawar
+
+DISCLAIMER : (This style of 'Pass Notes' is a guardian newspaper feature.)
+
+</CONTENT>
+
+<POST_TAG ID="177">Hardware description language</POST_TAG>
+
+<CATEGORY ID="75">Language</CATEGORY>
+
+<POST_TAG ID="77">Verilog</POST_TAG>
+
+<POST_TAG ID="36">vhdl</POST_TAG>

@@ -1,0 +1,312 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>253</ID>
+<TITLE>
+Combinational circuits - Equivalence checking
+</TITLE>
+
+<CONTENT>
+Given a VLSI entity and its two description, establishing if both of them are equivalent is fundamental problem in VLSI verification. In this post, I am going to give describe an small part of this problem. Lets say someone has provided us with an behavioral description of an entity. For example lets say the given behavior of this entity is following.
+
+[caption id="attachment_255" align="aligncenter" width="326" caption="a, b, c, and d are input to this entity and e is output."]<a href="http://dilawarnotes.files.wordpress.com/2010/11/untitleddocument1.png"><img class="size-full wp-image-255 " title="Cblock entity" src="http://dilawarnotes.files.wordpress.com/2010/11/untitleddocument1.png" alt="" width="326" height="256" /></a>[/caption]
+
+Lets say if $latex a = 1$ and $latex b =1$ then $latex c = c \otimes d$ and if $latex a = 1$ and $latex b = 0$ then $latex e = c \bar{\otimes} d$. Otherwise, I don't give a damn!
+
+Ok! Now I have to give a hardware description of this entity else no would care about it. I give the following VHDL description (I hate verilog!).
+
+[sourcecode language="text"]
+
+-- This is the entity
+
+entity Cblock is
+
+    port(a,b,c,d: in bit; e: out bit);
+
+end entity Cblock;
+
+-- this is the specification
+
+architecture Behave of Cblock is
+
+begin process(a,b,c,d)
+
+begin
+
+     if(a = '1' and b = '1') then
+
+e &amp;lt;= c xor d;
+
+elsif (a = '1' and b = '0') then
+
+e &lt;= c xnor d;
+
+else
+
+end if;
+
+end process;
+
+end Behave;
+
+[/sourcecode]
+
+Next task is to find an equivalent circuit description of this behavior. We can surely use some synthesizer but they are not smart enough. Sometimes they produce garbage (though this case is way too simple to make a synthesizer go mad.). We are going to build our own. <strong>We introduce one more condition, say a, c, and d can never be same at any time. So we can treat them as don't care condition. </strong>Lets make the truth table of Cblock.
+
+[caption id="attachment_270" align="aligncenter" width="630" caption="First table shows the truth table. Second shows truth table after don&#039;t cares and third shows the minimization process. Note that blue color is being overlapped by other one. We have three min terms here."]<a href="http://dilawarnotes.files.wordpress.com/2010/11/truthtables.png"><img class="size-full wp-image-270" title="truthtables" src="http://dilawarnotes.files.wordpress.com/2010/11/truthtables.png" alt="" width="630" height="131" /></a>[/caption]
+
+After minimization, Cblock can be written as $latex e = b \bar{c}\bar{d} + abd + abc$.  Notice that since $latex a, c, d$ are not allowed to be same at any given time. We have  $latex \bar{a}{b}\bar{c}\bar{d}$, $latex \bar{a}\bar{b}\bar{c}\bar{d}$, $latex abdc$, $latex {a}\bar{b}{c}{d}$ should not be taken into accout i.e. don't care conditions.
+<h3>Build the circuit</h3>
+Lets our life more miserable. We say that we have only <strong>AND </strong>and <strong>NOT </strong>gates available. Can we realise the given function $latex e$. Yes we can, remember that <strong>AND </strong>and <strong>NOT </strong>together represents <a href="http://en.wikipedia.org/wiki/NAND_logic"><strong>NAND </strong>which is universal gate</a> and others gates can be realised using it.
+
+Now we can construct the following circuit.
+
+[caption id="attachment_271" align="aligncenter" width="630" caption="Circuit representing the function in Qucs."]<a href="http://dilawarnotes.files.wordpress.com/2010/11/circuit.png"><img class="size-full wp-image-271" title="circuit" src="http://dilawarnotes.files.wordpress.com/2010/11/circuit.png" alt="" width="630" height="506" /></a>[/caption]
+
+This circuit can be simulated in any circuit simulator like <strong>ngspice.</strong> If you are using <strong>Qucs </strong>than you can use the following file. Since I can not attach this type of file, here is the code.
+<h2>Verify both implementation</h2>
+Now the final task to is to verify whether out implementation matches with the given behaviour. To verify, I must check my implementation for all the possible input combination and output must match the given bahviorial description. We use <strong>VHDL</strong> to describe our implementation and then we make a test-bench to verify it. Following is the code for testbench. All entities are given in a single file.
+
+[sourcecode language="text"]
+
+-- VHDL file for assignment 06.
+
+-- Dilawar Singh
+
+-- dilawar@ee.iitb.ac.in
+
+-- Modified from its original version.
+
+-- GHDL is used to compile it.
+
+-- AND GATE
+
+entity And2 is
+
+  port(a,b: in bit; c: out bit);
+
+end entity And2;
+architecture Behave of And2 is
+begin
+
+  c &amp;lt;= a and b;
+
+end Behave;
+
+-- Invertor
+
+entity Inv is
+
+  port(a: in bit; b: out bit);
+
+end entity Inv;
+
+architecture Behave of Inv is
+
+begin
+
+  b &amp;lt;= not a;
+
+end Behave;
+
+-- This is the entity
+
+entity Cblock is
+
+  port(a,b,c,d: in bit; e: out bit);
+
+end entity Cblock;
+
+-- this is the specification
+
+architecture Behave of Cblock is
+
+begin
+
+  process(a,b,c,d)
+
+  begin
+
+     if(a = '1' and b = '1') then
+
+        e &amp;lt;= c xor d;
+
+     elsif (a = '1' and b = '0') then
+
+        e &lt;= c xnor d;
+
+     else
+
+     end if;
+
+  end process;
+
+end Behave;
+
+-- this is the implementation which you have to write.
+
+-- you may assume that the dont care set is a=c=d
+
+architecture Impl of Cblock is
+
+	component And2 is port(a,b: in bit; c: out bit); end component;
+
+	component Inv is port(a: in bit; b: out bit); end component;
+
+	-- fill in your implementation
+
+	-- declare signals for interconnecting your gates
+
+  signal i1_out, i2_out, i3_out, i4_out, i5_out, i6_out, i7_out, i8_out : bit;
+
+  signal a1_out, a2_out, a3_out, a4_out, a5_out, a6_out : bit;
+
+begin
+
+  -- fill in your implementation
+
+	-- instantiate your gates.
+
+    i1 : Inv port map(a =&gt; c, b =&gt; i1_out);
+
+    i2 : Inv port map(a =&gt; d, b =&gt; i2_out);
+
+    i3 : Inv port map(a =&gt; c, b =&gt; i3_out);
+
+    i4 : Inv port map(a =&gt; d, b =&gt; i4_out);
+
+    i5 : Inv port map(a =&gt; a1_out, b =&gt; i5_out);
+
+    i6 : Inv port map(a =&gt; b, b =&gt; i6_out);
+
+    i7 : Inv port map(a =&gt; a4_out, b =&gt; i7_out);
+
+    i8 : Inv port map(a =&gt; a5_out, b =&gt; i8_out);
+
+    i9 : Inv port map(a =&gt; a6_out, b =&gt; e);
+
+    a1 : And2 port map(i1_out, i2_out, a1_out);
+
+    a2 : And2 port map(a, b, a2_out);
+
+    a3 : And2 port map(i3_out, i4_out, a3_out);
+
+    a4 : And2 port map(i5_out, a2_out, a4_out);
+
+    a5 : And2 port map(i6_out, a3_out, a5_out);
+
+    a6 : And2 port map(i7_out, i8_out, a6_out);
+
+end Impl;
+
+entity Testbench is
+end entity Testbench;
+
+-- testbench
+
+architecture Compare of Testbench is
+
+	signal a,b,c,d,eref,edut: bit;
+
+	type bV2 is array(natural range &lt;&gt;) of bit_vector(3 downto 0);
+
+	-- legal patterns.
+
+	constant pattern: bV2(0 to 11) :=
+
+		(
+
+			('0','0','0','1'),
+
+			('0','0','1','0'),
+
+			('0','0','1','1'),
+
+			('0','1','0','1'),
+
+			('0','1','1','0'),
+
+			('0','1','1','1'),
+
+			('1','0','0','0'),
+
+			('1','0','0','1'),
+
+			('1','0','1','0'),
+
+			('1','1','0','0'),
+
+			('1','1','0','1'),
+
+			('1','1','1','0'));
+
+component Cblock is port(a,b,c,d: in bit; e: out bit); end component;
+for ref:Cblock  use entity work.Cblock(behave);
+	for dut:Cblock  use entity work.Cblock(behave); -- use impl when ready
+
+begin
+
+   ref: Cblock port map(a=&gt;a,b=&gt;b,c=&gt;c,d=&gt;d,e=&gt;eref);
+
+   -- change to implementation when you have one ready
+
+   dut: Cblock port map(a=&gt;a,b=&gt;b,c=&gt;c,d=&gt;d,e=&gt;edut);
+
+   process
+
+	variable I : integer := 0;
+
+   begin
+
+	while I &amp;lt; 12 loop
+
+		a &amp;lt;= pattern(I)(3); b &amp;lt;= pattern(I)(2); c &amp;lt;= pattern(I)(1); d  &amp;lt;= pattern(I)(0);
+
+		I := I+1;
+
+		wait for 1 ns;
+
+		assert(eref = edut) report &quot;Mismatch between Reference and DUT&quot; severity error;
+
+	end loop;
+
+	assert false report &amp;quot;Test Over&amp;quot; severity note;
+
+ 	wait;
+
+   end process;
+
+end Compare;
+
+[/sourcecode]
+<h2>Results</h2>
+Now we have to run this testbench. There are few VHDL simulator available, one is ghdl. We are going to use this. Make sure you can ghdl installed. You can get it from<a href="http://ghdl.free.fr/"> here</a>. Now we have to run following commands.
+
+<code>$ghdl -a filename.vhd</code>
+
+<code>$ghdl -e testbench</code>
+
+<code>$ghdl -r testbench --vcd=filename.vcd</code>
+
+Since my filename was <code>dilawar.vhd</code> I got following output.
+
+<code>dilawar.vhdl:118:8:@12ns:(assertion note):Test Over</code>
+
+Note that since we have exhausted all the possible combination of inputs. This is not possible in big circuits with a lot of inputs. Simulation is too slow to handle all the cases. In future, we’ll be in need of better formal verification tools. About that some other day.
+
+[caption id="attachment_287" align="aligncenter" width="630" caption="Waveform of both of the implementation. Note that for given input combinations, output is same. Thats is what an engineer establishes for equivalence."]<a href="http://dilawarnotes.files.wordpress.com/2010/11/wave.png"><img class="size-full wp-image-287" title="wave" src="http://dilawarnotes.files.wordpress.com/2010/11/wave.png" alt="" width="630" height="179" /></a>[/caption]
+
+</CONTENT>
+
+<POST_TAG ID="37">comparison of two circuits</POST_TAG>
+
+<CATEGORY ID="10">Electrical Network</CATEGORY>
+
+<CATEGORY ID="11">Programming</CATEGORY>
+
+<POST_TAG ID="35">verification of vlsi</POST_TAG>
+
+<POST_TAG ID="36">vhdl</POST_TAG>
+
+<CATEGORY ID="9">VLSI</CATEGORY>
+
+<POST_TAG ID="30">vlsi</POST_TAG>

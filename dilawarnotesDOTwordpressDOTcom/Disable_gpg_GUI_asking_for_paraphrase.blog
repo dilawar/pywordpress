@@ -1,0 +1,35 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>719</ID>
+<TITLE>
+Disable gpg GUI asking for paraphrase
+</TITLE>
+
+<CONTENT>
+<ol>
+	<li>Someone suggested that if you have seahorse installed, remove it. (It did not work)</li>
+	<li>Someone suggested export <tt>PINENTRY_USER_DATA="USE_CURSES=1"</tt> will do the trick. Didn't work.</li>
+</ol>
+Add <tt>--no-use-agent</tt> to the command option. It did the trick. No gui is appearing while decrypting the file now!
+
+This will not work on gpg2 : gpg2 needs a use-agent. You have to create a file <tt>~/.gnupg/gpg-agent.conf</tt> and add the line <tt>pinentry-program /usr/bin/pinentry-curses</tt>. And you are done.
+
+<h6 class="zemanta-related-title" style="font-size:1em;">Related articles</h6>
+<ul class="zemanta-article-ul">
+	<li class="zemanta-article-ul-li"><a href="http://www.thegeekstuff.com/2013/02/gpg-encrypt-decrypt/" target="_blank">How to Encrypt and Decrypt a File using GnuPG in Linux</a> (thegeekstuff.com)</li>
+	<li class="zemanta-article-ul-li"><a href="http://priyac91.wordpress.com/2013/01/13/gpg-key-pair-encryption-and-decryption-and-signing/" target="_blank">GPG Key-Pair Encryption and Decryption and Signing</a> (priyac91.wordpress.com)</li>
+</ul>
+
+</CONTENT>
+
+<POST_TAG ID="151">disable gui in gpg</POST_TAG>
+
+<POST_TAG ID="160">GNU Privacy Guard</POST_TAG>
+
+<CATEGORY ID="126">Linux</CATEGORY>
+
+<CATEGORY ID="157">NoGuiNoMouseNoProblem</CATEGORY>
+
+<POST_TAG ID="161">Public-key cryptography</POST_TAG>
+
+<CATEGORY ID="132">Utility</CATEGORY>

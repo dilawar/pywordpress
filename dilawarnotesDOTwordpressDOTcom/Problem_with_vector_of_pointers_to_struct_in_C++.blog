@@ -1,0 +1,65 @@
+<TYPE>post</TYPE>
+<STATUS>draft</STATUS>
+<ID>539</ID>
+<TITLE>
+Problem with vector of pointers to struct in C++
+</TITLE>
+
+<CONTENT>
+<p>
+
+Following program, although legal in C++11, may not compile with your current c++ compiler.</p>
+
+<pre class="lang-c prettyprint"><code><span class="com">#include</span><span class="pln"> &nbsp; &nbsp;</span><span class="str">&lt;iostream&gt;</span><span class="pln">
+</span><span class="com">#include</span><span class="pln"> &nbsp; &nbsp;</span><span class="str">&lt;vector&gt;</span><span class="pln">
+</span><span class="kwd">using</span><span class="pln"> </span><span class="kwd">namespace</span><span class="pln"> std</span><span class="pun">;</span><span class="pln">
+
+</span><span class="kwd">int</span><span class="pln"> main</span><span class="pun">()</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+&nbsp; &nbsp; </span><span class="kwd">struct</span><span class="pln"> a
+&nbsp; &nbsp; </span><span class="pun">{</span><span class="pln">
+&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">int</span><span class="pln"> i</span><span class="pun">;</span><span class="pln">
+&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">int</span><span class="pln"> j</span><span class="pun">;</span><span class="pln">
+&nbsp; &nbsp; </span><span class="pun">};</span><span class="pln">
+
+&nbsp; &nbsp; std</span><span class="pun">::</span><span class="pln">vector</span><span class="pun">&lt;</span><span class="pln">a</span><span class="pun">*&gt;</span><span class="pln"> vecA</span><span class="pun">;</span><span class="pln">
+
+&nbsp; &nbsp; a</span><span class="pun">*</span><span class="pln"> pA </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> a</span><span class="pun">;</span><span class="pln">
+
+&nbsp; &nbsp; pA</span><span class="pun">-&gt;</span><span class="pln">i </span><span class="pun">=</span><span class="pln"> </span><span class="lit">4</span><span class="pun">;</span><span class="pln">
+&nbsp; &nbsp; pA</span><span class="pun">-&gt;</span><span class="pln">j </span><span class="pun">=</span><span class="pln"> </span><span class="lit">9</span><span class="pun">;</span><span class="pln">
+
+&nbsp; &nbsp; vecA</span><span class="pun">.</span><span class="pln">push_back</span><span class="pun">(</span><span class="pln">pA</span><span class="pun">);</span><span class="pln">
+
+&nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+</span></code>
+
+</pre>
+<p>
+
+It may generates following error and refuse to compile.</p>
+
+<pre class="lang-c prettyprint"><code><span class="pln">struct_update</span><span class="pun">.</span><span class="pln">cc</span><span class="pun">:</span><span class="pln"> </span><span class="typ">In</span><span class="pln"> function </span><span class="pun">&lsquo;</span><span class="kwd">int</span><span class="pln"> main</span><span class="pun">()&rsquo;:</span><span class="pln">
+struct_update</span><span class="pun">.</span><span class="pln">cc</span><span class="pun">:</span><span class="lit">32</span><span class="pun">:</span><span class="lit">19</span><span class="pun">:</span><span class="pln"> error</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">template</span><span class="pln"> argument </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">&lsquo;</span><span class="kwd">template</span><span class="pun">&lt;</span><span class="kwd">class</span><span class="pln"> _Alloc</span><span class="pun">&gt;</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> std</span><span class="pun">::</span><span class="pln">allocator</span><span class="pun">&rsquo;</span><span class="pln"> uses local type </span><span class="pun">&lsquo;</span><span class="pln">main</span><span class="pun">()::</span><span class="pln">a</span><span class="pun">*&rsquo;</span><span class="pln">
+struct_update</span><span class="pun">.</span><span class="pln">cc</span><span class="pun">:</span><span class="lit">32</span><span class="pun">:</span><span class="lit">19</span><span class="pun">:</span><span class="pln"> error</span><span class="pun">:</span><span class="pln"> &nbsp; trying to instantiate </span><span class="pun">&lsquo;</span><span class="kwd">template</span><span class="pun">&lt;</span><span class="kwd">class</span><span class="pln"> _Alloc</span><span class="pun">&gt;</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> std</span><span class="pun">::</span><span class="pln">allocator</span><span class="pun">&rsquo;</span><span class="pln">
+struct_update</span><span class="pun">.</span><span class="pln">cc</span><span class="pun">:</span><span class="lit">32</span><span class="pun">:</span><span class="lit">19</span><span class="pun">:</span><span class="pln"> error</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">template</span><span class="pln"> argument </span><span class="lit">2</span><span class="pln"> is invalid
+struct_update</span><span class="pun">.</span><span class="pln">cc</span><span class="pun">:</span><span class="lit">32</span><span class="pun">:</span><span class="lit">25</span><span class="pun">:</span><span class="pln"> error</span><span class="pun">:</span><span class="pln"> invalid type in declaration before </span><span class="pun">&lsquo;;&rsquo;</span><span class="pln"> token
+struct_update</span><span class="pun">.</span><span class="pln">cc</span><span class="pun">:</span><span class="lit">39</span><span class="pun">:</span><span class="lit">10</span><span class="pun">:</span><span class="pln"> error</span><span class="pun">:</span><span class="pln"> request </span><span class="kwd">for</span><span class="pln"> member </span><span class="pun">&lsquo;</span><span class="pln">push_back</span><span class="pun">&rsquo;</span><span class="pln"> in </span><span class="pun">&lsquo;</span><span class="pln">vecA</span><span class="pun">&rsquo;,</span><span class="pln"> which is of non</span><span class="pun">-</span><span class="kwd">class</span><span class="pln"> type </span><span class="pun">&lsquo;</span><span class="kwd">int</span><span class="pun">&rsquo;</span><span class="pln">
+
+</span></code>
+
+The answer is that you should declare your struct outside the main function. A local can not be used as a template parameter (i.e. vectror of pointers to struct).
+
+&nbsp;For more details, look at this <a href="http://stackoverflow.com/questions/8814146/vector-of-pointers-to-struct/8814167#8814167">question</a>.
+
+</pre>
+
+
+</CONTENT>
+
+<POST_TAG ID="111">c++11 standard</POST_TAG>
+
+<CATEGORY ID="11">Programming</CATEGORY>
+
+<POST_TAG ID="110">vector of struct</POST_TAG>

@@ -1,0 +1,17 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>708</ID>
+<TITLE>
+log4cxx: No appender could be found for logger (somelogger) 
+</TITLE>
+
+<CONTENT>
+Whooa! If nothing is working, do the following :
+<blockquote>Put a log4cxx configuration file named log4cxx.properties under the same directory as your executable.</blockquote>
+Most likely your application could not read the configuration file path you have so hopefully coded while setting up your logger. Trust me, I have spent an hour trying to debug my little logger.
+
+</CONTENT>
+
+<POST_TAG ID="150">log4cxx</POST_TAG>
+
+<CATEGORY ID="1">Uncategorized</CATEGORY>
