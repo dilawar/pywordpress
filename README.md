@@ -38,7 +38,7 @@ Create a file ~/.wordpressrc with following entry
 
   You can edit file and send it back to Wordpress :
 
-  $./wordpress.py --update filename.blog 
+    $./wordpress.py --update filename.blog 
 
 4. Creating or update a post 
 ----------------------
