@@ -4,24 +4,21 @@ pywordpress
 A command line Wordpress client to post and edit posts
 
 1. Configuration file 
-=====================
-
+---------------------
 Create a file ~/.wordpressrc with following entry 
 
-  # This file must be saved as ~/.wordpressrc 
-  # Url of blog. 
-  [blog]
-  url=dilawarnotes.wordpress.com
-  # Wordpress username
-  username=dilawars
-  password=mypassword
+    # This file must be saved as ~/.wordpressrc 
+    # Url of blog. 
+    [blog]
+    url=dilawarnotes.wordpress.com
+    # Wordpress username
+    username=dilawars
+    password=mypassword
 
 2. Dependencies 
-===============
+----------------
 
-  Download and install
-  https://github.com/maxcutler/python-wordpress-xmlrpc/blob/master/docs/index.rst
-  . It may be available in most of the linux distribution. It does not work
+  [Download and install](https://github.com/maxcutler/python-wordpress-xmlrpc/blob/master/docs/index.rst). It may be available in most of the linux distribution. It does not work
   networks behind proxy (such as mine at IIT Bombay). You can set-up transparent
   proxy to overcome this. Author of this library has indicated that he is going
   to support proxies in next release. Till then, transparent proxies.
