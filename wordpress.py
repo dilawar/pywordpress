@@ -21,6 +21,7 @@ from wordpress_xmlrpc.methods.posts import GetPosts, NewPost, EditPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
 import codecs
 import errno
+import difflib 
 
 # globals 
 blogDir = "."
@@ -215,14 +216,33 @@ password=password
     
   # Fetch blogs from wordpress.
   elif args.fetch :
-    # Get all posts 
+  # Get all posts 
+    posts = wp.call(GetPosts(
+      {'number': 200, 'offset': 0}
+      ))
+    pages = wp.call(GetPosts({'post_type' : 'page'}))
     if  args.fetch == "all" :
-      posts = wp.call(GetPosts(
-        {'number': 200, 'offset': 0}
-        ))
-      pages = wp.call(GetPosts({'post_type' : 'page'}))
       fetchPosts(posts, "post")
       fetchPosts(pages, "page")
+    elif len(args.fetch) > 2 :
+      # search for a post with similar titles.
+      matchedPosts = list()
+      for post in posts :
+        title = post.title 
+        match = difflib.SequenceMatcher(None, title, args.fetch).ratio()
+        if match > 0.65 :
+          matchedPosts.append(post)
+      fetchPosts(matchedPosts, "post")
+
+      # Why not pages.
+      matchedPages = list()
+      for page in pages :
+        title = page.title 
+        match = difflib.SequenceMatcher(None, title, args.fetch).ratio()
+        if match > 0.65 :
+          matchedPages.append(post)
+      fetchPosts(matchedPages, "page")
+
     else : # get recent posts 
       posts = wp.call(GetPosts(
         {'post_status': 'publish'}
@@ -231,15 +251,15 @@ password=password
  
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description="Blogger client")
-  parser.add_argument('--fetch', metavar="f"
+  parser.add_argument('--fetch', metavar="[all|post_name]"
       , help="Fetch a post with similar looking name. If 'recent' is given, it  \
           fetch and save recent posts. If 'all' is given then it fetches all\
           posts "
       )
-  parser.add_argument('--update', metavar='up'
+  parser.add_argument('--update', metavar='blog_file'
       , help="Update a post."
       )
-  parser.add_argument('--post', metavar='po'
+  parser.add_argument('--post', metavar='blog_file'
       , help="New post."
       )
   args = parser.parse_args()

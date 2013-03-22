@@ -31,16 +31,27 @@ Create a file ~/.wordpressrc with following entry
   
     $./wordpress.py --fech all 
 
-  And wait! 
+  And wait while it downloades all of your blogs.
   
   It will create a directory named after your blog and save all posts
   in that directory. Formatting is creepy. Open a file and see if you like it.
+
+  You can fetch only one blog also. Pass the name of blog to script 
+    
+    $./wordpress.py --fetch "My post with awesome title"
+
+  It will fetch all posts which are similar to this title. Note that, fetching a
+  single post or all of them takes same time. We only filter once all posts are
+  fetched. 
+
+4. Updating post 
+----------------
 
   You can edit file and send it back to Wordpress :
 
     $./wordpress.py --update filename.blog 
 
-4. Creating or update a post 
+5. Creating or update a post 
 ----------------------
 
   You have to write a file in similar format as the blogs you got after fetch.
