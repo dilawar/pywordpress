@@ -12,16 +12,17 @@ if sys.version_info < (3, 0) :
 else :
   from configparser import RawConfigParser 
 
+from wordpress_xmlrpc import Client, WordPressPost
+from wordpress_xmlrpc.methods.posts import GetPosts, NewPost, EditPost
+from wordpress_xmlrpc.methods.users import GetUserInfo
 import argparse
 import os
 import re
 import lxml.html as lh
-from wordpress_xmlrpc import Client, WordPressPost
-from wordpress_xmlrpc.methods.posts import GetPosts, NewPost, EditPost
-from wordpress_xmlrpc.methods.users import GetUserInfo
 import codecs
 import errno
 import difflib 
+import format 
 
 # globals 
 blogDir = "."
@@ -44,12 +45,6 @@ def titleToFileName(title) :
   fileName = os.path.abspath(blogDir+"/"+fileName)
   return fileName
 
-def formatContent(content1) :
-  # Removing whitespace between HTML tags
-  content1 = re.sub(r'>\s+<', "><", content1)
-  # Removing leading and trailing linebreaks.
-  content = re.sub(r"[\n]+", " ", content1) 
-  return content 
 
 def sendPostToWordpress(post, wp, txt) :
   # Check if there is no id.
@@ -72,7 +67,7 @@ def sendPostToWordpress(post, wp, txt) :
     m = contentRegex.search(txt)
     if m :
       content = m.groupdict()['content']
-      content = formatContent(content)
+      content = format.formatContent(content)
     else :
       print("[W] Post with empty content.")
       content = ""
