@@ -242,6 +242,7 @@ password=password
       posts = wp.call(GetPosts(
         {'post_status': 'publish'}
         ))
+      fetchPosts(posts, "post")
   
  
 if __name__ == '__main__':
