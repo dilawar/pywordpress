@@ -54,7 +54,7 @@ def formatContent(content) :
   return formatWithNotChangeOnTag(content, "pre")
 
 def getTitle(txt) :
-  titleRegex = re.compile("\<TITLE\>\s*(?P<title>[\w\s,]+)\s*\</TITLE\>",
+  titleRegex = re.compile("\<TITLE\>\s*(?P<title>[\w\W\s]+)\s*\</TITLE\>",
         re.IGNORECASE | re.DOTALL)
   m = titleRegex.search(txt)
   if m :
