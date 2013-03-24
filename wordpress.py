@@ -119,7 +119,7 @@ def sendPostToWordpress(post, wp, txt) :
       post.post_status = status 
     else :
       print("[W] Post with uncertain status. Default to publish")
-      post.post_status = "publish"
+      or pagepost.post_status = "publish"
     
     termsAndCats = dict()
     
@@ -246,6 +246,7 @@ password=password
     with open(savePath, "w") as ff :
       ff.write(txt)
     sendPostToWordpress(post, wp, txt)
+    print("== You should now delete : {0}.".format(args.post))
     return
     
   # Fetch blogs from wordpress.
@@ -299,7 +300,7 @@ if __name__ == '__main__':
       , help="Update a post."
       )
   parser.add_argument('--post', metavar='blog_file'
-      , help="New post."
+      , help="New post or page"
       )
   args = parser.parse_args()
   main(args)
