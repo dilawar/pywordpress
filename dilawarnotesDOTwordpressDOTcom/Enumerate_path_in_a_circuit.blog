@@ -10,8 +10,6 @@ Consider the following circuit and its directed graph. Directed graphs can repre
 
 [caption id="attachment_224" align="aligncenter" width="663" caption="Circuit is drawn in Qucs simulator which I think will be of great value in near future."]<a href="http://dilawarnotes.files.wordpress.com/2010/10/assign4.png"><img class="size-large wp-image-224    " title="A digital Circuit " src="http://dilawarnotes.files.wordpress.com/2010/10/assign4.png?w=1024" alt="" width="663" height="468" /></a>[/caption]
 <p style="text-align:left;">Following figure shows its directed graph. Buffer Y9 and Y10 are ignored since they were inserted to distinguish u_1 from p_00 etc. Now if we need to test this circuit for path delays, we need to enumerate the path firsts. After converting the circuit into a graph, enumeration the path is a routine problem and can be solved by using <strong>Depth First Search</strong> algorithm. An <em>edge</em> from one node to other shows that a <em>wire</em> exists between them. By <em>path</em> we mean this <em>wire</em> only.</p>
-
-
 The path is shown below. <strong>dot </strong> Tool is used to generate this graph. Now the problem is reduced to enumerating the path between input and output.﻿ This can be done using the standard <strong>Depth First Search (DFS). </strong>The procedure is following.
 
 [caption id="attachment_223" align="alignleft" width="218" caption="Figure representing a digital circuit."]<a href="http://dilawarnotes.files.wordpress.com/2010/10/graph1.png"><img class="size-medium wp-image-223" title="graph1" src="http://dilawarnotes.files.wordpress.com/2010/10/graph1.png?w=218" alt="" width="218" height="300" /></a>[/caption]
@@ -32,15 +30,9 @@ In the same way, we can enumerate all the paths from input node <strong>b </stro
 <p style="text-align:center;">&nbsp;</p>
 
 
-
-
 [caption id="attachment_228" align="aligncenter" width="615" caption="Path from node b to output. The procedure is explained in the previous figure. Here also we get 6 paths."]<a href="http://dilawarnotes.files.wordpress.com/2010/10/path2.png"><img class="size-full wp-image-228  " title="path2" src="http://dilawarnotes.files.wordpress.com/2010/10/path2.png" alt="" width="615" height="421" /></a>[/caption]
 <p style="text-align:left;">Well, we used graphviz to generate these graphs. We give these scripts.</p>
-
-
 <p style="text-align:left;">&nbsp;</p>
-
-
 
 [sourcecode language="css"]
 &amp;lt;p style=&amp;quot;text-align: left;&amp;quot;&amp;gt;digraph G {
@@ -109,6 +101,8 @@ subgraph cluster004{
  }
 
 }
+
+
 [/sourcecode]
 
 [sourcecode language="css"]
@@ -171,6 +165,8 @@ subgraph cluster03{
  u1; u2; u3; u4;
 }
 }
+
+
 [/sourcecode]
 
 </CONTENT>

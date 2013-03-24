@@ -37,6 +37,8 @@ verbose = 2
 read_all = False
 message_log = ~/.getmail/gpo.log
 
+
+
 [/sourcecode]
 
 If you also wants EE account then create one more file getmail.ee as following.
@@ -65,6 +67,8 @@ path = ~/Mail/EE-IITB/
 verbose = 2
 read_all = False
 message_log = ~/.getmail/ee.log
+
+
 [/sourcecode]
 
 Now run from terminal.
@@ -166,6 +170,8 @@ color   attachment      red            blue
 alias epw-circulation Circulation
 alias harami harami
 alias pilla pilla
+
+
 [/sourcecode]
 
 Now we need to send email. We have choses 'msmtp' as our send-mail client. Configure it too. We are using iitb-gpo
@@ -183,6 +189,8 @@ password ihatecartman
 tls on
 tls_starttls on
 tls_certcheck off
+
+
 [/sourcecode]
 
 </CONTENT>

@@ -15,6 +15,8 @@ Now I want to read this file which contain following information. To be precise,
 (b) (a c d)
 (c) (a b d)
 (d) (b c)
+
+
 [/sourcecode]
 
 It graph file can be very complicated. Here is what I did to read this file. What each line does in code can be googled out easily. Just put lisp with the keyword while searching.
@@ -40,6 +42,8 @@ It graph file can be very complicated. Here is what I did to read this file. Wha
   (loop for line = (read-line graph-stream nil 'end-of-graph)
         until(eq line 'end-of-graph)
         do( print line))) ;; We need to something more.
+
+
 
 [/sourcecode]
 

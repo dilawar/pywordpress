@@ -8,9 +8,9 @@ Clean up mess in terminal after ncurses crashes
 <CONTENT>
 If your terminal is left in mess (line-break are messed up and newlines are not visible etc) due to ncurses-crash or seg-fault, you can make your terminal behave normally again. Type
 
-<pre>
-stty sane^j
-</pre>
+
+<pre>stty sane^j</pre>
+
 
 
 </CONTENT>

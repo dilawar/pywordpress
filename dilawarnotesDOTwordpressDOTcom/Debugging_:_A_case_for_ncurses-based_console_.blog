@@ -16,8 +16,6 @@ For medium or small debugging, writing to simple text files or console is good e
 
 I wish to suggest something more. If you are a big fan of terminal (no gui, no mouse, no problem) and have a look at <a class="zem_slink" title="Ncurses" href="http://www.gnu.org/software/ncurses/ncurses.html" target="_blank" rel="homepage">ncurses</a> library. It creates a <a class="zem_slink" title="Text-based user interface" href="http://en.wikipedia.org/wiki/Text-based_user_interface" target="_blank" rel="wikipedia">text based user interface</a> and I have used it in two applications. To cut the long story short, let me show you the screen-shot of how ncurses based screen can be split into many section in which different section can be used for different type of log messages.
 <p style="text-align:center;"><a href="http://dilawarnotes.files.wordpress.com/2013/02/2013-02-17-033243_1366x768_scrot.png"><img class="aligncenter  wp-image-735" alt="2013-02-17-033243_1366x768_scrot" src="http://dilawarnotes.files.wordpress.com/2013/02/2013-02-17-033243_1366x768_scrot.png" width="637" height="358" /></a></p>
-
-
 Even this is lame. Let me show you a video. First few seconds to this video will show you the blindness caused by naive logging on the console. Then we'll see the power of ncurses. You'll see two matrices, we wish the left one must have rows which has only single 1. If this is achieved, our algorithm is correct.
 
 https://www.facebook.com/video/video.php?v=109918892526120&amp;saved

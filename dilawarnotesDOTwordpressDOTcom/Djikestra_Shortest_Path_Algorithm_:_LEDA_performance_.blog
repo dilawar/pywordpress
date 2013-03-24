@@ -98,6 +98,8 @@ m = rand_int(1,3)*n;
 
 return 0;
 }
+
+
 [/sourcecode]
 
 </CONTENT>

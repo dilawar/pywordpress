@@ -10,9 +10,9 @@ How to detect if you are getting caught inside a loop when you are traversing a 
 
 Assume that each vertex of graph has a label such as A, B, C, etc. While you are traversing the graph, you keep your labels of traversed vertices on a stack or in a vector. If you construct a string out of this traversal, you will get a pattern like the following one.
 
-<pre>
- A,B,D,E,F,D,E,F,D,E,F
-</pre>
+
+<pre> A,B,D,E,F,D,E,F,D,E,F</pre>
+
 
 Whenever you are caught in a loop, a path will repeat itself. We have <tt>D,E,F</tt> repeating itself. Now there are two ways to detect this. One is a classical graph based method which is efficient $latex O(E+V)$. The second one, about which I am going to talk about now, is not as efficient as first but but it is very easy to code. It is based on <a class="zem_slink" title="Regular expression" href="http://en.wikipedia.org/wiki/Regular_expression" target="_blank" rel="wikipedia">regular expressions</a>.
 
@@ -20,9 +20,9 @@ All we have to do is  construct a string out of the data-structure which holds 
 
 Here is one such pattern written using boost regex library.
 
-<pre>
- boost::regex rx ("^([0-9a-zA-Z_@]+,)+(?[0-9a-zA-Z@_,]+)(g{cycle})$", boost::regex::perl);
-</pre>
+
+<pre> boost::regex rx ("^([0-9a-zA-Z_@]+,)+(?[0-9a-zA-Z@_,]+)(g{cycle})$", boost::regex::perl);</pre>
+
 
 Care has to be taken while using this regex. First, I have special character <tt>@</tt> in the label of vertex. And this pattern assumes that if there is a single repetition such as <tt>A,B,A,B</tt> or <tt>A,B,B</tt> etc, then it must lead to a loop. In my case it is justified. You should think if this is the behavior you want. And again, it is not as efficient as standard graph algorithms to detect loop (which uses <a class="zem_slink" title="Depth-first search" href="http://en.wikipedia.org/wiki/Depth-first_search" target="_blank" rel="wikipedia">Depth First Search</a>). But for writing quick tests, it is a good approach.
 

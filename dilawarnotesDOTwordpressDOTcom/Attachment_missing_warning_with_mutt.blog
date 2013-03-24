@@ -1,0 +1,51 @@
+<TYPE>post</TYPE>
+<STATUS>publish</STATUS>
+<ID>884</ID>
+<TITLE>
+Configuring mutt to display 'attachment missing warning' 
+</TITLE>
+
+<CONTENT>
+
+
+<p> This method works if you are using vim as your editor. In file <tt>~/.vim/ftplugin/mail.vim</tt>, write this function definition. </p> 
+
+
+[sourcecode language="bash"] 
+function! CheckAttach()
+     let check='attach,angehängt,attachment,Anhang'
+     let oldPos=getpos('.')
+     let ans=1
+     let val = join(split(escape(check,' \.+*'), ','),'\|')
+     1
+     if search('\%('.val.'\)','W')
+       let ans=input("Attach file?: (leave empty to abbort): ", "", "file")
+       while (ans != '')
+               normal magg}-
+               call append(line('.'), 'Attach: '.ans)
+               redraw
+           let ans=input("Attach another file?: (leave empty to abbort): ", 
+", "file")
+       endwhile
+     endif
+     exe ":write ". expand("<amatch>")
+     call setpos('.', oldPos)
+ endfu
+ 
+ augroup script
+     au!
+     au BufWriteCmd,FileWriteCmd mutt* :call CheckAttach()
+ augroup END
+[/sourcecode] 
+ 
+ And in <tt>.muttrc</tt>, you should have something like this. 
+
+<pre> 
+set editor = "vim -c 'set spell spelllang=en syntax=mail ft=mail enc=utf-8' '+/^$'" 
+</pre>
+
+<p> Notice that we have <tt>ft=mail</tt>. This will automatically load the funtion. </p> <h3>Reference</h3> 1. http://www.mail-archive.com/mutt-users@mutt.org/msg37580.html
+
+</CONTENT>
+
+<CATEGORY ID="133">mutt</CATEGORY>

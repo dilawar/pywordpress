@@ -90,6 +90,8 @@ clean:
 
 .PHONY: clean&lt;/pre&gt;
 
+
+
 [/sourcecode]
 <h2>wav-def.h file</h2>
 Well, to understand it, you have to see the WAV file format.
@@ -215,6 +217,8 @@ typedef struct
 } CHUNK_HDR;
 
 #endif   /* ----- #ifndef wave_def_INC  ----- */
+
+
 
 [/sourcecode]
 <h2>wav-file.h file</h2>
@@ -489,6 +493,8 @@ class WavFile
 }; /* -----  end of class WavFile  ----- */
 
 #endif // _WAV_FILE_H_
+
+
 
 [/sourcecode]
 <h2>wave-file.cc</h2>
@@ -1224,6 +1230,8 @@ int WavFile::writeDataToFile()
 
 }
 
+
+
 [/sourcecode]
 <h2>main.cc</h2>
 [sourcecode language="c"]
@@ -1641,6 +1649,8 @@ int main(int argc, char** argv)
       return 0;
 
     }
+
+
 
 [/sourcecode]
 <h1>Results</h1>

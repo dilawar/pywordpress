@@ -14,72 +14,72 @@ If you belong to Electrical Engineering department at IIT Bombay then you must b
 
 Let's log-on to sharada.
 
-<pre>
-dilawar@hobbes:~$ <a class="zem_slink" title="Secure Shell" href="http://en.wikipedia.org/wiki/Secure_Shell" target="_blank" rel="wikipedia">ssh -X</a> dilawar@sharada.ee.iitb.ac.in
+
+<pre>dilawar@hobbes:~$ <a class="zem_slink" title="Secure Shell" href="http://en.wikipedia.org/wiki/Secure_Shell" target="_blank" rel="wikipedia">ssh -X</a> dilawar@sharada.ee.iitb.ac.in
 Last login: Sun Jan 27 17:27:28 2013 from 10.107.105.13
-dilawar@sharada:~$
-</pre>
+dilawar@sharada:~$</pre>
+
 
 You may have to accept the signature of machine and enter your password. I am using public-private key based authentication mechanism (no need for password, but can be dangerous sometimes).
 
 Anyway, we are inside sharada and in my home.
 
-<pre>
-dilawar@sharada:~$ pwd
-/pg/rs/dilawar
-</pre>
+
+<pre>dilawar@sharada:~$ pwd
+/pg/rs/dilawar</pre>
+
 
 Let's initialize a repository which we'll use for our private work; let's call it <b>repo_on_sharada</b>.
 
-<pre>
-dilawar@sharada:~$ ls
+
+<pre>dilawar@sharada:~$ ls
 mail  mbox  public_html  Scripts
 dilawar@sharada:~$ mkdir repo_on_sharada
 dilawar@sharada:~$ ls
 mail  mbox  public_html  repo_on_sharada  Scripts
 dilawar@sharada:~$ cd repo_on_sharada/
-dilawar@sharada:~/repo_on_sharada$ ls
-</pre>
+dilawar@sharada:~/repo_on_sharada$ ls</pre>
+
 
 Great, now we are good to go. Since it is our storehouse and we'll never work on sharada we will initialize a repo which is bare.
 
-<pre>
-dilawar@sharada:~/repo_on_sharada$ git init --bare
+
+<pre>dilawar@sharada:~/repo_on_sharada$ git init --bare
 Initialized empty Git repository in /pg/rs/dilawar/repo_on_sharada/
-dilawar@sharada:~/repo_on_sharada$
-</pre>
+dilawar@sharada:~/repo_on_sharada$</pre>
+
 
 Great, we have a bare initialized repo. Notice that its path on sharada server is <b><tt>/pg/rs/dilawar/repo_on_sharada/ </tt></b>.
 
 Now logout from sharada and forget about it. On your lapton, cd to some location and do the following.
 
-<pre>
-dilawar@hobbes:~/Works$ git clone ssh://sharada.ee.iitb.ac.in/pg/rs/dilawar/repo_on_sharada 
+
+<pre>dilawar@hobbes:~/Works$ git clone ssh://sharada.ee.iitb.ac.in/pg/rs/dilawar/repo_on_sharada 
 Cloning into 'repo_on_sharada'...
-warning: You appear to have cloned an empty repository.
-</pre>
+warning: You appear to have cloned an empty repository.</pre>
+
 
 Now we have cloned a empty repository. Now we are ready to make our first commit. Create a file named <tt>readme</tt> with few lines, add and commit it.
 
-<pre>
-dilawar@hobbes:~/Works/repo_on_sharada (master)*$ git add readme
+
+<pre>dilawar@hobbes:~/Works/repo_on_sharada (master)*$ git add readme
 dilawar@hobbes:~/Works/repo_on_sharada (master)*$ git commit -m "my first commit"
 [master (root-commit) 03e612d] my first commit
  1 file changed, 1 insertion(+)
  create mode 100644 readme
-dilawar@hobbes:~/Works/repo_on_sharada (master)$
-</pre>
+dilawar@hobbes:~/Works/repo_on_sharada (master)$</pre>
+
 
 This file readme is stored locally and has not yet sent to sharada. Since this is our first commit, our repo still doesn't know about branch. We need to specify a branch to which this local repository should be pointed to (the term branch is not used here in strict sense).
 
-<pre>
-dilawar@hobbes:~/Works/repo_on_sharada (master)$ git push origin master
+
+<pre>dilawar@hobbes:~/Works/repo_on_sharada (master)$ git push origin master
 Counting objects: 3, done.
 Writing objects: 100% (3/3), 232 bytes, done.
 Total 3 (delta 0), reused 0 (delta 0)
 To ssh://sharada.ee.iitb.ac.in/pg/rs/dilawar/repo_on_sharada
- * [new branch]      master -&gt; master
-</pre>
+ * [new branch]      master -&gt; master</pre>
+
 
 Origin usually means the remote server which is sharada in our case. Branch master is a branch on this remote. We can have more than one branch such as dilawar, vinay etc. Anyway how to branch and merge branches is advanced topic and can be learned later. For now, we have a private repo to work with. Now even if you delete the directory, you can clone the repository again.
 

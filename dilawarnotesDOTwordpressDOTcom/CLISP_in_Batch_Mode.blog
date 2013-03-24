@@ -12,6 +12,8 @@ I struggled few hours to get CLisP working in batch mode (Of course, Internet wa
 
 (load &quot;filename&quot;)
 
+
+
 [/sourcecode]
 
 That all folks!

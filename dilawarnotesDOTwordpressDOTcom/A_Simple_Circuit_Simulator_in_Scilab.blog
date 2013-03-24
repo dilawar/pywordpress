@@ -44,6 +44,8 @@ RyA n1 n2 0.1;
 RzB n2 n3 0.1;
 RzC n2 n0 0.2;
 VyB n3 n0 3;
+
+
 [/sourcecode]
 <h2>2.2 Parse this file</h2>
 Following is the SCILAB function which is used to parse this file. It is adequately commented.
@@ -316,6 +318,8 @@ mclose(fd);
 number = [noOfVoltageSources, noOfCurrentSources, noOfResistance];
 
 endfunction
+
+
 [/sourcecode]
 <h2>2.3 Generate coefficient matrix</h2>
 Well this part should have a better documentation. matM is the matrix which will contain all the coefficients. Matrix matB got all  the coefficient matrix. It is better that you work out a simple example for MNA and understand the structure of these matrices.
@@ -531,6 +535,8 @@ msprintf(&quot;Your circuit contains %d current sources, %d voltage sources, and
 the circuit. Make sure your file describing your circuit is error free.&quot;, ...
 nI, nV, nR);
 endfunction;
+
+
 [/sourcecode]
 <h2>2.4 Top most level script and its result</h2>
 [sourcecode language="matlab"]
@@ -566,6 +572,8 @@ end;
 
 // This ends our endeavor.
 exit();
+
+
 [/sourcecode]
 
 Results for the file 2.1.
@@ -579,6 +587,8 @@ Node n2 votage is : 3.200000
 Current through voltage sources.
 Current through voltage source (n1, n0) is : -18.000000
 Current through voltage source (n0, n3) is : 4.320000
+
+
 [/sourcecode]
 
 RESOURCES : <a href="http://dilawarnotes.files.wordpress.com/2010/09/mna_scilab1.pdf">mna_scilab_ver0.9</a>

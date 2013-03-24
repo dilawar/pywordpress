@@ -6,24 +6,14 @@ Hangman game in Haskell
 </TITLE>
 
 <CONTENT>
-<h1>Hangman in Haskell</h1>
-<h2>Rule of Hangman</h2>
-You play this game with a man called Hangman. The job of hangman is to kill you. Hangman is fair and have some rules. He is abided by these rules.
-<ul>
-	<li>Hangman writes down a secret word. Let the word be <em>W</em> and its length is <em>n</em>.</li>
-	<li>He asks you to guess a letter of <em>W</em>. Whenever you guess a letter which is in <em>W</em>, hangman shows you that part of the word. For instance, if the word was <code>cat</code> and you guessed 'a' then hangman shows you <code>_a_</code>. At first correct guess, you get to know the size of the word and the position of your guess. If the word contains your guessed letter more than one time then hangman also shows them. For example, if the word was <code>tweedledee</code> and you guessed 'e' then hangman shows you <code>__ee_l_d__</code>.</li>
-	<li>You have minimum of <em>n</em> guesses. Every time you guess right, your get one more guess to make i.e. for each correct guess, total number of guess you can make in future are same.</li>
-	<li>If you can not guess the correct word in given guesses, hangman kills you.</li>
-</ul>
-<h2>Functions we need</h2>
-Obviously, it requires input-output to system. When hangman inputs the word, you should not see. For this purpose, we have to disable echo at <code>stdin</code>.
+<h1>Hangman in Haskell</h1> <h2>Rule of Hangman</h2> You play this game with a man called Hangman. The job of hangman is to kill you. Hangman is fair and have some rules. He is abided by these rules. <ul> <li>Hangman writes down a secret word. Let the word is <em>W</em> and its length is <em>n</em>.</li> <li>He asks you to guess a letter of <em>W</em>. Whenever you guess a letter which is in <em>W</em>, hangman shows you that part of the word. For instance, if the word was <code>cat</code> and you guessed 'a' then hangman shows you <code>_a_</code>. At first correct guess, you get to know the size of the word and the position of your guess. If the word contains your guessed letter more than one time then hangman also shows them. For example, if the word was <code>tweedledee</code> and you guessed 'e' then hangman shows you <code>__ee_l_d__</code>.</li> <li>You have minimum of <em>n</em> guesses. Every time you guess right, your get one more guess to make i.e. for each correct guess, total number of guess you can make in future are same.</li> <li>If you can not guess the correct word in given guesses, hangman kills you.</li> </ul> <h2>Functions we need</h2> Obviously, it requires input-output to system. When hangman inputs the word, you should not see. For this purpose, we have to disable echo at <code>stdin</code>. 
 
 <pre>
 &lt;import&gt;=
 import System.IO
 </pre>
 
-@ Now we have to read the word from terminal. For this purpose we create a function <code>getWord</code>.
+ @ Now we have to read the word from terminal. For this purpose we create a function <code>getWord</code>. 
 
 <pre>
 &lt;Function&gt;=
@@ -37,9 +27,7 @@ getWord = do
             return (c:l)
 </pre>
 
-@
-<h5>Checking if a letter is in word</h5>
-To do this, first we check if a given letter is in word by using function <code>posChar</code>. It returns a list of <code>Bool</code> specifying if given letter exists in the word or not. For example, give a word 'gabbar' and a letter b, <code>posChar</code> returns a list of <em>[False, False, True, True, False, False]</em>.
+ @ <h5>Checking if a letter is in word</h5> To do this, first we check if a given letter is in word by using function <code>posChar</code>. It returns a list of <code>Bool</code> specifying if given letter exists in the word or not. For example, give a word 'gabbar' and a letter b, <code>posChar</code> returns a list of <em>[False, False, True, True, False, False]</em>. 
 
 <pre>
 &lt;Function&gt;+=
@@ -48,7 +36,7 @@ posChar [] char = []
 posChar (x:xs) char = (x==char) : (posChar xs char)
 </pre>
 
-It would be useful sometimes, just to see if a letter exists in given word or not. We can simply create another function <code>ifContain</code> using <code>foldr</code>. The idea is to use logical <code>or</code> operation on the returned list from <code>posChar</code>.
+ It would be useful sometimes, just to see if a letter exists in given word or not. We can simply create another function <code>ifContain</code> using <code>foldr</code>. The idea is to use logical <code>or</code> operation on the returned list from <code>posChar</code>. 
 
 <pre>
 &lt;Function&gt;+=
@@ -56,16 +44,13 @@ ifContain :: [Char] -&gt; Char -&gt; Bool
 ifContain word c = foldr (||) False (posChar word c)
 </pre>
 
-<h5>Hangman constructs word from guesses</h5>
-Now if the guessed letter exists in the word then hangman has to show the word with guessed letter unmasked. We will use letter <code>_</code>to mask the hidden letter. At the beginning, hangman creates a word and a masked copy of it. Both of them must have the same size. We need a function to create such a masked copy. To make such a copy, we write a lambda expression on the fly,
+ <h5>Hangman constructs word from guesses</h5> Now if the guessed letter exists in the word then hangman has to show the word with guessed letter unmasked. We will use letter <code>_</code>to mask the hidden letter. At the beginning, hangman creates a word and a masked copy of it. Both of them must have the same size. We need a function to create such a masked copy. To make such a copy, we write a lambda expression on the fly, 
 
 <pre>
  foldr(\x -&gt;('_':))[] word
 </pre>
 
-does the job nicely.
-
-Now the job of hangman is to maintain the mask word and display its unmasked letter to the player. To maintain it, he needs a function <code>addGuessToWord</code>.
+ does the job nicely. Now the job of hangman is to maintain the mask word and display its unmasked letter to the player. To maintain it, he needs a function <code>addGuessToWord</code>. 
 
 <pre>
 &lt;Function&gt;+=
@@ -74,7 +59,6 @@ addGuessToWord w w1 c
     | length(w) /= length(w1) = error "Length mismatch" -- just for safety.
     | ifContain w c = buildW1 w1 c (posChar w c)
     | otherwise = w1
-
 buildW1 :: [Char] -&gt; Char -&gt; [Bool] -&gt; [Char]
 buildW1 (x:[]) c (p:[])
     | x == '_' &amp;&amp; p == True = c:[]
@@ -86,16 +70,13 @@ buildW1 (x:xs) c (p:ps)
     | otherwise = '_' : buildW1 xs c ps
 </pre>
 
-This function is slightly complicated. It uses extensive pattern matching. At the heart of this function is another function <code>buildW1</code> which unmasks (or rather put) correct guessed letter into masked-word.
-<h2>Put things together</h2>
-Now we have all the pieces to play hangman. Now we have to maintain no of guesses a player is allowed to make and <code>callHangman</code> at each step. We do it by,
+ This function is slightly complicated. It uses extensive pattern matching. At the heart of this function is another function <code>buildW1</code> which unmasks (or rather put) correct guessed letter into masked-word. <h2>Put things together</h2> Now we have all the pieces to play hangman. Now we have to maintain no of guesses a player is allowed to make and <code>callHangman</code> at each step. We do it by, 
 
 <pre>
 &lt;Function&gt;+=
 callHangman :: Int -&gt; [Char] -&gt; [Char] -&gt; Char -&gt; IO ()
 {- No attempt left, you are dead -}
 callHangman 0 wrd wrd1 c = do putStrLn "Dead" 
-
 {- Attempts left, play on! -}
 callHangman n wrd wrd1 c 
     | ifContain wrd c = do 
@@ -108,7 +89,6 @@ callHangman n wrd wrd1 c
                 putStrLn ("Guess again. Left " ++ (show n))
                 guess &lt;- getChar
                 callHangman n wrd newWrd guess
-
     | not (ifContain wrd c) = do
         putStrLn ("Guess again. Left " ++ (show (n-1)))
         guess &lt;- getChar
@@ -116,7 +96,7 @@ callHangman n wrd wrd1 c
     | otherwise = error "Something wrong in logic."
 </pre>
 
-<h2>The main function</h2>
+ <h2>The main function</h2> 
 
 <pre>
 &lt;main&gt;=
@@ -134,7 +114,7 @@ main = do
     putStrLn "Game over" -- make sure you are alive ;-)
 </pre>
 
-<h2>Program structure</h2>
+ <h2>Program structure</h2> 
 
 <pre>
 &lt;*&gt;=
@@ -143,7 +123,7 @@ main = do
 <em>&lt;main&gt;</em>
 </pre>
 
-<h5>Index</h5>
+ <h5>Index</h5>
 
 </CONTENT>
 

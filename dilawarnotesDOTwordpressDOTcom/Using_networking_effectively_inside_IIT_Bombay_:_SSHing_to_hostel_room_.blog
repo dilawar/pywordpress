@@ -10,8 +10,8 @@ Having LAN is great for downloading movies and other stuff from other connected 
 
 Let's not be Homo Neanderthal and promise ourself that we will not carry our laptop and its charger everywhere we go inside the campus (unless there is no escape, such as showing-off your new-laptop etc.). <a href="https://help.ubuntu.com/community/AptGet/Howto">Install openssh</a> in your machine and make sure that port 22 is listening to incoming connections. You can check it by <b><tt>nmap</tt></b>  command. You need to install it first. It is more powerful than primitive pinging (ping 10.14.42.7).
 
-<pre>
-dilawar@hobbes:~$ nmap localhost
+
+<pre>dilawar@hobbes:~$ nmap localhost
 
 Starting Nmap 5.21 ( http://nmap.org ) at 2013-02-21 21:29 IST
 Nmap scan report for localhost (127.0.0.1)
@@ -22,8 +22,8 @@ PORT     STATE SERVICE
 53/tcp   open  domain
 80/tcp   open  http
 631/tcp  open  ipp
-9418/tcp open  gitNmap done: 1 <a class="zem_slink" title="IP address" href="http://en.wikipedia.org/wiki/IP_address" target="_blank" rel="wikipedia">IP address</a> (1 host up) scanned in 0.15 seconds
-</pre>
+9418/tcp open  gitNmap done: 1 <a class="zem_slink" title="IP address" href="http://en.wikipedia.org/wiki/IP_address" target="_blank" rel="wikipedia">IP address</a> (1 host up) scanned in 0.15 seconds</pre>
+
 
 Great! We were interested in <tt>22/tcp</tt> port which is open. Now note down the ip of your system which you can get it by <tt>ip addr</tt> or <tt>ifconfig</tt> command. For example my ip is <tt>10.14.42.7</tt> and username is <tt>dilawar</tt>.  Now my laptop is ready to accept any connection from any other computer on LAN. Leave it on and roam in campus like a leopard. You can access your laptop from anywhere now.
 
@@ -31,9 +31,9 @@ Now I go to <tt>pc-lab</tt> and get a computer with terminal (repeat with me 4 t
 
 Now I can connect to my pc using <tt>ssh</tt> command. Do the following.
 
-<pre>
-ssh -X dilawar@10.14.42.7
-</pre>
+
+<pre>ssh -X dilawar@10.14.42.7</pre>
+
 
 And launch any command from terminal. Make sure to write capital X and not small x. You can also use capital Y instead of 'y'. Now next time you see someone carrying his/her laptop with him/her, you can call them idiots and laugh like a maniac (in your head).
 

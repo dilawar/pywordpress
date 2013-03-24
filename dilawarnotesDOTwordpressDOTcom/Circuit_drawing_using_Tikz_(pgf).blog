@@ -38,6 +38,8 @@ right] {$f$};
 \end{tikzpicture}
 \caption{\small A full adder.}
 \end{figure}
+
+
 [/sourcecode]
 
 Above code draws the circuit shown below. You have to use \usetikzlibrary{circuits.logic.US} in the preamble of latex document. Also, make sure you have the recent version of texlive and you have hashed the tex data-base using texhash if you have installed pgf as standalone.

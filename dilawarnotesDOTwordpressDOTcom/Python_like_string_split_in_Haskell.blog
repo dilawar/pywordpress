@@ -8,16 +8,16 @@ Python like string split in Haskell
 <CONTENT>
 Following function split a string into a list of strings at a given string. For example <tt>split "dilawar raw war" "aw"</tt> returns <tt>["dil", "ar r" " war"]</tt>
 
-<pre>
-split :: String -&gt; String -&gt; [String]
+
+<pre>split :: String -&gt; String -&gt; [String]
 split str pat = helper str pat [] [] where 
     helper :: String -&gt; String -&gt; String -&gt; String -&gt; [String]
     helper [] ys n m = [n] ++ []
     helper xs [] n m = [n] ++ (split xs pat)
     helper (x:xs) (y:ys) n m
         | x /= y = helper (xs) pat ((n++m)++[x]) m
-        | otherwise = helper xs ys n (m++[y])
-</pre>
+        | otherwise = helper xs ys n (m++[y])</pre>
+
 
 
 </CONTENT>

@@ -8,11 +8,7 @@ Binary Decision Diagrams and VLSI Verification
 <CONTENT>
 [in progress : I'll put up the solution after Nov 28. I have to submit it as assignment so can not take the risk of being copied or so.]
 
-These days simulation is the most prominent technique for verification. However, simulation can only cover a part of all cases possible thus simulation does not guarantee that certain properties will hold everywhere in the system. For example, any complex asynchronous boolean circuit with 100 variables will have 2<sup>
-
-100</sup>
-
- combination. Not everyone can afford verifying all these combination with computers using simulation. Only a handful of companies like Intel can afford to do so with thousands of C.P.U. running in parallel verifying a chip design or testing a chip before sending it to foundry. If you are a smaller company, then you have to make sure that you hire smart people who can break down a larger problem into smaller one. Partitioning a large system into smaller one is an art and requires a lot of experience and eyes for details though there are few techniques available such as expander graphs and matroids etc.
+These days simulation is the most prominent technique for verification. However, simulation can only cover a part of all cases possible thus simulation does not guarantee that certain properties will hold everywhere in the system. For example, any complex asynchronous boolean circuit with 100 variables will have 2<sup>100</sup> combination. Not everyone can afford verifying all these combination with computers using simulation. Only a handful of companies like Intel can afford to do so with thousands of C.P.U. running in parallel verifying a chip design or testing a chip before sending it to foundry. If you are a smaller company, then you have to make sure that you hire smart people who can break down a larger problem into smaller one. Partitioning a large system into smaller one is an art and requires a lot of experience and eyes for details though there are few techniques available such as expander graphs and matroids etc.
 
 A good techniques which widely used these days is <em> temporal logic model checking </em>. In this method the system being verified is modeled as  <strong>finite state transition system </strong> and by exhaustively exploring the model, we check whether property holds or not. The biggest advantage using this is, if some property does not hold on this system then a <em>witness</em> (counterexample) is produces. This helps a lot in improving and correcting the design.
 
@@ -97,6 +93,8 @@ begin
 		end if;
 	end process;
 end encode;
+
+
 [/sourcecode]
 
 </CONTENT>

@@ -49,14 +49,8 @@ These faults, among others, are classified as spot defects. Geometrically, these
 </ul>
 <h1>Fault Modeling</h1>
 <h2>Test Sequence Detectability</h2>
-Let's make a gauge to measure how fault-free my circuit is. If I do a test, can I answer this question. <strong>What are the chances that a successfully tested IC still contains undetected faults? <a id="reff1" href="#f1"><sup>
-
-[FOOTNOTE]</sup>
-
-</a> </strong>Such is measure which one can name <strong>test sequence detectability, </strong>$latex D$<strong>. </strong>It is defined as,
+Let's make a gauge to measure how fault-free my circuit is. If I do a test, can I answer this question. <strong>What are the chances that a successfully tested IC still contains undetected faults? <a id="reff1" href="#f1"><sup>[FOOTNOTE]</sup></a> </strong>Such is measure which one can name <strong>test sequence detectability, </strong>$latex D$<strong>. </strong>It is defined as,
 <p style="text-align:center;">$latex D = \prod_{i=1}^{n_e}(1-{p_i})$</p>
-
-
 where,
 
 $latex p_i$ is the probability of the occurrence of faults and  $latex n_e$ are the faults that can not be detected by a given test sequence. Well, defining it this make sense to me.

@@ -48,6 +48,8 @@ end process;
 
 end Behave;
 
+
+
 [/sourcecode]
 
 Next task is to find an equivalent circuit description of this behavior. We can surely use some synthesizer but they are not smart enough. Sometimes they produce garbage (though this case is way too simple to make a synthesizer go mad.). We are going to build our own. <strong>We introduce one more condition, say a, c, and d can never be same at any time. So we can treat them as don't care condition. </strong>Lets make the truth table of Cblock.
@@ -276,6 +278,8 @@ begin
    end process;
 
 end Compare;
+
+
 
 [/sourcecode]
 <h2>Results</h2>

@@ -1,21 +1,23 @@
 import re 
 
 with open("../dilawarnotesDOTwordpressDOTcom/Attachment_missing_warning_with_mutt.blog", "r") as f :
- txt = f.read()
+ txt1 = f.read()
+with open("../dilawarnotesDOTwordpressDOTcom/Hangman_game_in_Haskell.blog", "r") as ff :
+  txt2 = ff.read()
 
-def formatWithNotChangeOnTag(txt, tag) :
+def formatWithNoChangeOnTag(txt, tag) :
   newText = ""
   bTag = False 
   eTag = True
   beginTag = re.compile("[\<\[]\s*"+tag+"\s*(\w+\s*=\s*[\"\w\']+\s*)?[\>\]]",
       re.IGNORECASE)
-  endTag = re.compile("[\<\]]\s*\/"+tag+"\s*[\>\]]", re.IGNORECASE)
+  endTag = re.compile("[\<\[]\s*\/"+tag+"\s*[\>\]]", re.IGNORECASE)
   for line in txt.split("\n") :
     if len(line.strip()) == 0 : continue 
-    if beginTag.search(line) and endTag.search(line) : continue
+    if beginTag.search(line) and endTag.search(line) : newText += line
     else : 
       if beginTag.search(line) :
-        print("source")
+        newText += "\n"
         bTag = True
         eTag = False
       if endTag.search(line) :
@@ -23,9 +25,11 @@ def formatWithNotChangeOnTag(txt, tag) :
         bTag = False
     #check 
     if bTag is True and eTag is False:
-      newText += (line+"\n")
+      newText += (line+"+QUQ+")
     else : # format it 
-      newText += (line.strip()+" ")
+      newText += (line.strip()+"\n")
   return newText
 
-print formatWithNotChangeOnTag(txt, "sourcecode")
+txt1 = formatWithNoChangeOnTag(txt1, "sourcecode")
+txt1 = formatWithNoChangeOnTag(txt1, "pre")
+print txt1.replace("+QUQ+", "\n")

@@ -43,6 +43,8 @@ isAnyFactor :: Integer -&gt; [Integer] -&gt; [Bool]
  isPrime :: Integer -&gt; Bool
  isPrime n = not $ or $ isAnyFactor n (mkList n)
 
+
+
 [/sourcecode]
 <div class="zemanta-pixie"><img class="zemanta-pixie-img" src="http://img.zemanta.com/pixy.gif?x-id=816787f3-2f1c-8e3a-b454-918e814eb539" alt="" /></div>
 

@@ -10,8 +10,8 @@ Langford pairs in Haskell
 
 \This implementation is not-very naive but it is not very efficient either. It can generate solutions up to n = 12, then it gets very slow.
 
-<pre>
-This is an extremely horrible solution to generate langford pairs by
+
+<pre>This is an extremely horrible solution to generate langford pairs by
 dilawar@ee.iitb.ac.in succesfully finished on Nov 27, 2011 after two days of
 labour. Is is advised not to use this program in any real-time application. Its
 runs slower than Chacha Chaudary brain.
@@ -106,8 +106,8 @@ Who needs tests now!
 test1 = mergeTopBottom [2,0,0,2] [3,0,0,0,3] 3
 test2 = map (\x -&gt; mergeTopBottom [1,0,1] x 3) test1
 test4 = mergeThisList [2,0,0,2]
-test5 = mergeThisList
-</pre>
+test5 = mergeThisList</pre>
+
 
 
 </CONTENT>

@@ -126,6 +126,8 @@ begin
    end process;
 
 end Behave;
+
+
 [/sourcecode]
 
 Now here is another file which instantiate these memory blocks with faults in it.
@@ -297,6 +299,8 @@ begin
 	end process;
 	
 end Behave;
+
+
 [/sourcecode]
 
 <b>If you run the simulation using the algorithm in this existing test bench, the memory block seems to be functioning correctly. However, each of the memory blocks has faults present in it (as you can verify by examining the VHDL code). Why did the test fail to detect the errors? Now one needs to modify the test-bench to use a single test (sequence of reads and writes) that can detect any decoder/stuck-at/coupling/pattern-sensitive fault in MemBlock. Pattern-sensitive faults may be assumed to be for a neighbourhood which consists of adjacent bits in the same column of the 256x8 array. Conﬁrm that this modiﬁed test-bench detects that each of the MemBlock instances is faulty. </b>
@@ -830,6 +834,8 @@ architecture Behave of MemTest is
         end process;
 
     end Behave;
+
+
 [/sourcecode]
 
 <h2>Solution </h2>
@@ -838,6 +844,8 @@ Use following commands to run the test.
 ghdl -i *.vhd
 ghdl -m memtest
 ghdl -r memtest --stop-time=40ms --vcd=dilawar.vcd
+
+
 [/sourcecode]
 
 

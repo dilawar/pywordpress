@@ -20,6 +20,8 @@ user = alice
 type = Maildir
 path = /home/joe/Maildir/
 user = joe
+
+
 [/sourcecode]
 
 It did not work and gave me following error.
@@ -30,6 +32,8 @@ Change this to following and it worked
 
 [sourcecode language="text"]
 destinations = ('~/Mail/inbox/', '~/Mail/archive/current/')
+
+
 [/sourcecode]
 
 </CONTENT>

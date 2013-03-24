@@ -26,19 +26,23 @@ import difflib
 # globals 
 blogDir = "."
 
-def formatWithNotChangeOnTag(txt, tag) :
+
+def formatWithNoChangeOnTag(txt, tag) :
+  ''' Notice :
+  +QUQ+ should be replace by \n after using this function last time.
+  '''
   newText = ""
   bTag = False 
   eTag = True
   beginTag = re.compile("[\<\[]\s*"+tag+"\s*(\w+\s*=\s*[\"\w\']+\s*)?[\>\]]",
       re.IGNORECASE)
-  endTag = re.compile("[\<\]]\s*\/"+tag+"\s*[\>\]]", re.IGNORECASE)
+  endTag = re.compile("[\<\[]\s*\/"+tag+"\s*[\>\]]", re.IGNORECASE)
   for line in txt.split("\n") :
     if len(line.strip()) == 0 : continue 
-    if beginTag.search(line) and endTag.search(line) : continue
+    if beginTag.search(line) and endTag.search(line) : newText += line
     else : 
       if beginTag.search(line) :
-        print("source")
+        newText += "\n"
         bTag = True
         eTag = False
       if endTag.search(line) :
@@ -46,14 +50,16 @@ def formatWithNotChangeOnTag(txt, tag) :
         bTag = False
     #check 
     if bTag is True and eTag is False:
-      newText += (line+"\n")
+      newText += (line+"+QUQ+")
     else : # format it 
-      newText += (line.strip()+" ")
+      newText += (line.strip()+"\n")
   return newText
 
 def formatContent(content) :
-  content = formatWithNotChangeOnTag(content, "pre")
-  return formatWithNotChangeOnTag(content, "sourcecode")
+  content = formatWithNoChangeOnTag(content, "sourcecode")
+  content = formatWithNoChangeOnTag(content, "pre")
+  content = content.replace("+QUQ+", "\n")
+  return content
 
 def getTitle(txt) :
   titleRegex = re.compile("\<TITLE\>\s*(?P<title>[\w\W\s]+)\s*\</TITLE\>",
@@ -90,11 +96,14 @@ def sendPostToWordpress(post, wp, txt) :
     print("[I] Sending post : {0} : {1}.".format(id, title))
 
     # content 
-    contentRegex = re.compile("\<CONTENT\>(?P<content>.+)\</CONTENT\>"
+    contentRegex = re.compile("\<CONTENT\>(?P<content>.+)\<\/CONTENT\>"
         , re.IGNORECASE | re.DOTALL)
     m = contentRegex.search(txt)
     if m :
       content = m.groupdict()['content']
+      if len(content.strip()) == 0 :
+        print("[E] : No content in file.")
+        return 
       content = formatContent(content)
     else :
       print("[W] Post with empty content.")
