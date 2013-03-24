@@ -119,7 +119,7 @@ def sendPostToWordpress(post, wp, txt) :
       post.post_status = status 
     else :
       print("[W] Post with uncertain status. Default to publish")
-      or pagepost.post_status = "publish"
+      pagepost.post_status = "publish"
     
     termsAndCats = dict()
     
