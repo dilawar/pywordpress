@@ -199,14 +199,15 @@ password=password
   cfg = RawConfigParser()
   with open(configFilePath, "r") as configFile :
     cfg.readfp(configFile)
-  blog = cfg.get('blog', 'url')
+  blogId = "blog"+str(args.blog)
+  blog = cfg.get(blogId, 'url')
   blog = blog.replace("www.", "")
   blog = blog.replace("http://", "")
   blogDir = blog.replace(".", "DOT")
   blog = blog.replace("/xmlrpc.php", "")
   blog = "http://"+blog+"/xmlrpc.php"
-  user = cfg.get('blog', 'username')
-  password = cfg.get('blog', 'password')
+  user = cfg.get(blogId,'username')
+  password = cfg.get(blogId, 'password')
 
   try :
     os.makedirs(blogDir)
@@ -285,6 +286,10 @@ password=password
  
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description="Blogger client")
+  parser.add_argument('--blog', metavar="blog index in config file eg. 0, 1"
+      , default = "0"
+      , help = "Index of blog. If not given 0 is assumed"
+      )
   parser.add_argument('--fetch', metavar="[all|post_name]"
       , help="Fetch a post with similar looking name. If 'recent' is given, it  \
           fetch and save recent posts. If 'all' is given then it fetches all\
