@@ -28,30 +28,32 @@ blogDir = "."
 
 def formatWithNotChangeOnTag(txt, tag) :
   newText = ""
-  beginPre = False 
-  endPre = True
-  preRegex = re.compile("\<"+tag+"\>")
-  endPreRegex = re.compile("\<\/"+tag+"pre\>")
+  bTag = False 
+  eTag = True
+  beginTag = re.compile("[\<\[]\s*"+tag+"\s*(\w+\s*=\s*[\"\w\']+\s*)?[\>\]]",
+      re.IGNORECASE)
+  endTag = re.compile("[\<\]]\s*\/"+tag+"\s*[\>\]]", re.IGNORECASE)
   for line in txt.split("\n") :
     if len(line.strip()) == 0 : continue 
-    if preRegex.search(line) and endPreRegex.search(line) : continue
+    if beginTag.search(line) and endTag.search(line) : continue
     else : 
-      if preRegex.search(line) :
-        beginPre = True
-        endPre = False
-      if re.search(r"\<\/pre\>", line) :
-        endPre = True
-        beginPre = False
+      if beginTag.search(line) :
+        print("source")
+        bTag = True
+        eTag = False
+      if endTag.search(line) :
+        eTag = True
+        bTag = False
     #check 
-    if beginPre is True and endPre is False:
+    if bTag is True and eTag is False:
       newText += (line+"\n")
     else : # format it 
       newText += (line.strip()+" ")
   return newText
 
-
 def formatContent(content) :
-  return formatWithNotChangeOnTag(content, "pre")
+  content = formatWithNotChangeOnTag(content, "pre")
+  return formatWithNotChangeOnTag(content, "sourcecode")
 
 def getTitle(txt) :
   titleRegex = re.compile("\<TITLE\>\s*(?P<title>[\w\W\s]+)\s*\</TITLE\>",
