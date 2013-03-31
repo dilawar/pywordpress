@@ -58,6 +58,7 @@ def formatWithNoChangeOnTag(txt, tag) :
 def formatContent(content) :
   content = formatWithNoChangeOnTag(content, "sourcecode")
   content = formatWithNoChangeOnTag(content, "pre")
+  content = content.replace("\n+" " ")
   content = content.replace("+QUQ+", "\n")
   return content
 
