@@ -154,8 +154,8 @@ def sendPostToWordpress(post, wp, txt) :
     return
 
 
-def fetchPosts(posts, type) :
-  """ Fetch all posts in list posts with type type
+def fetchPosts(posts, postType, fmt="native") :
+  """ Fetch all posts in list posts with postType
   """
   global blogDir
   for post in posts :
@@ -163,27 +163,45 @@ def fetchPosts(posts, type) :
     terms = post.terms
     print("[I] : Downloading : {0}".format(title))
     content = post.content 
-    content = content.replace("<br/>", "<br>")
-    content = content.replace("<br />", "<br>")
-    content = content.replace("<br>", "\n<br>\n")
-    content = content.replace("<pre>", "\n\n<pre>") 
-    content = content.replace("</pre>", "</pre>\n\n") 
-    content = content.replace("<p>", "\n\n<p>")
-    content = content.replace("[/sourcecode", "\n\n[/sourcecode")
     fileName = titleToFileName(title)
     f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
-    f.write("<TYPE>"+type+"</TYPE>\n")
-    f.write("<STATUS>"+post.post_status+"</STATUS>\n")
-    f.write("<ID>"+post.id+"</ID>\n")
-    f.write("<TITLE>\n")
-    f.write(title)
-    f.write("\n</TITLE>\n\n")
-    f.write("<CONTENT>\n")
-    f.write(content)
-    f.write("\n\n</CONTENT>\n")
-    for t in terms :
-      f.write("\n<"+t.taxonomy.upper()+" ID=\""+t.taxonomy_id+"\">"\
-          +t.name+"</"+t.taxonomy.upper()+">\n")
+    
+    if fmt == "native":
+        content = content.replace("<br/>", "<br>")
+        content = content.replace("<br />", "<br>")
+        content = content.replace("<br>", "\n<br>\n")
+        content = content.replace("<pre>", "\n\n<pre>") 
+        content = content.replace("</pre>", "</pre>\n\n") 
+        content = content.replace("<p>", "\n\n<p>")
+        content = content.replace("[/sourcecode", "\n\n[/sourcecode")
+        f.write("<TYPE>"+postType+"</TYPE>\n")
+        f.write("<STATUS>"+post.post_status+"</STATUS>\n")
+        f.write("<ID>"+post.id+"</ID>\n")
+        f.write("<TITLE>\n")
+        f.write(title)
+        f.write("\n</TITLE>\n\n")
+        f.write("<CONTENT>\n")
+        f.write(content)
+        f.write("\n\n</CONTENT>\n")
+        for t in terms :
+          f.write("\n<"+t.taxonomy.upper()+" ID=\""+t.taxonomy_id+"\">"\
+              +t.name+"</"+t.taxonomy.upper()+">\n")
+    elif fmt == "markdown":
+        content = content.replace("<br/>", "\n\n")
+        content = content.replace("<br />", "\n\n")
+        content = content.replace("<br>", "\n\n")
+        content = content.replace("<pre>", "\n\n<pre>") 
+        content = content.replace("</pre>", "</pre>\n\n") 
+        content = content.replace("<p>", "\n\n<p>")
+        content = content.replace("[/sourcecode", "\n\n[/sourcecode")
+        f.write("~~~\n")
+        f.write("title: {0} \n".format(title))
+        f.write("status: {0} \n".format(post.post_status))
+        f.write("type: {0} \n".format(postType))
+        f.write("id: {0} \n".format(post.id))
+        f.write("category: {0}".format(post.terms))
+        f.write("~~~\n\n")
+        f.write(content)
     
     f.close()
 
