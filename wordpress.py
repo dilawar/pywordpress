@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 '''
 Created on Apr 17, 2012
 Originall written by : Vlad Gorloff
@@ -58,21 +59,25 @@ def formatWithNoChangeOnTag(txt, tag) :
 def formatContent(content) :
   content = formatWithNoChangeOnTag(content, "sourcecode")
   content = formatWithNoChangeOnTag(content, "pre")
-  content = re.sub("\n+" " ", content)
+  content = re.sub("\n+", " ", content)
   content = content.replace("+QUQ+", "\n")
   return content
 
-def getTitle(txt) :
-  titleRegex = re.compile("\<TITLE\>\s*(?P<title>[\w\W\s]+)\s*\</TITLE\>",
-        re.IGNORECASE | re.DOTALL)
-  m = titleRegex.search(txt)
-  if m :
-    title = m.groupdict()['title']
-  else :
-    print("[W] Empty title!")
-    title = ""
-  return title
-
+def getTitle(txt, format='native'):
+    if format == "markdown":
+        print("Support markdown")
+        sys.exit(0)
+  
+    titleRegex = re.compile("\<TITLE\>\s*(?P<title>[\w\W\s]+)\s*\</TITLE\>",
+          re.IGNORECASE | re.DOTALL)
+    m = titleRegex.search(txt)
+    if m :
+      title = m.groupdict()['title']
+    else :
+      print("[W] Empty title!")
+      title = ""
+    return title
+  
 def titleToFileName(title) :
   global blogDir 
   fileName = title.replace(" ","_")+".blog"
@@ -190,7 +195,7 @@ def main(args):
   if not os.path.exists(configFilePath) :
     print("""
 Create a ~/.wordpressrc file with following lines. "
-[blog]
+[blog0]
 url=http://dilawarrajput.wordpress.com"
 username=username
 password=password
@@ -217,7 +222,7 @@ password=password
       raise
   
   ## Now cleate a client 
-  wp = Client(blog, user, password)
+  wp = Client(blog, user, password, proxy = os.environ['http_proxy'])
   
   # Send a file to wordpress.
   if args.update :
@@ -292,6 +297,9 @@ if __name__ == '__main__':
       , default = "0"
       , help = "Index of blog. If not given 0 is assumed"
       )
+  parser.add_argument('--proxy', metavar="proxy"
+      , help = "Setup proxy information.")
+
   parser.add_argument('--fetch', metavar="[all|post_name]"
       , help="Fetch a post with similar looking name. If 'recent' is given, it  \
           fetch and save recent posts. If 'all' is given then it fetches all\
