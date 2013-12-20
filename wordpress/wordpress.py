@@ -14,6 +14,8 @@ else :
 from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc.methods.posts import GetPosts, NewPost, EditPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
+
+import formatter as formatter
 import argparse
 import os
 import re
@@ -210,17 +212,11 @@ def fetchPosts(posts, postType, fmt="native") :
     terms = post.terms
     print("[I] : Downloading : {0}".format(title))
     content = post.content 
+    content = formatter.formatContent(content)
     fileName = titleToFileName(title)
     f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
     
     if fmt == "native":
-        content = content.replace("<br/>", "<br>")
-        content = content.replace("<br />", "<br>")
-        content = content.replace("<br>", "\n<br>\n")
-        content = content.replace("<pre>", "\n\n<pre>") 
-        content = content.replace("</pre>", "</pre>\n\n") 
-        content = content.replace("<p>", "\n\n<p>")
-        content = content.replace("[/sourcecode", "\n\n[/sourcecode")
         f.write("<type>"+postType+"</type>\n")
         f.write("<status>"+post.post_status+"</status>\n")
         f.write("<id>"+post.id+"</id>\n")
