@@ -2,7 +2,7 @@
 
 """formatter.py:  Format text
 
-Last modified: Fri Dec 20, 2013  10:26PM
+Last modified: Fri Dec 20, 2013  11:33PM
 
 """
     
@@ -47,10 +47,12 @@ def formatParagraph(paraTxt):
 def formatContent(content):
     content = content.replace("&amp;", "")
     # Introduce paragraph marks in page.
+    content = content.replace("<p>", paragraphMark)
+    content = content.replace("</p>", paragraphMark)
     content = content.replace("[sourcecode", "%s[sourcecode" % paragraphMark)
-    content = content.replace("[/sourcecode]", "[/sourcecode]%s" % paragraphMark)
-    content = content.replace("<pre>", "%s<pre>" % paragraphMark)
-    content = content.replace("</pre>", "</pre>%s" % paragraphMark)
+    content = content.replace("[/sourcecode]", "[/sourcecode]%s\n" % paragraphMark)
+    content = content.replace("<pre>", "%s<pre>\n" % paragraphMark)
+    content = content.replace("</pre>", "\n</pre>%s\n" % paragraphMark)
     content = content.replace("<h" , "%s<h" % paragraphMark)
     contentList = [formatParagraph(x) for x in content.split(paragraphMark)]
     return "\n".join(contentList)
