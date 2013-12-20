@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Created on Apr 17, 2012
 Originall written by : Vlad Gorloff
@@ -24,9 +22,54 @@ import codecs
 import errno
 import difflib 
 
-# globals 
-blogDir = "."
+blogDir = "./blogs"
 
+def newPostToWordpress(wp, postName):
+    print("[INFO] You are going to create a new post ...")
+    post = WordPressPost()
+    post.id = wp.call(NewPost(post))
+    # get the text of new post
+    fileName = postName
+    with open(fileName, "r") as f :
+        txt = f.read()
+    
+    txt = "<id>"+post.id+"</id>\n" + txt
+    title = getTitle(txt)
+    savePath = titleToFileName(title)
+    print("|- Adding id to new post and saving it to : \n {0}".format(savePath))
+    with open(savePath, "w") as ff :
+        ff.write(txt)
+    sendPostToWordpress(post, wp, txt)
+    print("== You should now delete : {0}.".format(postName))
+    return 0
+
+def fetchWpPosts(wp, postsToFetch):
+    """
+    Fetch given posts from wordpress.
+    """
+    posts = wp.call(GetPosts( {'number': 200, 'offset': 0}))
+    pages = wp.call(GetPosts({'post_type' : 'page'}))
+    if  postsToFetch == "all" :
+        fetchPosts(posts, "post")
+        fetchPosts(pages, "page")
+    elif len(postsToFetch) > 2 :
+        # search for a post with similar titles.
+        matchedPosts = list()
+        for post in posts :
+            title = post.title 
+            match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
+            if match > 0.65 :
+                matchedPosts.append(post)
+        fetchPosts(matchedPosts, "post")
+        # Why not pages.
+        matchedPages = list()
+        for page in pages :
+            title = page.title 
+            match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
+            if match > 0.65 :
+                matchedPages.append(post)
+        fetchPosts(matchedPages, "page")
+  
 
 def formatWithNoChangeOnTag(txt, tag) :
   ''' Notice :
@@ -68,7 +111,7 @@ def getTitle(txt, format='native'):
         print("Support markdown")
         sys.exit(0)
   
-    titleRegex = re.compile("\<TITLE\>\s*(?P<title>[\w\W\s]+)\s*\</TITLE\>",
+    titleRegex = re.compile("\<title\>\s*(?P<title>[\w\W\s]+)\s*\</title\>",
           re.IGNORECASE | re.DOTALL)
     m = titleRegex.search(txt)
     if m :
@@ -79,76 +122,80 @@ def getTitle(txt, format='native'):
     return title
   
 def titleToFileName(title) :
-  global blogDir 
-  fileName = title.replace(" ","_")+".blog"
-  fileName = fileName.replace("/", "_")
-  fileName = os.path.abspath(blogDir+"/"+fileName)
-  return fileName
-
+    global blogDir
+    fileName = title.replace(" ","_")+".blog"
+    fileName = fileName.replace("/", "_")
+    fileName = os.path.abspath(blogDir+"/"+fileName)
+    return fileName
+  
 
 def sendPostToWordpress(post, wp, txt) :
-  # Check if there is no id.
-  idregex = re.compile('\<ID\>\s*(?P<id>\d+)\s*\</ID\>', re.IGNORECASE | re.DOTALL)
-  m = idregex.search(txt) 
-  if not m :
-    print("This looks like a new post, use --post option")
-    return 
-  else :
+    # Check if there is no id.
+    idregex = re.compile('\<id\>\s*(?P<id>\d+)\s*\</id\>', re.IGNORECASE | re.DOTALL)
+    m = idregex.search(txt) 
+    if not m :
+        print("This looks like a new post, use --post option")
+        return 
     id = m.groupdict()['id']
     post.id = id
     title = getTitle(txt)
     post.title = title
     
     print("[I] Sending post : {0} : {1}.".format(id, title))
-
+  
     # content 
-    contentRegex = re.compile("\<CONTENT\>(?P<content>.+)\<\/CONTENT\>"
-        , re.IGNORECASE | re.DOTALL)
+    contentRegex = re.compile("\<content\>(?P<content>.+)\<\/content\>"
+        , re.IGNORECASE | re.DOTALL
+        )
     m = contentRegex.search(txt)
     if m :
-      content = m.groupdict()['content']
-      if len(content.strip()) == 0 :
-        print("[E] : No content in file.")
-        return 
-      content = formatContent(content)
+        content = m.groupdict()['content']
+        if len(content.strip()) == 0 :
+            print("[E] : No content in file.")
+            return 
+        content = formatContent(content)
     else :
-      print("[W] Post with empty content.")
-      content = ""
+        print("[W] Post with empty content.")
+        content = ""
     post.content = content
     
     # status 
-    statusRegex = re.compile("\<STATUS\>\s*(?P<status>\w+)\s*\</STATUS\>"
+    statusRegex = re.compile("\<status\>\s*(?P<status>\w+)\s*\</status\>"
         , re.IGNORECASE | re.DOTALL)
     m = statusRegex.search(txt)
     if m :
-      status = m.groupdict()['status']
-      post.post_status = status 
+        status = m.groupdict()['status']
+        post.post_status = status 
     else :
-      print("[W] Post with uncertain status. Default to publish")
-      pagepost.post_status = "publish"
+        print("[W] Post with uncertain status. Default to publish")
+        post.post_status = "publish"
     
     termsAndCats = dict()
     
     # tags 
-    tagRegex = re.compile("\<POST_TAG\s+ID\=\"(?P<id>\d*)\"\>\s*"+\
-        "(?P<tag>[\s\w]+)\s*\</POST_TAG\>", re.IGNORECASE | re.DOTALL)
+    tagRegex = re.compile("\<post_tag\s+id\=\"(?P<id>\d*)\"\>\s*"+\
+        "(?P<tag>[\s\w]+)\s*\</post_tag\>"
+        , re.IGNORECASE | re.DOTALL
+        )
     ms = tagRegex.findall(txt)
     tags = list()
     for m in ms :
-      id, name = m
-      tags.append(name)
+        id, name = m
+        tags.append(name)
     termsAndCats['post_tag'] = tags 
-
+  
     # categories
-    catRegex = re.compile("\<CATEGORY\s+ID\=\"(?P<id>\d*)\"\>\s*"+\
-        "(?P<cat>[\s\w]+)\s*\</CATEGORY\>", re.IGNORECASE | re.DOTALL)
+    catRegex = re.compile("\<category\s+id\=\"(?P<id>\d*)\"\>\s*"+\
+        "(?P<cat>[\s\w]+)\s*\</category\>"
+        , re.IGNORECASE | re.DOTALL
+        )
     mm = catRegex.findall(txt)
     cats = list()
     for m in mm :
-      id, cat = m
-      cats.append(cat)
+        id, cat = m
+        cats.append(cat)
     termsAndCats['category'] = cats
-
+  
     post.terms_names = termsAndCats 
     wp.call(EditPost(post.id, post))
     return
@@ -174,17 +221,17 @@ def fetchPosts(posts, postType, fmt="native") :
         content = content.replace("</pre>", "</pre>\n\n") 
         content = content.replace("<p>", "\n\n<p>")
         content = content.replace("[/sourcecode", "\n\n[/sourcecode")
-        f.write("<TYPE>"+postType+"</TYPE>\n")
-        f.write("<STATUS>"+post.post_status+"</STATUS>\n")
-        f.write("<ID>"+post.id+"</ID>\n")
-        f.write("<TITLE>\n")
+        f.write("<type>"+postType+"</type>\n")
+        f.write("<status>"+post.post_status+"</status>\n")
+        f.write("<id>"+post.id+"</id>\n")
+        f.write("<title>")
         f.write(title)
-        f.write("\n</TITLE>\n\n")
-        f.write("<CONTENT>\n")
+        f.write("</title>\n\n")
+        f.write("<content>\n")
         f.write(content)
-        f.write("\n\n</CONTENT>\n")
+        f.write("\n</content>\n")
         for t in terms :
-          f.write("\n<"+t.taxonomy.upper()+" ID=\""+t.taxonomy_id+"\">"\
+          f.write("\n<"+t.taxonomy.upper()+" id=\""+t.taxonomy_id+"\">"\
               +t.name+"</"+t.taxonomy.upper()+">\n")
     elif fmt == "markdown":
         content = content.replace("<br/>", "\n\n")
@@ -206,128 +253,55 @@ def fetchPosts(posts, postType, fmt="native") :
     f.close()
 
 
-def main(args):
-  # Getting command line arguments   
-  global blogDir
-  configFilePath = os.getenv('HOME')+"/.wordpressrc"
-  if not os.path.exists(configFilePath) :
-    print("""
-Create a ~/.wordpressrc file with following lines. "
-[blog0]
-url=http://dilawarrajput.wordpress.com"
-username=username
-password=password
-      """)
-    sys.exit()
-
-  cfg = RawConfigParser()
-  with open(configFilePath, "r") as configFile :
-    cfg.readfp(configFile)
-  blogId = "blog"+str(args.blog)
-  blog = cfg.get(blogId, 'url')
-  blog = blog.replace("www.", "")
-  blog = blog.replace("http://", "")
-  blogDir = blog.replace(".", "DOT")
-  blog = blog.replace("/xmlrpc.php", "")
-  blog = "http://"+blog+"/xmlrpc.php"
-  user = cfg.get(blogId,'username')
-  password = cfg.get(blogId, 'password')
-
-  try :
-    os.makedirs(blogDir)
-  except OSError as exception :
-    if exception.errno != errno.EEXIST :
-      raise
+def run(args):
+    # Getting command line arguments   
+    global blogDir 
+    configFilePath = args.config
+    cfg = RawConfigParser()
+    with open(configFilePath, "r") as configFile :
+        cfg.readfp(configFile)
+    blogId = "blog"+str(args.blog)
+    blog = cfg.get(blogId, 'url')
+    blog = blog.replace("www.", "")
+    blog = blog.replace("http://", "")
+    blogDir = blog.replace(".", "DOT")
+    blog = blog.replace("/xmlrpc.php", "")
+    blog = "http://"+blog+"/xmlrpc.php"
+    user = cfg.get(blogId,'username')
+    password = cfg.get(blogId, 'password')
   
-  ## Now cleate a client 
-  wp = Client(blog, user, password, proxy = os.environ['http_proxy'])
-  
-  # Send a file to wordpress.
-  if args.update :
-    fileName = args.update
-    if not os.path.exists(fileName) :
-      print("File {0} doesn't exists.. Existing...".format(fileName))
-      return 
-    # Open the file.
-    with open(fileName, "r") as f :
-      txt = f.read()
-    post = WordPressPost()
-    sendPostToWordpress(post, wp, txt) 
-  
-  elif args.post :
-    print("You are going to create a new post.")
-    post = WordPressPost()
-    post.id = wp.call(NewPost(post))
-    # get the text of new post
-    fileName = args.post 
-    with open(fileName, "r") as f :
-      txt = f.read()
+    try :
+        os.makedirs(blogDir)
+    except OSError as exception :
+        if exception.errno != errno.EEXIST :
+            raise 
     
-    txt = "<ID>"+post.id+"</ID>\n" + txt
-    title = getTitle(txt)
-    savePath = titleToFileName(title)
-    print("|- Adding id to new post and saving it to : \n {0}".format(savePath))
-    with open(savePath, "w") as ff :
-      ff.write(txt)
-    sendPostToWordpress(post, wp, txt)
-    print("== You should now delete : {0}.".format(args.post))
-    return
+    ## Now cleate a client 
+    p = os.environ['http_proxy']
+    if 'http::/' in p :
+        p = p.replace('http://', '')
+
+    wp = Client(blog, user, password, proxy=p)
     
-  # Fetch blogs from wordpress.
-  elif args.fetch :
-  # Get all posts 
-    posts = wp.call(GetPosts(
-      {'number': 200, 'offset': 0}
-      ))
-    pages = wp.call(GetPosts({'post_type' : 'page'}))
-    if  args.fetch == "all" :
-      fetchPosts(posts, "post")
-      fetchPosts(pages, "page")
-    elif len(args.fetch) > 2 :
-      # search for a post with similar titles.
-      matchedPosts = list()
-      for post in posts :
-        title = post.title 
-        match = difflib.SequenceMatcher(None, title, args.fetch).ratio()
-        if match > 0.65 :
-          matchedPosts.append(post)
-      fetchPosts(matchedPosts, "post")
-
-      # Why not pages.
-      matchedPages = list()
-      for page in pages :
-        title = page.title 
-        match = difflib.SequenceMatcher(None, title, args.fetch).ratio()
-        if match > 0.65 :
-          matchedPages.append(post)
-      fetchPosts(matchedPages, "page")
-
+    # Send a file to wordpress.
+    if args.update :
+        fileName = args.update
+        if not os.path.exists(fileName) :
+            print("File {0} doesn't exists.. Existing...".format(fileName))
+            return 
+        # Open the file.
+        with open(fileName, "r") as f :
+            txt = f.read()
+        post = WordPressPost()
+        sendPostToWordpress(post, wp, txt) 
+    
+    elif args.post :
+        newPostToWordpress(wp, args.post)
+    # Fetch blogs from wordpress.
+    elif args.fetch :
+    # Get all posts 
+        fetchWpPosts(wp, args.fetch)
     else : # get recent posts 
-      posts = wp.call(GetPosts(
-        {'post_status': 'publish'}
-        ))
-      fetchPosts(posts, "post")
-  
- 
-if __name__ == '__main__':
-  parser = argparse.ArgumentParser(description="Blogger client")
-  parser.add_argument('--blog', metavar="blog index in config file eg. 0, 1"
-      , default = "0"
-      , help = "Index of blog. If not given 0 is assumed"
-      )
-  parser.add_argument('--proxy', metavar="proxy"
-      , help = "Setup proxy information.")
+        posts = wp.call(GetPosts( {'post_status': 'publish'}))
+        fetchPosts(posts, "post")
 
-  parser.add_argument('--fetch', metavar="[all|post_name]"
-      , help="Fetch a post with similar looking name. If 'recent' is given, it  \
-          fetch and save recent posts. If 'all' is given then it fetches all\
-          posts "
-      )
-  parser.add_argument('--update', metavar='blog_file'
-      , help="Update a post."
-      )
-  parser.add_argument('--post', metavar='blog_file'
-      , help="New post or page"
-      )
-  args = parser.parse_args()
-  main(args)
