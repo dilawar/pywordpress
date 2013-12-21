@@ -2,7 +2,7 @@
 
 """formatter.py:  Format text
 
-Last modified: Sat Dec 21, 2013  04:30AM
+Last modified: Sat Dec 21, 2013  04:46AM
 
 """
     
@@ -60,14 +60,15 @@ def formatWithNoChangeOnTag(txt, tag) :
       if bTag is True and eTag is False:
         newText += (line+"+QUQ+")
       else : # format it 
-        newText += (line.strip()+"\n")
+        newText += (line.strip()+" ")
     return newText.replace("+QUQ+", "\n")
 
 def contentToHTML(content):
     """Convert content to html
     """
-    content = formatWithNoChangeOnTag(content, "pre")
+    # Join single newline but not two
     content = formatWithNoChangeOnTag(content, "sourcecode")
+    content = formatWithNoChangeOnTag(content, "pre")
     return content
     
 

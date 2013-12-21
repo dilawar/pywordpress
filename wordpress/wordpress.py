@@ -88,7 +88,7 @@ def titleToBlogDir(title):
     global blogDir
     fileName = title.replace(" ","_").replace(':', '-').replace('(', '')
     fileName = fileName.replace("/", "_").replace(')', '')
-    fileName = os.path.abspath(os.path.join(blogDir, fileName))
+    fileName = os.path.join(blogDir, fileName)
     return fileName
   
 def appendMetadataToPost(metadata, post):
@@ -139,7 +139,7 @@ def appendMetadataToPost(metadata, post):
 
 def updatePost(post, wp, txt) :
     # Check if there is no id.
-    pat = re.compile(r'~~~(~*)(?P<metadata>[^~.]+)~~~(~*)', re.DOTALL)
+    pat = re.compile(r'\<!--(?P<metadata>.+?)--\>', re.DOTALL)
     metadata = pat.search(txt).group('metadata')
     content = re.sub(pat, "", txt)
     assert len(metadata) > 0
@@ -154,8 +154,6 @@ def updatePost(post, wp, txt) :
     else :
         print("[W] : Post with empty content.")
         content = ""
-
-    content = formatter.contentToHTML(content)
     post.content = content
     print("[I] Sending post : {0} : {1}.".format(post.id, post.title))
     wp.call(EditPost(post.id, post))
@@ -165,24 +163,22 @@ def fetchPosts(posts, postType, wp):
     """ Fetch all posts in list posts with postType
     """
     global blogDir
-    pat = re.compile(r'\<img(?P<src>[^>]+)>', re.DOTALL)
     for post in posts :
         title = post.title.encode('utf-8')
         terms = post.terms
         print("[I] : Downloading : {0}".format(title))
         content = post.content 
         content = formatter.formatContent(content)
-        fileName = titleToBlogDir(title)
+        postDir = titleToBlogDir(title)
         # Create directory for this filename in blogDir.
-        postDir = os.path.join(blogDir, fileName)
         if not os.path.isdir(postDir):
             os.makedirs(postDir)
 
         # Good now for this post, we have directory. Download its content in
         # content.md file.
-        fileName = os.path.join(postDir, 'content.md')
+        fileName = os.path.join(postDir, 'content.html')
         f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
-        f.write("".join("~" for x in range(10))+'\n')
+        f.write("<!-- \n")
         f.write("title: ")
         f.write(title)
         f.write("\ntype: "+postType)
@@ -204,14 +200,9 @@ def fetchPosts(posts, postType, wp):
             for c in cats:
                 f.write('\ncategory: {0}'.format(c))
         f.write('\n')
-        f.write("".join("~" for x in range(10))+'\n')
-
+        f.write("-->\n\n")
         # TODO: Get links from the post
-        srcs = pat.findall(content)
-        i = 0
-        for src in srcs:
-            i += 1
-
+        # Write content to file.
         f.write(content)
         f.close()
 
