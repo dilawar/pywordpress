@@ -109,14 +109,22 @@ def appendMetadataToPost(metadata, post):
     id = m.group('id').strip()
     post.id = id
     title = getTitle(metadata)
-    post.title = title
+    post.title = title.strip()
+
+    # type wordpress.
+    pat = re.compile(r'type:(?P<type>.+)', re.IGNORECASE)
+    m = pat.search(metadata)
+    if not m:
+        raise UserError, "This post has no type"
+    else:
+        post.type = m.group('type').strip()
 
     # status 
     statusRegex = re.compile("status:(?P<status>.+)", re.IGNORECASE) 
     m = statusRegex.search(metadata)
     if m :
         status = m.groupdict()['status']
-        post.post_status = status 
+        post.post_status = status.strip()
     else :
         print("[W] Post with uncertain status. Default to publish")
         post.post_status = "publish"
@@ -128,7 +136,7 @@ def appendMetadataToPost(metadata, post):
     ms = tagRegex.findall(metadata)
     tags = list()
     for m in ms :
-        name = m
+        name = m.strip()
         tags.append(name)
     termsAndCats['post_tag'] = tags 
   
@@ -137,7 +145,7 @@ def appendMetadataToPost(metadata, post):
     mm = catRegex.findall(metadata)
     cats = list()
     for m in mm :
-        cat = m
+        cat = m.strip()
         cats.append(cat)
     termsAndCats['category'] = cats
     post.terms_names = termsAndCats 
@@ -151,6 +159,7 @@ def updatePost(post, wp, txt, format="markdown") :
     assert len(metadata) > 0
     
     post = appendMetadataToPost(metadata, post)
+    assert post.type
   
     # content 
     if content :
@@ -175,7 +184,12 @@ def updatePost(post, wp, txt, format="markdown") :
         post.content = content
 
     print(("[I] Sending post : {0} : {1}.".format(post.id, post.title)))
-    wp.call(EditPost(post.id, post))
+    try:
+        wp.call(EditPost(post.id, post))
+    except Exception as e:
+        print("[DEBUG] I was trying to update but failed")
+        print(" + You sure that this post exist on the blog.")
+        print("Error was : {0}".format(e))
     return
 
 def writeContent(fH, content, format):
@@ -285,7 +299,7 @@ def run(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Blogger client")
+    parser = argparse.ArgumentParser(description="Wordpress client")
     parser.add_argument('--config', metavar="config"
         , default = os.environ['HOME'] + "/.wordpressrc"
         , help = "Config file containing setting. Default ~/.wordpressrc"
