@@ -333,7 +333,7 @@ does not seem to be the case with IITs any day where number of
 applicants are so high and student selected are only a tiny fraction. --
 Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Government to go ahead with
     JEE](http://www.thehindu.com/news/national/government-to-go-ahead-with-jee/article4120556.ece)

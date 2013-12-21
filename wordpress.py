@@ -251,9 +251,11 @@ def run(args):
             raise 
     
     ## Now cleate a client 
-    p = os.environ['http_proxy']
-    if 'http://' in p :
+    p = os.environ.get('http_proxy')
+    if p and 'http://' in p :
         p = p.replace('http://', '')
+    else:
+       p = ''
 
     wp = Client(blog, user, password, proxy=p)
     

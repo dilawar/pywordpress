@@ -138,7 +138,7 @@ sphere, but it poisons the well of public life when it seeps into those
 institutions --  universities, offices, courts and politics -- which
 must be insulated from it. – Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Blanket of
     Modernity](http://ashakibo.wordpress.com/2013/08/30/blanket-of-modernity/)

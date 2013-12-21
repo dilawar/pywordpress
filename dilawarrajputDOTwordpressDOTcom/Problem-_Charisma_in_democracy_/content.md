@@ -57,7 +57,7 @@ Winston Churchill. The consideration of this for the prospect of
 democracy and health of its institutions deserves some attention. --
 Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Democracy and
     Despotism](http://ktipler.wordpress.com/2013/12/05/democracy-and-despotism/)

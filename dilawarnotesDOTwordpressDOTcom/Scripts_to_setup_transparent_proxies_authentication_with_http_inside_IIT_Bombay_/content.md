@@ -24,7 +24,7 @@ edit and post your blogs from vim editor. Credits and acknowledgments
 are in Readme file. DO NOT SETUP on servers unless you wants them to use
 your transparent proxies.
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Using networking effectively inside IIT Bombay : SSHing to hostel
     room](http://dilawarnotes.wordpress.com/2013/02/21/using-networking-effectively-in-iit-bombay-sshing-to-hostel-room/)

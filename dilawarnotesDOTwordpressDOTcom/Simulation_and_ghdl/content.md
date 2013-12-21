@@ -18,7 +18,7 @@ Historian who could think beyond the nations of Atlantis.
 
  
 
-Simulation {style="text-align:left;"}
+Simulation
 ----------
 
 An engineer should be able to not only correct an error but also locate

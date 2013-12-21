@@ -230,7 +230,7 @@ of us wrapped in a very dirty package by the media. And shame on all of
 you, who dares to take away even that from us. Beware! We also know how
 to bite. -- A farmer
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Sainath plans online 'People's archive of rural
     India'](http://www.thehindu.com/news/cities/bangalore/sainath-plans-online-peoples-archive-of-rural-india/article4305024.ece)

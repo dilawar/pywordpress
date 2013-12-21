@@ -45,7 +45,7 @@ serious thought before you go around again comparing your penis with
 mine. Have fun comparing with each others. Wishing you a productive life
 [abroad] ! -- Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Concern with JEE, merit etc in
     IITs](http://dilawarrajput.wordpress.com/2012/06/26/concern-with-jee-merit-etc-in-iits/)

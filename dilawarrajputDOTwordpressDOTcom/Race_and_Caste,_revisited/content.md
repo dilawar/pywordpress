@@ -102,7 +102,7 @@ handled no less effectively as it is without painting it as a form of
 racial discrimination. The benefits are doubtful, if they exists at all,
 but the risks seems to be real enough to ignore -- Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [The EU flexes its muscle on
     Caste](http://hindusummary.wordpress.com/2013/11/05/the-eu-flexes-its-muscle-on-caste/)

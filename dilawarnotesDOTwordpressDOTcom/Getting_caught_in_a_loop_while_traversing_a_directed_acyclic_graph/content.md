@@ -51,7 +51,7 @@ not support 2011C++ fully e.g. regex is not implemented fully. Have a
 look at its status page before writing any regex using ` ` header
 \<regex\>. -- Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Computer Algorithms: Topological Sort
     Revisited](http://www.stoimen.com/blog/2012/12/10/computer-algorithms-topological-sort-revisited/)

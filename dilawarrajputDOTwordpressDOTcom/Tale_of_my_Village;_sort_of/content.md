@@ -208,14 +208,12 @@ know who could have done it, there was no witch-hunting. They did not
 consider it a crime. What she would have done otherwise. She wanted a
 grandson and a *Baba* (saint) told her to do so!
 
-  ------------------------------------------------------------------------
-  [![](http://dilawarrajput.files.wordpress.com/2010/04/bittu1.jpg?w=300)]
-  (http://dilawarrajput.files.wordpress.com/2010/04/bittu1.jpg)
+[![](http://dilawarrajput.files.wordpress.com/2010/04/bittu1.jpg?w=300)](http://dilawarrajput.files.wordpress.com/2010/04/bittu1.jpg)
 
-  A village lies less closer to Gandhi's self sufficient republic than
-  Ambedkar's 'Den of Ignorance'.
-   
-  ------------------------------------------------------------------------
+A village lies less closer to Gandhi's self sufficient republic than
+Ambedkar's 'Den of Ignorance'.
+
+ 
 
 Nearby villages have their own characters. Bugwara, for a long time, had
 been a village where 'B stands for Vendetta'. Khirka is notorious for

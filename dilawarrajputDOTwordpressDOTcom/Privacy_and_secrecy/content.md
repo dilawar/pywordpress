@@ -204,7 +204,7 @@ Social Science'. -- Dilawar
 
 ![](http://dilawarrajput.files.wordpress.com/2011/05/3794193585985230867-1448428345228948442.gif?w=1)
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [My Thoughts On
     Privacy](http://everythingbutblack.wordpress.com/2013/02/18/my-thoughts-on-privacy/)

@@ -51,7 +51,7 @@ we wish the left one must have rows which has only single 1. If this is
 achieved, our algorithm is correct.
 https://www.facebook.com/video/video.php?v=109918892526120&saved
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Processing XML
     files](http://dilawarnotes.wordpress.com/2013/01/20/processing-xml-files/)

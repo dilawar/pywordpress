@@ -114,7 +114,7 @@ be anti-religion. It will only asks people what Jesus is believed to ask
 his fellows, 'Render unto Caesar the things which are Caesar's, and unto
 God the things that are God's'. -- Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Secularism re-examined : By Andre
     Beteille](http://dilawars.wordpress.com/2013/01/21/secularism-re-examined/)

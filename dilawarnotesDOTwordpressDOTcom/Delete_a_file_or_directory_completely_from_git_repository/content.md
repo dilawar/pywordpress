@@ -21,7 +21,7 @@ script. It will do the rest. It only works on master branch. On other
 branches, you have to push yourself.Make sure to provide full path of
 file or directory. I am not sure if it would work on regex.
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [How the Heck Do I Use
     GitHub?](http://lifehacker.com/5983680/how-the-heck-do-i-use-github)

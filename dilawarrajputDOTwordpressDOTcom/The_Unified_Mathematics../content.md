@@ -24,13 +24,12 @@ have got it is already super-motivated and hardly  need any support.
 Already all door are open to him - already a professor in some
 university!. Funny people.\
 
-[![](http://www.cs.yale.edu/homes/spielman/iceland.jpg)](http://www.cs.yale.edu/homes/spielman/iceland.jpg)
+  ------------------------------------------------------------------------------------------------------------- --- ---
+  [![](http://www.cs.yale.edu/homes/spielman/iceland.jpg)](http://www.cs.yale.edu/homes/spielman/iceland.jpg)
 
-Dan Spielman. Smooth Operator.
-
-\
-
-\
+  Dan Spielman. Smooth Operator.                                                                                \   \
+                                                                                                                    
+  ------------------------------------------------------------------------------------------------------------- --- ---
 
 \
 \

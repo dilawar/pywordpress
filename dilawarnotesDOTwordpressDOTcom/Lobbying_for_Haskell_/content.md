@@ -136,7 +136,7 @@ and interpretation of computer program. This old classic is freely
 available. Still a great book to learn about computer programs. --
 Dilawar EE, IITB
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Haskell - Mind
     Blowing](http://drtallman.wordpress.com/2013/06/19/haskell-mind-blowing/)

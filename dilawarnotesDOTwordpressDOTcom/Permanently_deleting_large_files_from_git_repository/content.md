@@ -36,7 +36,7 @@ accordingly. On github, there is an article on 'removing sensitive data
 from github' or something like that. Do read that article. Happy
 gitting!
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Git Tips And Workflows, Round 2: basics, stashes and
     submodules](http://durdn.com/blog/2013/01/14/10-git-tips-and-workflows-round-2/)

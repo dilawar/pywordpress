@@ -18,7 +18,7 @@ the video to \~/Video/output.mkv file. The file size is typically very
 big (high definition) which you can again reduce to by converting the
 file to some other format using ffmpeg. No need to use GUI application.
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Record Your Linux Desktop Experience with
     FDesktopRecorder](http://news.softpedia.com/news/Record-Your-Linux-Desktop-Experience-with-FDesktopRecorder-322901.shtml)

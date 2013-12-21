@@ -25,7 +25,7 @@ have to create a file `~/.gnupg/gpg-agent.conf` and add the line
 
 . And we are done.
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [How to Encrypt and Decrypt a File using GnuPG in
     Linux](http://www.thegeekstuff.com/2013/02/gpg-encrypt-decrypt/)

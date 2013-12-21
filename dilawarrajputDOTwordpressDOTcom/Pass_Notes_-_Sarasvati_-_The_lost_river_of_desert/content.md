@@ -145,7 +145,7 @@ current controversy over Sarasvati rivers. -- Dilawar
 
 ![](https://blogger.googleusercontent.com/tracker/3794193585985230867-5900154359398319359?l=dilawarsays.blogspot.com)
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Journal : The River Sarasvati And Its
     People](http://vamadevananda.wordpress.com/2012/12/09/journal-the-river-sarasvati-and-its-people/)

@@ -37,7 +37,7 @@ lead.
 
 Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Dhoni is best finisher I have ever seen:
     Vengsarkar](http://www.thehindu.com/sport/cricket/dhoni-is-best-finisher-i-have-ever-seen-vengsarkar/article4909009.ece)

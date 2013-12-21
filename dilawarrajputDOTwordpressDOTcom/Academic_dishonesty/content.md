@@ -138,7 +138,7 @@ report. [The New York Times, Sep 25,
 2012](http://www.nytimes.com/2012/09/26/education/stuyvesant-high-school-students-describe-rationale-for-cheating.html?pagewanted=all&_r=0).
 -- Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Life on a campus : IIT
     Bombay](http://dilawarrajput.wordpress.com/2012/05/19/life-on-a-campus-iit-bombay/)

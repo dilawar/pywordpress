@@ -338,7 +338,7 @@ and Faber, 1963), See particularly Chapter 3: “The Pursuit of Happiness”
 [4] Bertrand Russell, *The Conquest of Happiness*. [5] The idea of
 happiness, Ashis Nandy. -- Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Happy People](http://www.coca-cola.com/happiness/happy-people/)
     (coca-cola.com)

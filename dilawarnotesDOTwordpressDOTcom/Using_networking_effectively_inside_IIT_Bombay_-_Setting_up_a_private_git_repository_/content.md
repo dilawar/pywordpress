@@ -107,7 +107,7 @@ tutorial](http://git-scm.com/documentation) around on the web. There is
 no need to write one more. However, if you run into trouble, I'll be
 happy to help you!
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Using networking effectively inside IIT Bombay : SSHing to hostel
     room](http://dilawarnotes.wordpress.com/2013/02/21/using-networking-effectively-in-iit-bombay-sshing-to-hostel-room/)

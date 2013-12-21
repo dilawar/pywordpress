@@ -194,7 +194,7 @@ of learning is a very jealous goddess, she is not pleased by hymns of
 praise and material offerings but demands a life long unwavering
 dedication. -- Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Where have all the public thinkers gone? Away from
     universities](http://www.theglobeandmail.com/commentary/where-have-all-the-public-thinkers-gone-away-from-universities/article14958029/?cmpid=rss1)

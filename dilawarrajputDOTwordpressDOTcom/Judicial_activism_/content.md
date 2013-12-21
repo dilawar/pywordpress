@@ -152,7 +152,7 @@ References :\
  [1] IIT-Madras is attempting to cover up irregularities’, The Hindu,
 Sep 13, 2013
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   ['IIT-Madras is attempting to cover up
     irregularities'](http://www.thehindu.com/news/cities/chennai/iitmadras-is-attempting-to-cover-up-irregularities/article5121105.ece)

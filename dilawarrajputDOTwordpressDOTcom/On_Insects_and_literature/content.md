@@ -106,7 +106,7 @@ Dilawar
 
 ![](https://blogger.googleusercontent.com/tracker/3794193585985230867-663307874494028537?l=dilawarsays.blogspot.com)
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Songs about
     insects](http://ask.metafilter.com/229553/Songs-about-insects)

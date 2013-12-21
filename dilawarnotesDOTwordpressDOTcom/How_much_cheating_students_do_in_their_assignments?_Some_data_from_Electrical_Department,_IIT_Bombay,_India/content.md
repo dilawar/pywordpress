@@ -41,7 +41,7 @@ assignment. No of edge tells how many files are copied between two
 students. This does not show total no of students in class.
 [![summary](http://dilawarnotes.files.wordpress.com/2013/12/summary.png)](http://dilawarnotes.files.wordpress.com/2013/12/summary.png)
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Asian Immigrants and What No One Mentions
     Aloud](http://educationrealist.wordpress.com/2013/10/08/asian-immigrants-and-what-no-one-mentions-aloud/)

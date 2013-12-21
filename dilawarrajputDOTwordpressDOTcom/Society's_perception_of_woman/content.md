@@ -316,7 +316,7 @@ sexuality](http://india-seminar.com/semframe.html "http://india-seminar.com/2013
 Seminar. -- Dilawar ( This article is most likely to incorporate changes
 and additional footnotes over time).
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [Rape, shame and the curse of
     patriarchy](http://www.thehindu.com/opinion/open-page/rape-shame-and-the-curse-of-patriarchy/article4323558.ece)

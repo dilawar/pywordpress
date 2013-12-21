@@ -17,7 +17,7 @@ category: Village Life
 
 > ####  "No nation is permitted to live in ignorance with impunity." 
 
-#### --Thomas Jefferson** **  {style="text-align:right;"}
+#### --Thomas Jefferson** ** 
 
 In order to get your attention, let me boast a little bit. I was one of
 the 100 percentile in GATE-2007. So I was able to convince my family to
@@ -438,11 +438,12 @@ and threatening the livelihoods of farmers in developing countries.\
 
 \
 
-![](http://dilawarrajput.files.wordpress.com/2010/10/25thcartooncolour_274414f1.jpg?w=300)
+  -------------------------------------------------------------------------------------------- ---
+  ![](http://dilawarrajput.files.wordpress.com/2010/10/25thcartooncolour_274414f1.jpg?w=300)
 
-Courtsey : TheHindu
-
-\
+  Courtsey : TheHindu                                                                          \
+                                                                                               
+  -------------------------------------------------------------------------------------------- ---
 
 Now back in India, out Agricultural minister, who spent all of time
 promoting cricket and hence is the Hero of Cricket consuming media,

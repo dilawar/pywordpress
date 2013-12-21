@@ -78,7 +78,7 @@ India](http://www.medialabju.org/omeka/items/show/40).
 
 Dilawar
 
-###### Related articles {.zemanta-related-title style="font-size:1em;"}
+###### Related articles
 
 -   [nandy's
     nadir](http://www.telegraphindia.com/1130129/jsp/opinion/story_16492475.jsp)
