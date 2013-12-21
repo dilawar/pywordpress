@@ -106,7 +106,7 @@ def appendMetadataToPost(metadata, post):
     post.title = title
 
     # status 
-    statusRegex = re.compile("status:(?P<status>.+)"), re.IGNORECASE) 
+    statusRegex = re.compile("status:(?P<status>.+)", re.IGNORECASE) 
     m = statusRegex.search(metadata)
     if m :
         status = m.groupdict()['status']
@@ -135,7 +135,7 @@ def appendMetadataToPost(metadata, post):
         cats.append(cat)
     termsAndCats['category'] = cats
     post.terms_names = termsAndCats 
-    return post
+    return id, title, post
 
 def updatePost(post, wp, txt) :
     # Check if there is no id.
@@ -143,8 +143,7 @@ def updatePost(post, wp, txt) :
     metadata = pat.search(txt).group('metadata')
     content = re.sub(pat, "", metadata)
     assert len(metadata) > 0
-
-    post = appendMetadataToPost(metadata, post)
+    id, title, post = appendMetadataToPost(metadata, post)
     print("[I] Sending post : {0} : {1}.".format(id, title))
   
     # content 
