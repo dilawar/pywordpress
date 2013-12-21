@@ -2,7 +2,7 @@
 
 """formatter.py:  Format text
 
-Last modified: Sat Dec 21, 2013  04:29AM
+Last modified: Sat Dec 21, 2013  04:30AM
 
 """
     
@@ -73,7 +73,7 @@ def contentToHTML(content):
 
 def formatContent(content):
     content = content.replace("&amp;", "")
-    content = content.replac("quot;", "\"")
+    content = content.replace("quot;", "\"")
     # Introduce paragraph marks in page.
     content = content.replace("<p>", paragraphMark)
     content = content.replace("</p>", paragraphMark)
