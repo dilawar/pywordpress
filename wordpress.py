@@ -1,9 +1,7 @@
-'''
-Created on Apr 17, 2012
-Originall written by : Vlad Gorloff
+#!/usr/bin/env python
 
-Modified by Dilawar for personal use.
-'''
+import argparse
+import os 
 
 import sys
 if sys.version_info < (3, 0) :
@@ -280,9 +278,6 @@ def run(args):
         fetchPosts(posts, "post", wp)
         
 
-import argparse
-import os 
-import wordpress.wordpress as wp
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Blogger client")
@@ -309,4 +304,4 @@ if __name__ == "__main__":
         , help="New post or page"
         )
     args = parser.parse_args()
-    wp.run(args) 
+    run(args) 
