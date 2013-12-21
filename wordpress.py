@@ -95,8 +95,9 @@ def appendMetadataToPost(metadata, post):
     idregex = re.compile(r'id:(?P<id>.+)', re.IGNORECASE)
     m = idregex.search(metadata) 
     if not m :
-        print("This looks like a new post, use --post option")
-        return 
+        print("[Warning] This looks like a new post, use --post option")
+        sys.exit()
+
     id = m.group('id').strip()
     post.id = id
     title = getTitle(metadata)
@@ -156,7 +157,7 @@ def updatePost(post, wp, txt, format="markdown") :
         pass
     elif format in ["markdown", "md"]:
         cmd = ["pandoc", "-f", "markdown", "-o", "html"]
-        subprocess.Popen(cmd
+        p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
                 , stdout = subprocess.PIPE
                 )
@@ -259,13 +260,14 @@ def run(args):
     # Send a file to wordpress.
     if args.update :
         fileName = args.update
-        if not os.path.exists(fileName) :
+        if not os.path.exists(fileName):
             print(("File {0} doesn't exists.. Existing...".format(fileName)))
             return 
         # Open the file.
-        with open(fileName, "r") as f :
+        with open(fileName, "r") as f:
             txt = f.read()
         post = WordPressPost()
+        assert post is not None
         updatePost(post, wp, txt, format="markdown") 
     elif args.post :
         newPostToWordpress(wp, args.post)
