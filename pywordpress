@@ -16,14 +16,13 @@ from wordpress_xmlrpc.methods.posts import GetPosts, NewPost, EditPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
 from wordpress_xmlrpc.methods import media, posts 
 
-import formatter as formatter
 import argparse
 import os
 import re
-import lxml.html as lh
 import codecs
 import errno
 import difflib 
+import subprocess
 
 blogDir = "./blogs"
 
@@ -42,7 +41,7 @@ def newPostToWordpress(wp, postName):
     with open(savePath, "w") as ff:
         ff.write(txt)
     updatePost(post, wp, txt)
-    print("== You should now delete : {0}.".format(postName))
+    print(("== You should now delete : {0}.".format(postName)))
     return 0
 
 def fetchWpPosts(wp, postsToFetch):
@@ -137,9 +136,9 @@ def appendMetadataToPost(metadata, post):
     post.terms_names = termsAndCats 
     return post
 
-def updatePost(post, wp, txt) :
+def updatePost(post, wp, txt, format="markdown") :
     # Check if there is no id.
-    pat = re.compile(r'\<!--(?P<metadata>.+?)--\>', re.DOTALL)
+    pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
     metadata = pat.search(txt).group('metadata')
     content = re.sub(pat, "", txt)
     assert len(metadata) > 0
@@ -154,21 +153,44 @@ def updatePost(post, wp, txt) :
     else :
         print("[W] : Post with empty content.")
         content = ""
-    post.content = content
-    print("[I] Sending post : {0} : {1}.".format(post.id, post.title))
+
+    if format == "html":
+        pass
+    elif format in ["markdown", "md"]:
+        cmd = ["pandoc", "-f", "markdown", "-o", "html"]
+        subprocess.Popen(cmd
+                , stdin = subprocess.PIPE
+                , stdout = subprocess.PIPE
+                )
+        p.stdin.write(content)
+        post.content = p.communicate()[0]
+    else:
+        post.content = content
+
+    print(("[I] Sending post : {0} : {1}.".format(post.id, post.title)))
     wp.call(EditPost(post.id, post))
     return
 
-def fetchPosts(posts, postType, wp):
+def writeContent(fH, content, format):
+    if format == "html":
+        fH.write(content)
+    elif format in ["markdown", "md"]:
+        p = subprocess.Popen(["pandoc", "-f", "html", "-t", "markdown"]
+            , stdin=subprocess.PIPE
+            , stdout=fH
+            )
+        p.communicate(content)
+
+
+def fetchPosts(posts, postType, wp, format="markdown"):
     """ Fetch all posts in list posts with postType
     """
     global blogDir
     for post in posts :
         title = post.title.encode('utf-8')
         terms = post.terms
-        print("[I] : Downloading : {0}".format(title))
-        content = post.content 
-        content = formatter.formatContent(content)
+        print(("[I] : Downloading : {0}".format(title)))
+        content = post.content.encode('utf-8') 
         postDir = titleToBlogDir(title)
         # Create directory for this filename in blogDir.
         if not os.path.isdir(postDir):
@@ -176,9 +198,9 @@ def fetchPosts(posts, postType, wp):
 
         # Good now for this post, we have directory. Download its content in
         # content.md file.
-        fileName = os.path.join(postDir, 'content.html')
+        fileName = os.path.join(postDir, 'content.md')
         f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
-        f.write("<!-- \n")
+        f.write("~~~~ \n")
         f.write("title: ")
         f.write(title)
         f.write("\ntype: "+postType)
@@ -192,7 +214,7 @@ def fetchPosts(posts, postType, wp):
             elif t.taxonomy == 'category':
                 cats.append(t.name)
             else:
-                raise RuntimeError, "Unknown taxonomy {0} found".format(t.name)
+                raise RuntimeError("Unknown taxonomy {0} found".format(t.name))
         if tags:
             for t in tags:
                 f.write('\ntag: {0}'.format(t)) 
@@ -200,10 +222,10 @@ def fetchPosts(posts, postType, wp):
             for c in cats:
                 f.write('\ncategory: {0}'.format(c))
         f.write('\n')
-        f.write("-->\n\n")
+        f.write("~~~~\n\n")
         # TODO: Get links from the post
         # Write content to file.
-        f.write(content)
+        writeContent(f, content, format)
         f.close()
 
 def run(args):
@@ -240,13 +262,13 @@ def run(args):
     if args.update :
         fileName = args.update
         if not os.path.exists(fileName) :
-            print("File {0} doesn't exists.. Existing...".format(fileName))
+            print(("File {0} doesn't exists.. Existing...".format(fileName)))
             return 
         # Open the file.
         with open(fileName, "r") as f :
             txt = f.read()
         post = WordPressPost()
-        updatePost(post, wp, txt) 
+        updatePost(post, wp, txt, format="markdown") 
     elif args.post :
         newPostToWordpress(wp, args.post)
     # Fetch blogs from wordpress.
@@ -258,3 +280,33 @@ def run(args):
         fetchPosts(posts, "post", wp)
         
 
+import argparse
+import os 
+import wordpress.wordpress as wp
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Blogger client")
+    parser.add_argument('--config', metavar="config"
+        , default = os.environ['HOME'] + "/.wordpressrc"
+        , help = "Config file containing setting. Default ~/.wordpressrc"
+        )
+    parser.add_argument('--blog', metavar="blog index in config file eg. 0, 1"
+        , default = "0"
+        , help = "Index of blog. If not given 0 is assumed"
+        )
+    parser.add_argument('--proxy', metavar="proxy"
+        , help = "Setup proxy information.")
+  
+    parser.add_argument('--fetch', metavar="[all|post_name]"
+        , help="Fetch a post with similar looking name. If 'recent' is given, it  \
+            fetch and save recent posts. If 'all' is given then it fetches all\
+            posts "
+        )
+    parser.add_argument('--update', metavar='blog_file'
+        , help="Update a post."
+        )
+    parser.add_argument('--post', metavar='blog_file'
+        , help="New post or page"
+        )
+    args = parser.parse_args()
+    wp.run(args) 
