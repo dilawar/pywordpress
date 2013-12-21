@@ -2,7 +2,7 @@
 
 """formatter.py:  Format text
 
-Last modified: Sat Dec 21, 2013  12:44AM
+Last modified: Sat Dec 21, 2013  04:29AM
 
 """
     
@@ -16,6 +16,7 @@ __email__            = "dilawars@iitb.ac.in"
 __status__           = "Development"
 
 import re
+import os
 
 paragraphMark = "\nQQQQ\n"
 
@@ -24,13 +25,6 @@ def formatParagraph(paraTxt):
         return paraTxt
     if "[sourcecode" in paraTxt:
         return paraTxt
-    pat = re.compile(r'\<h\d+\>(?P<text>.+)\<\/h\d+\>', re.DOTALL)
-    m = pat.search(paraTxt)
-    if m:
-        paraTxt = re.sub(pat, ' ', paraTxt)
-        headText = m.group('text')
-        paraTxt = headText + '\n' + ''.join(['-' for x in headText]) + '\n' + paraTxt 
-    paraTxt.replace("\n", "")
     newTxt = ""
     lenght = 0
     for c in paraTxt:
@@ -67,22 +61,19 @@ def formatWithNoChangeOnTag(txt, tag) :
         newText += (line+"+QUQ+")
       else : # format it 
         newText += (line.strip()+"\n")
-    return newText
-
-def titleToFileName(title) :
-    global blogDir
-    fileName = title.replace(" ","_")+".blog"
-    fileName = fileName.replace("/", "_")
-    fileName = os.path.abspath(blogDir+"/"+fileName)
-    return fileName
+    return newText.replace("+QUQ+", "\n")
 
 def contentToHTML(content):
     """Convert content to html
     """
+    content = formatWithNoChangeOnTag(content, "pre")
+    content = formatWithNoChangeOnTag(content, "sourcecode")
     return content
+    
 
 def formatContent(content):
     content = content.replace("&amp;", "")
+    content = content.replac("quot;", "\"")
     # Introduce paragraph marks in page.
     content = content.replace("<p>", paragraphMark)
     content = content.replace("</p>", paragraphMark)

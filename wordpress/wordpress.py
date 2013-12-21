@@ -14,6 +14,7 @@ else :
 from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc.methods.posts import GetPosts, NewPost, EditPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
+from wordpress_xmlrpc.methods import media, posts 
 
 import formatter as formatter
 import argparse
@@ -38,9 +39,7 @@ def newPostToWordpress(wp, postName):
     txt = "<id>"+post.id+"</id>\n" + txt
     title = getTitle(txt)
     savePath = titleToBlogDir(title)+'/content.md'
-
-    print("|- Adding id to new post and saving it to : \n {0}".format(savePath))
-    with open(savePath, "w") as ff :
+    with open(savePath, "w") as ff:
         ff.write(txt)
     updatePost(post, wp, txt)
     print("== You should now delete : {0}.".format(postName))
@@ -53,8 +52,8 @@ def fetchWpPosts(wp, postsToFetch):
     posts = wp.call(GetPosts( {'number': 200, 'offset': 0}))
     pages = wp.call(GetPosts({'post_type' : 'page'}))
     if  postsToFetch == "all" :
-        fetchPosts(posts, "post")
-        fetchPosts(pages, "page")
+        fetchPosts(posts, "post", wp)
+        fetchPosts(pages, "page", wp)
     elif len(postsToFetch) > 2 :
         # search for a post with similar titles.
         matchedPosts = list()
@@ -63,7 +62,7 @@ def fetchWpPosts(wp, postsToFetch):
             match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
             if match > 0.65 :
                 matchedPosts.append(post)
-        fetchPosts(matchedPosts, "post")
+        fetchPosts(matchedPosts, "post", wp)
         # Why not pages.
         matchedPages = list()
         for page in pages :
@@ -71,7 +70,7 @@ def fetchWpPosts(wp, postsToFetch):
             match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
             if match > 0.65 :
                 matchedPages.append(post)
-        fetchPosts(matchedPages, "page")
+        fetchPosts(matchedPages, "page", wp)
   
 
 def getTitle(txt):
@@ -82,6 +81,7 @@ def getTitle(txt):
     else :
         print("[W] Empty title!")
         title = ""
+        
     return title.strip()
   
 def titleToBlogDir(title):
@@ -135,34 +135,37 @@ def appendMetadataToPost(metadata, post):
         cats.append(cat)
     termsAndCats['category'] = cats
     post.terms_names = termsAndCats 
-    return id, title, post
+    return post
 
 def updatePost(post, wp, txt) :
     # Check if there is no id.
-    pat = re.compile(r'~~~(~*)(?P<metadata>.+)~~~(~*)', re.DOTALL)
+    pat = re.compile(r'~~~(~*)(?P<metadata>[^~.]+)~~~(~*)', re.DOTALL)
     metadata = pat.search(txt).group('metadata')
-    content = re.sub(pat, "", metadata)
+    content = re.sub(pat, "", txt)
     assert len(metadata) > 0
-    id, title, post = appendMetadataToPost(metadata, post)
-    print("[I] Sending post : {0} : {1}.".format(id, title))
+    
+    post = appendMetadataToPost(metadata, post)
   
     # content 
     if content :
         if len(content.strip()) == 0 :
             print("[E] : No content in file.")
             return 
-        content = formatter.contentToHTML(content)
     else :
         print("[W] : Post with empty content.")
         content = ""
+
+    content = formatter.contentToHTML(content)
     post.content = content
+    print("[I] Sending post : {0} : {1}.".format(post.id, post.title))
     wp.call(EditPost(post.id, post))
     return
 
-def fetchPosts(posts, postType, fmt="native"):
+def fetchPosts(posts, postType, wp):
     """ Fetch all posts in list posts with postType
     """
     global blogDir
+    pat = re.compile(r'\<img(?P<src>[^>]+)>', re.DOTALL)
     for post in posts :
         title = post.title.encode('utf-8')
         terms = post.terms
@@ -179,51 +182,38 @@ def fetchPosts(posts, postType, fmt="native"):
         # content.md file.
         fileName = os.path.join(postDir, 'content.md')
         f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
-        if fmt == "native":
-            f.write("".join("~" for x in range(10))+'\n')
-            f.write("title: ")
-            f.write(title)
-            f.write("\ntype: "+postType)
-            f.write("\nstatus: "+post.post_status)
-            f.write("\nid: "+post.id)
-            cats = []
-            tags = []
-            for t in terms :
-                if t.taxonomy == 'post_tag':
-                    tags.append(t.name)
-                elif t.taxonomy == 'category':
-                    cats.append(t.name)
-                else:
-                    raise RuntimeError, "Unknown taxonomy {0} found".format(t.name)
-            if tags:
-                for t in tags:
-                    f.write('\ntag: {0}'.format(t)) 
-            if cats:
-                for c in cats:
-                    f.write('\ncategory: {0}'.format(c))
-            f.write('\n')
-            f.write("".join("~" for x in range(10))+'\n')
-            f.write(content)
+        f.write("".join("~" for x in range(10))+'\n')
+        f.write("title: ")
+        f.write(title)
+        f.write("\ntype: "+postType)
+        f.write("\nstatus: "+post.post_status)
+        f.write("\nid: "+post.id)
+        cats = []
+        tags = []
+        for t in terms :
+            if t.taxonomy == 'post_tag':
+                tags.append(t.name)
+            elif t.taxonomy == 'category':
+                cats.append(t.name)
+            else:
+                raise RuntimeError, "Unknown taxonomy {0} found".format(t.name)
+        if tags:
+            for t in tags:
+                f.write('\ntag: {0}'.format(t)) 
+        if cats:
+            for c in cats:
+                f.write('\ncategory: {0}'.format(c))
+        f.write('\n')
+        f.write("".join("~" for x in range(10))+'\n')
 
-        elif fmt == "markdown":
-            content = content.replace("<br/>", "\n\n")
-            content = content.replace("<br />", "\n\n")
-            content = content.replace("<br>", "\n\n")
-            content = content.replace("<pre>", "\n\n<pre>") 
-            content = content.replace("</pre>", "</pre>\n\n") 
-            content = content.replace("<p>", "\n\n<p>")
-            content = content.replace("[/sourcecode", "\n\n[/sourcecode")
-            f.write("~~~\n")
-            f.write("title: {0} \n".format(title))
-            f.write("status: {0} \n".format(post.post_status))
-            f.write("type: {0} \n".format(postType))
-            f.write("id: {0} \n".format(post.id))
-            f.write("category: {0}".format(post.terms))
-            f.write("~~~\n\n")
-            f.write(content)
-        
+        # TODO: Get links from the post
+        srcs = pat.findall(content)
+        i = 0
+        for src in srcs:
+            i += 1
+
+        f.write(content)
         f.close()
-
 
 def run(args):
     # Getting command line arguments   
@@ -274,5 +264,6 @@ def run(args):
         fetchWpPosts(wp, args.fetch)
     else : # get recent posts 
         posts = wp.call(GetPosts( {'post_status': 'publish'}))
-        fetchPosts(posts, "post")
+        fetchPosts(posts, "post", wp)
+        
 
