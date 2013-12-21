@@ -46,6 +46,14 @@ def fetchWpPosts(wp, postsToFetch):
     """
     Fetch given posts from wordpress.
     """
+     
+    # Create blog directory if not exists.
+    try :
+        os.makedirs(blogDir)
+    except OSError as exception :
+        if exception.errno != errno.EEXIST :
+            raise 
+    
     posts = wp.call(GetPosts( {'number': 200, 'offset': 0}))
     pages = wp.call(GetPosts({'post_type' : 'page'}))
     if  postsToFetch == "all" :
@@ -243,14 +251,7 @@ def run(args):
     blog = "http://"+blog+"/xmlrpc.php"
     user = cfg.get(blogId,'username')
     password = cfg.get(blogId, 'password')
-  
-    try :
-        os.makedirs(blogDir)
-    except OSError as exception :
-        if exception.errno != errno.EEXIST :
-            raise 
-    
-    ## Now cleate a client 
+     ## Now cleate a client 
     p = os.environ.get('http_proxy')
     if p and 'http://' in p :
         p = p.replace('http://', '')
@@ -275,7 +276,7 @@ def run(args):
         newPostToWordpress(wp, args.post)
     # Fetch blogs from wordpress.
     elif args.fetch :
-    # Get all posts 
+        # Get all posts 
         fetchWpPosts(wp, args.fetch)
     else : # get recent posts 
         posts = wp.call(GetPosts( {'post_status': 'publish'}))
