@@ -37,11 +37,12 @@ def newPostToWordpress(wp, postName):
     
     txt = "<id>"+post.id+"</id>\n" + txt
     title = getTitle(txt)
-    savePath = titleToFileName(title)
+    savePath = titleToBlogDir(title)+'/content.md'
+
     print("|- Adding id to new post and saving it to : \n {0}".format(savePath))
     with open(savePath, "w") as ff :
         ff.write(txt)
-    sendPostToWordpress(post, wp, txt)
+    updatePost(post, wp, txt)
     print("== You should now delete : {0}.".format(postName))
     return 0
 
@@ -73,98 +74,40 @@ def fetchWpPosts(wp, postsToFetch):
         fetchPosts(matchedPages, "page")
   
 
-def formatWithNoChangeOnTag(txt, tag) :
-  ''' Notice :
-  +QUQ+ should be replace by \n after using this function last time.
-  '''
-  newText = ""
-  bTag = False 
-  eTag = True
-  beginTag = re.compile("[\<\[]\s*"+tag+"\s*(\w+\s*=\s*[\"\w\']+\s*)?[\>\]]",
-      re.IGNORECASE)
-  endTag = re.compile("[\<\[]\s*\/"+tag+"\s*[\>\]]", re.IGNORECASE)
-  for line in txt.split("\n") :
-    if len(line.strip()) == 0 : continue 
-    if beginTag.search(line) and endTag.search(line) : newText += line
-    else : 
-      if beginTag.search(line) :
-        newText += "\n"
-        bTag = True
-        eTag = False
-      if endTag.search(line) :
-        eTag = True
-        bTag = False
-    #check 
-    if bTag is True and eTag is False:
-      newText += (line+"+QUQ+")
-    else : # format it 
-      newText += (line.strip()+"\n")
-  return newText
-
-def formatContent(content) :
-  content = formatWithNoChangeOnTag(content, "sourcecode")
-  content = formatWithNoChangeOnTag(content, "pre")
-  content = re.sub("\n+", " ", content)
-  content = content.replace("+QUQ+", "\n")
-  return content
-
-def getTitle(txt, format='native'):
-    if format == "markdown":
-        print("Support markdown")
-        sys.exit(0)
-  
-    titleRegex = re.compile("\<title\>\s*(?P<title>[\w\W\s]+)\s*\</title\>",
-          re.IGNORECASE | re.DOTALL)
+def getTitle(txt):
+    titleRegex = re.compile("title:(?P<title>.+)", re.IGNORECASE)
     m = titleRegex.search(txt)
     if m :
-      title = m.groupdict()['title']
+        title = m.groupdict()['title']
     else :
-      print("[W] Empty title!")
-      title = ""
-    return title
+        print("[W] Empty title!")
+        title = ""
+    return title.strip()
   
-def titleToFileName(title) :
+def titleToBlogDir(title):
     global blogDir
-    fileName = title.replace(" ","_")+".blog"
-    fileName = fileName.replace("/", "_")
-    fileName = os.path.abspath(blogDir+"/"+fileName)
+    fileName = title.replace(" ","_").replace(':', '-').replace('(', '')
+    fileName = fileName.replace("/", "_").replace(')', '')
+    fileName = os.path.abspath(os.path.join(blogDir, fileName))
     return fileName
   
-
-def sendPostToWordpress(post, wp, txt) :
-    # Check if there is no id.
-    idregex = re.compile('\<id\>\s*(?P<id>\d+)\s*\</id\>', re.IGNORECASE | re.DOTALL)
-    m = idregex.search(txt) 
+def appendMetadataToPost(metadata, post):
+    """
+    Append metadata to post.
+    """
+    idregex = re.compile(r'id:(?P<id>.+)', re.IGNORECASE)
+    m = idregex.search(metadata) 
     if not m :
         print("This looks like a new post, use --post option")
         return 
-    id = m.groupdict()['id']
+    id = m.group('id').strip()
     post.id = id
-    title = getTitle(txt)
+    title = getTitle(metadata)
     post.title = title
-    
-    print("[I] Sending post : {0} : {1}.".format(id, title))
-  
-    # content 
-    contentRegex = re.compile("\<content\>(?P<content>.+)\<\/content\>"
-        , re.IGNORECASE | re.DOTALL
-        )
-    m = contentRegex.search(txt)
-    if m :
-        content = m.groupdict()['content']
-        if len(content.strip()) == 0 :
-            print("[E] : No content in file.")
-            return 
-        content = formatContent(content)
-    else :
-        print("[W] Post with empty content.")
-        content = ""
-    post.content = content
-    
+
     # status 
-    statusRegex = re.compile("\<status\>\s*(?P<status>\w+)\s*\</status\>"
-        , re.IGNORECASE | re.DOTALL)
-    m = statusRegex.search(txt)
+    statusRegex = re.compile("status:(?P<status>.+)"), re.IGNORECASE) 
+    m = statusRegex.search(metadata)
     if m :
         status = m.groupdict()['status']
         post.post_status = status 
@@ -173,80 +116,114 @@ def sendPostToWordpress(post, wp, txt) :
         post.post_status = "publish"
     
     termsAndCats = dict()
-    
+
     # tags 
-    tagRegex = re.compile("\<post_tag\s+id\=\"(?P<id>\d*)\"\>\s*"+\
-        "(?P<tag>[\s\w]+)\s*\</post_tag\>"
-        , re.IGNORECASE | re.DOTALL
-        )
-    ms = tagRegex.findall(txt)
+    tagRegex = re.compile("tag:(?P<name>.+)", re.IGNORECASE)
+    ms = tagRegex.findall(metadata)
     tags = list()
     for m in ms :
-        id, name = m
+        name = m
         tags.append(name)
     termsAndCats['post_tag'] = tags 
   
     # categories
-    catRegex = re.compile("\<category\s+id\=\"(?P<id>\d*)\"\>\s*"+\
-        "(?P<cat>[\s\w]+)\s*\</category\>"
-        , re.IGNORECASE | re.DOTALL
-        )
-    mm = catRegex.findall(txt)
+    catRegex = re.compile("category:(?P<cat>.+)", re.DOTALL)
+    mm = catRegex.findall(metadata)
     cats = list()
     for m in mm :
-        id, cat = m
+        cat = m
         cats.append(cat)
     termsAndCats['category'] = cats
-  
     post.terms_names = termsAndCats 
+    return post
+
+def updatePost(post, wp, txt) :
+    # Check if there is no id.
+    pat = re.compile(r'~~~(~*)(?P<metadata>.+)~~~(~*)', re.DOTALL)
+    metadata = pat.search(txt).group('metadata')
+    content = re.sub(pat, "", metadata)
+    assert len(metadata) > 0
+
+    post = appendMetadataToPost(metadata, post)
+    print("[I] Sending post : {0} : {1}.".format(id, title))
+  
+    # content 
+    if content :
+        if len(content.strip()) == 0 :
+            print("[E] : No content in file.")
+            return 
+        content = formatter.contentToHTML(content)
+    else :
+        print("[W] : Post with empty content.")
+        content = ""
+    post.content = content
     wp.call(EditPost(post.id, post))
     return
 
+def fetchPosts(posts, postType, fmt="native"):
+    """ Fetch all posts in list posts with postType
+    """
+    global blogDir
+    for post in posts :
+        title = post.title.encode('utf-8')
+        terms = post.terms
+        print("[I] : Downloading : {0}".format(title))
+        content = post.content 
+        content = formatter.formatContent(content)
+        fileName = titleToBlogDir(title)
+        # Create directory for this filename in blogDir.
+        postDir = os.path.join(blogDir, fileName)
+        if not os.path.isdir(postDir):
+            os.makedirs(postDir)
 
-def fetchPosts(posts, postType, fmt="native") :
-  """ Fetch all posts in list posts with postType
-  """
-  global blogDir
-  for post in posts :
-    title = post.title.encode('utf-8')
-    terms = post.terms
-    print("[I] : Downloading : {0}".format(title))
-    content = post.content 
-    content = formatter.formatContent(content)
-    fileName = titleToFileName(title)
-    f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
-    
-    if fmt == "native":
-        f.write("<type>"+postType+"</type>\n")
-        f.write("<status>"+post.post_status+"</status>\n")
-        f.write("<id>"+post.id+"</id>\n")
-        f.write("<title>")
-        f.write(title)
-        f.write("</title>\n\n")
-        f.write("<content>\n")
-        f.write(content)
-        f.write("\n</content>\n")
-        for t in terms :
-          f.write("\n<"+t.taxonomy.upper()+" id=\""+t.taxonomy_id+"\">"\
-              +t.name+"</"+t.taxonomy.upper()+">\n")
-    elif fmt == "markdown":
-        content = content.replace("<br/>", "\n\n")
-        content = content.replace("<br />", "\n\n")
-        content = content.replace("<br>", "\n\n")
-        content = content.replace("<pre>", "\n\n<pre>") 
-        content = content.replace("</pre>", "</pre>\n\n") 
-        content = content.replace("<p>", "\n\n<p>")
-        content = content.replace("[/sourcecode", "\n\n[/sourcecode")
-        f.write("~~~\n")
-        f.write("title: {0} \n".format(title))
-        f.write("status: {0} \n".format(post.post_status))
-        f.write("type: {0} \n".format(postType))
-        f.write("id: {0} \n".format(post.id))
-        f.write("category: {0}".format(post.terms))
-        f.write("~~~\n\n")
-        f.write(content)
-    
-    f.close()
+        # Good now for this post, we have directory. Download its content in
+        # content.md file.
+        fileName = os.path.join(postDir, 'content.md')
+        f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
+        if fmt == "native":
+            f.write("".join("~" for x in range(10))+'\n')
+            f.write("title: ")
+            f.write(title)
+            f.write("\ntype: "+postType)
+            f.write("\nstatus: "+post.post_status)
+            f.write("\nid: "+post.id)
+            cats = []
+            tags = []
+            for t in terms :
+                if t.taxonomy == 'post_tag':
+                    tags.append(t.name)
+                elif t.taxonomy == 'category':
+                    cats.append(t.name)
+                else:
+                    raise RuntimeError, "Unknown taxonomy {0} found".format(t.name)
+            if tags:
+                for t in tags:
+                    f.write('\ntag: {0}'.format(t)) 
+            if cats:
+                for c in cats:
+                    f.write('\ncategory: {0}'.format(c))
+            f.write('\n')
+            f.write("".join("~" for x in range(10))+'\n')
+            f.write(content)
+
+        elif fmt == "markdown":
+            content = content.replace("<br/>", "\n\n")
+            content = content.replace("<br />", "\n\n")
+            content = content.replace("<br>", "\n\n")
+            content = content.replace("<pre>", "\n\n<pre>") 
+            content = content.replace("</pre>", "</pre>\n\n") 
+            content = content.replace("<p>", "\n\n<p>")
+            content = content.replace("[/sourcecode", "\n\n[/sourcecode")
+            f.write("~~~\n")
+            f.write("title: {0} \n".format(title))
+            f.write("status: {0} \n".format(post.post_status))
+            f.write("type: {0} \n".format(postType))
+            f.write("id: {0} \n".format(post.id))
+            f.write("category: {0}".format(post.terms))
+            f.write("~~~\n\n")
+            f.write(content)
+        
+        f.close()
 
 
 def run(args):
@@ -274,7 +251,7 @@ def run(args):
     
     ## Now cleate a client 
     p = os.environ['http_proxy']
-    if 'http::/' in p :
+    if 'http://' in p :
         p = p.replace('http://', '')
 
     wp = Client(blog, user, password, proxy=p)
@@ -289,8 +266,7 @@ def run(args):
         with open(fileName, "r") as f :
             txt = f.read()
         post = WordPressPost()
-        sendPostToWordpress(post, wp, txt) 
-    
+        updatePost(post, wp, txt) 
     elif args.post :
         newPostToWordpress(wp, args.post)
     # Fetch blogs from wordpress.

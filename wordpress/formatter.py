@@ -2,7 +2,7 @@
 
 """formatter.py:  Format text
 
-Last modified: Fri Dec 20, 2013  11:33PM
+Last modified: Sat Dec 21, 2013  12:44AM
 
 """
     
@@ -42,7 +42,44 @@ def formatParagraph(paraTxt):
         else:pass
     return newTxt 
 
+def formatWithNoChangeOnTag(txt, tag) :
+    ''' Notice :
+    '''
+    newText = ""
+    bTag = False 
+    eTag = True
+    beginTag = re.compile("[\<\[]\s*"+tag+"\s*(\w+\s*=\s*[\"\w\']+\s*)?[\>\]]",
+        re.IGNORECASE)
+    endTag = re.compile("[\<\[]\s*\/"+tag+"\s*[\>\]]", re.IGNORECASE)
+    for line in txt.split("\n") :
+      if len(line.strip()) == 0 : continue 
+      if beginTag.search(line) and endTag.search(line) : newText += line
+      else : 
+        if beginTag.search(line) :
+          newText += "\n"
+          bTag = True
+          eTag = False
+        if endTag.search(line) :
+          eTag = True
+          bTag = False
+      #check 
+      if bTag is True and eTag is False:
+        newText += (line+"+QUQ+")
+      else : # format it 
+        newText += (line.strip()+"\n")
+    return newText
 
+def titleToFileName(title) :
+    global blogDir
+    fileName = title.replace(" ","_")+".blog"
+    fileName = fileName.replace("/", "_")
+    fileName = os.path.abspath(blogDir+"/"+fileName)
+    return fileName
+
+def contentToHTML(content):
+    """Convert content to html
+    """
+    return content
 
 def formatContent(content):
     content = content.replace("&amp;", "")
