@@ -213,7 +213,7 @@ def fetchPosts(posts, postType, wp, format="markdown"):
             elif t.taxonomy == 'category':
                 cats.append(t.name)
             else:
-                raise RuntimeError("Unknown taxonomy {0} found".format(t.name))
+                cats.append(t.name)
         if tags:
             for t in tags:
                 f.write('\ntag: {0}'.format(t)) 

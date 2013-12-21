@@ -1,0 +1,40 @@
+~~~~ 
+title: Brief history of complex poles
+type: post
+status: publish
+id: 386
+tag: history of poles
+category: History
+category: Mathematics
+~~~~
+
+According to these pages http://jeff560.tripod.com the word 'pole' was
+first used in *Théorie des fonctions elliptiques*. English translation
+(of course using google), "When u is holomorphic function in a certain
+part of the plan, except at a point z1, where it becomes infinite, so
+however that the function remains 1/u holomorphic in the neighborhood of
+this point, we say that this is a pole or infinite the function u." In
+their memoirs they have mentioned that pole is 'un infini du degré
+fini'- An infinity of finite degree. However, they do not explain why
+they have used the word 'pole'. English speaking people give a intuitive
+explanation, "it was because if you plot, or envision plotting, the
+surface z = |f(x + iy)|, at poles of f, the surface, if you imagine it
+sitting over the xy plane, looks like it is being supported by a really
+tall pole. Like a circus tent."[2] That does not goes well with 'French'
+and 'German' since their idea of 'pole' is slightly different (not
+related with 'pillar'). Besides the inventors of this word were French.
+Perhaps an explanation that would also make sense in French and German
+is that the value of a function at a pole is equal to infinity, the
+North pole of the Riemann sphere. However, if one look at this figure,
+it is not at all hard to agree with 'circus tent' theory.
+http://en.wikipedia.org/wiki/File:Jahnke\_gamma\_function.png Renteln
+and Dundes (2005) give the following (bad) mathematical jokes about
+poles:[3] Q: What's the value of a contour integral around Western
+Europe? A: Zero, because all the Poles are in Eastern Europe. Q: Why did
+the mathematician name his dog "Cauchy?" A: Because he left a residue at
+every pole. REF :[1]
+http://visualiseur.bnf.fr/Visualiseur?Destination=Gallica&O=NUMM-99571
+[2]
+http://mathoverflow.net/questions/39538/what-is-the-naming-reason-of-poles-in-complex-analysis
+[3] Renteln, P. and Dundes, A. "Foolproof: A Sampling of Mathematical
+Folk Humor." *Notices Amer. Math. Soc.* **52**, 24-34, 2005.
