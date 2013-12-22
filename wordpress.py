@@ -32,7 +32,7 @@ def newPostToWordpress(wp, postName):
     fileName = postName
     with open(fileName, "r") as f :
         txt = f.read()
-    updatePost(post, wp, txt, format="markdown") 
+    updatePost(post, wp, txt) 
     post = wp.call(GetPost(post.id))
     fetchPosts([post], wp)
     print("== You should now delete : {0}.".format(postName))
@@ -154,10 +154,11 @@ def updatePost(post, wp, txt, format="markdown") :
     metadata = pat.search(txt).group('metadata')
     content = re.sub(pat, "", txt)
     assert len(metadata) > 0
-    
+
     post = appendMetadataToPost(metadata, post)
     assert post.post_type
   
+    print content
     # content 
     if content :
         if len(content.strip()) == 0 :
@@ -170,7 +171,7 @@ def updatePost(post, wp, txt, format="markdown") :
     if format == "html":
         pass
     elif format in ["markdown", "md"]:
-        cmd = ["pandoc", "-f", "markdown", "-o", "html"]
+        cmd = ["pandoc", "-f", "markdown", "-t", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
                 , stdout = subprocess.PIPE
