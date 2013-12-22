@@ -96,15 +96,16 @@ def appendMetadataToPost(metadata, post):
     """
     Append metadata to post.
     """
-    if post.id == None:
+    try:
+        id = post.id 
+    except AttributeError:
         idregex = re.compile(r'id:(?P<id>.+)', re.IGNORECASE)
         m = idregex.search(metadata) 
         if not m :
-            print("[Warning] This looks like a new post, use --post option")
-            sys.exit()
-
+            raise UserWarning, "[Warning] This looks like a new post, use --post option"
         id = m.group('id').strip()
-        post.id = id
+
+    post.id = id
     title = getTitle(metadata)
     post.title = title.strip()
 
