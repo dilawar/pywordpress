@@ -10,7 +10,7 @@ else :
   from configparser import RawConfigParser 
 
 from wordpress_xmlrpc import Client, WordPressPost
-from wordpress_xmlrpc.methods.posts import GetPosts, NewPost, EditPost
+from wordpress_xmlrpc.methods.posts import GetPosts, GetPost, NewPost, EditPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
 from wordpress_xmlrpc.methods import media, posts 
 
@@ -33,6 +33,8 @@ def newPostToWordpress(wp, postName):
     with open(fileName, "r") as f :
         txt = f.read()
     updatePost(post, wp, txt, format="markdown") 
+    post = wp.call(GetPost(post.id))
+    fetchPosts([post], wp)
     print("== You should now delete : {0}.".format(postName))
     return 0
 
@@ -51,8 +53,8 @@ def fetchWpPosts(wp, postsToFetch):
     posts = wp.call(GetPosts( {'number': 200, 'offset': 0}))
     pages = wp.call(GetPosts({'post_type' : 'page'}))
     if  postsToFetch == "all" :
-        fetchPosts(posts, "post", wp)
-        fetchPosts(pages, "page", wp)
+        fetchPosts(posts, wp)
+        fetchPosts(pages, wp)
     elif len(postsToFetch) > 2 :
         # search for a post with similar titles.
         matchedPosts = list()
@@ -61,7 +63,7 @@ def fetchWpPosts(wp, postsToFetch):
             match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
             if match > 0.65 :
                 matchedPosts.append(post)
-        fetchPosts(matchedPosts, "post", wp)
+        fetchPosts(matchedPosts, wp)
         # Why not pages.
         matchedPages = list()
         for page in pages :
@@ -69,7 +71,7 @@ def fetchWpPosts(wp, postsToFetch):
             match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
             if match > 0.65 :
                 matchedPages.append(post)
-        fetchPosts(matchedPages, "page", wp)
+        fetchPosts(matchedPages,  wp)
   
 
 def getTitle(txt):
@@ -111,9 +113,9 @@ def appendMetadataToPost(metadata, post):
     m = pat.search(metadata)
     if not m:
         print("Warnng. This post has no type. Assuming post")
-        post.type = 'post'
+        post.post_type = 'post'
     else:
-        post.type = m.group('type').strip()
+        post.post_type = m.group('type').strip()
 
     # status 
     statusRegex = re.compile("status:(?P<status>.+)", re.IGNORECASE) 
@@ -154,7 +156,7 @@ def updatePost(post, wp, txt, format="markdown") :
     assert len(metadata) > 0
     
     post = appendMetadataToPost(metadata, post)
-    assert post.type
+    assert post.post_type
   
     # content 
     if content :
@@ -198,8 +200,8 @@ def writeContent(fH, content, format):
         p.communicate(content)
 
 
-def fetchPosts(posts, postType, wp, format="markdown"):
-    """ Fetch all posts in list posts with postType
+def fetchPosts(posts, wp, format="markdown"):
+    """ Fetch all posts in list posts.
     """
     global blogDir
     for post in posts :
@@ -219,9 +221,9 @@ def fetchPosts(posts, postType, wp, format="markdown"):
         f.write("~~~~ \n")
         f.write("title: ")
         f.write(title)
-        f.write("\ntype: "+postType)
-        f.write("\nstatus: "+post.post_status)
-        f.write("\nid: "+post.id)
+        f.write("\ntype: " + post.post_type)
+        f.write("\nstatus: " + post.post_status)
+        f.write("\nid: " + post.id)
         cats = []
         tags = []
         for t in terms :
@@ -287,7 +289,7 @@ def run(args):
         fetchWpPosts(wp, args.fetch)
     else : # get recent posts 
         posts = wp.call(GetPosts( {'post_status': 'publish'}))
-        fetchPosts(posts, "post", wp)
+        fetchPosts(posts, wp)
         
 
 
