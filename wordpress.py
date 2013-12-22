@@ -32,7 +32,7 @@ def newPostToWordpress(wp, postName):
     fileName = postName
     with open(fileName, "r") as f :
         txt = f.read()
-    updatePost(post, wp, txt, format="markdown", id=post.id) 
+    updatePost(post, wp, txt, format="markdown") 
     print("== You should now delete : {0}.".format(postName))
     return 0
 
