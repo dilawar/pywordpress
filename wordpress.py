@@ -25,7 +25,7 @@ import subprocess
 blogDir = "./blogs"
 
 def newPostToWordpress(wp, postName):
-    print("[INFO] You are going to create a new post ...")
+    print("[I] You are going to create a new post ...")
     post = WordPressPost()
     post.id = wp.call(NewPost(post))
     ## get the text of new post
@@ -33,8 +33,8 @@ def newPostToWordpress(wp, postName):
     with open(fileName, "r") as f :
         txt = f.read()
     updatePost(post, wp, txt) 
-    post = wp.call(GetPost(post.id))
-    fetchPosts([post], wp)
+    postNew = wp.call(GetPost(post.id))
+    fetchPosts([postNew], wp)
     print("== You should now delete : {0}.".format(postName))
     return 0
 
@@ -157,8 +157,6 @@ def updatePost(post, wp, txt, format="markdown") :
 
     post = appendMetadataToPost(metadata, post)
     assert post.post_type
-  
-    print content
     # content 
     if content :
         if len(content.strip()) == 0 :
@@ -206,6 +204,7 @@ def fetchPosts(posts, wp, format="markdown"):
     """
     global blogDir
     for post in posts :
+        assert int(post.id.strip()) > 0, "Post must have an id"
         title = post.title.encode('utf-8')
         terms = post.terms
         print(("[I] : Downloading : {0}".format(title)))
