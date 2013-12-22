@@ -122,4 +122,7 @@ since Lal Bahadur Shashri" is almost gone. If the media does not
 regularize itself, someone else in power will. When they will find that
 public sympathy is no longer on the side of media. Indian media will do
 well to learn some lessons from what happened to media autonomy in U.K.
-after Leverson report. -- Dilawar
+after Leverson report. 
+
+--  
+Dilawar

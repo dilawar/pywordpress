@@ -28,18 +28,12 @@ def newPostToWordpress(wp, postName):
     print("[INFO] You are going to create a new post ...")
     post = WordPressPost()
     post.id = wp.call(NewPost(post))
-    # get the text of new post
+    ## get the text of new post
     fileName = postName
     with open(fileName, "r") as f :
         txt = f.read()
-    
-    txt = "<id>"+post.id+"</id>\n" + txt
-    title = getTitle(txt)
-    savePath = titleToBlogDir(title)+'/content.md'
-    with open(savePath, "w") as ff:
-        ff.write(txt)
-    updatePost(post, wp, txt)
-    print(("== You should now delete : {0}.".format(postName)))
+    updatePost(post, wp, txt, format="markdown", id=post.id) 
+    print("== You should now delete : {0}.".format(postName))
     return 0
 
 def fetchWpPosts(wp, postsToFetch):
@@ -100,14 +94,15 @@ def appendMetadataToPost(metadata, post):
     """
     Append metadata to post.
     """
-    idregex = re.compile(r'id:(?P<id>.+)', re.IGNORECASE)
-    m = idregex.search(metadata) 
-    if not m :
-        print("[Warning] This looks like a new post, use --post option")
-        sys.exit()
+    if post.id == None:
+        idregex = re.compile(r'id:(?P<id>.+)', re.IGNORECASE)
+        m = idregex.search(metadata) 
+        if not m :
+            print("[Warning] This looks like a new post, use --post option")
+            sys.exit()
 
-    id = m.group('id').strip()
-    post.id = id
+        id = m.group('id').strip()
+        post.id = id
     title = getTitle(metadata)
     post.title = title.strip()
 
@@ -115,7 +110,8 @@ def appendMetadataToPost(metadata, post):
     pat = re.compile(r'type:(?P<type>.+)', re.IGNORECASE)
     m = pat.search(metadata)
     if not m:
-        raise UserError, "This post has no type"
+        print("Warnng. This post has no type. Assuming post")
+        post.type = 'post'
     else:
         post.type = m.group('type').strip()
 
@@ -128,7 +124,6 @@ def appendMetadataToPost(metadata, post):
     else :
         print("[W] Post with uncertain status. Default to publish")
         post.post_status = "publish"
-    
     termsAndCats = dict()
 
     # tags 
@@ -267,13 +262,11 @@ def run(args):
     password = cfg.get(blogId, 'password')
      ## Now cleate a client 
     p = os.environ.get('http_proxy')
-    if p and 'http://' in p :
+    if p is not None and 'http://' in p :
         p = p.replace('http://', '')
+        wp = Client(blog, user, password, proxy=p)
     else:
-       p = ''
-
-    wp = Client(blog, user, password, proxy=p)
-    
+        wp = Client(blog, user, password)
     # Send a file to wordpress.
     if args.update :
         fileName = args.update
