@@ -37,9 +37,10 @@ def colored(msg, label="INFO") :
         color = ""
     return "{0} {1}".format(color+msg, ENDC)
 
-def printDebug(label, msg, frame=None, exception=None):
+def printDebug(label, msg, msg2='', frame=None, exception=None):
     if not frame :
-        print("[{0}] {1}".format(label, colored(msg,label)), file=sys.stderr)
+        print("[%s] %s %s" % (label, colored(msg,label),msg2)
+                , file=sys.stderr)
     else :
         filename = frame.f_code.co_filename
         filename = "/".join(filename.split("/")[-2:])

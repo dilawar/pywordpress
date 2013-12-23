@@ -233,7 +233,9 @@ class Wordpress:
         title = post.title.encode('utf-8')
         terms = post.terms
         logging.debug("Downloading : {0}".format(title))
-        printDebug("INFO", "Downloading {0}".format(title))
+        printDebug("INFO", "Downloading {0}".format(post.post_type)
+                , title
+                )
 
         content = post.content.encode('utf-8') 
         postDir = self.titleToBlogDir(title)
