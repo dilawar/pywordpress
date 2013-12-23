@@ -194,7 +194,7 @@ class Wordpress:
         if format == "html":
             pass
         elif format in ["markdown", "md"]:
-            content = formatter.htmlToMarkdown(content, 'pandoc')
+            content = formatter.htmlToMarkdown(content)
             post.content = content
         else:
             post.content = content
@@ -215,7 +215,7 @@ class Wordpress:
             content = formatter.htmlToHtml(content) 
         elif format in ["markdown", "md"]:
             logging.info("Writing markdown format")
-            content = formatter.htmlToMarkdown(content, "pandoc")
+            content = formatter.htmlToMarkdown(content)
         fH.write(content)
     
     
