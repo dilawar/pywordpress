@@ -21,8 +21,8 @@ import codecs
 import errno
 import difflib 
 import subprocess
-
-blogDir = "./blogs"
+import logging
+import text.formatter as formatter
 
 class Wordpress:
     def __init__(self):
@@ -30,16 +30,24 @@ class Wordpress:
         self.wp = None
     
     def newPostToWordpress(self, postName):
-        print("[I] You are going to create a new post ...")
+        print("-> You are going to create a new post!")
         post = WordPressPost()
         post.id = self.wp.call(NewPost(post))
         ## get the text of new post
         fileName = postName
         with open(fileName, "r") as f :
             txt = f.read()
-        self.updatePost(post, wp, txt) 
+        try:
+            self.updatePost(post, txt) 
+        except Exception as e:
+            logging.warning("Failed to send post to wordpress")
+            logging.debug("Error was {0}".format(e))
+
+        logging.info('Post is sent successfully')
+
+        # Now download the sent post and save it.
         postNew = self.wp.call(GetPost(post.id))
-        self.writePosts([postNew], wp)
+        self.writePosts([postNew])
         print("= You should now delete : {0}.".format(postName))
         return 0
     
@@ -50,7 +58,7 @@ class Wordpress:
          
         # Create blog directory if not exists.
         try :
-            os.makedirs(blogDir)
+            os.makedirs(self.blogDir)
         except OSError as exception :
             if exception.errno != errno.EEXIST :
                 raise 
@@ -58,8 +66,7 @@ class Wordpress:
         posts = self.wp.call(GetPosts( {'number': 200, 'offset': 0}))
         pages = self.wp.call(GetPosts({'post_type' : 'page'}))
         if  postsToFetch == "all" :
-            self.writePosts(posts)
-            self.writePosts(pages)
+            self.writePosts(posts + pages)
         elif len(postsToFetch) > 2 :
             # search for a post with similar titles.
             matchedPosts = list()
@@ -115,8 +122,10 @@ class Wordpress:
         self.attachStatus(metadata, post)
         
         termsAndCats = dict()
-        self.attachTags(metadata, post, termsAndCats)
-        self.attachCategories(metadata, post, termsAndCats)
+        termsAndCats = self.attachTags(metadata, post, termsAndCats)
+        termsAndCats = self.attachCategories(metadata, post, termsAndCats)
+        post.terms_names = termsAndCats 
+
         return post
     
     def attachType(self, metadata, post):
@@ -149,8 +158,9 @@ class Wordpress:
             name = m.strip()
             tags.append(name)
         termsAndCats['post_tag'] = tags 
+        return termsAndCats
     
-    def attachCategories(self, metadata, post):
+    def attachCategories(self, metadata, post, termsAndCats):
         # categories
         catRegex = re.compile("category:(?P<cat>.+)", re.DOTALL)
         mm = catRegex.findall(metadata)
@@ -159,7 +169,7 @@ class Wordpress:
             cat = m.strip()
             cats.append(cat)
         termsAndCats['category'] = cats
-        post.terms_names = termsAndCats 
+        return termsAndCats
     
     def updatePost(self, post, txt, format="markdown") :
         # Check if there is no id.
@@ -182,82 +192,89 @@ class Wordpress:
         if format == "html":
             pass
         elif format in ["markdown", "md"]:
-            cmd = ["pandoc", "-f", "markdown", "-t", "html"]
-            p = subprocess.Popen(cmd
-                    , stdin = subprocess.PIPE
-                    , stdout = subprocess.PIPE
-                    )
-            p.stdin.write(content)
-            post.content = p.communicate()[0]
+            content = formatter.htmlToMarkdown(content, 'pandoc')
+            post.content = content
         else:
             post.content = content
-    
-        print(("[I] Sending post : {0} : {1}.".format(post.id, post.title)))
+        logging.debug(
+                "[I] Sending post : {0} : {1}.".format(post.id, post.title)
+                )
         try:
             self.wp.call(EditPost(post.id, post))
         except Exception as e:
-            print("[DEBUG] I was trying to update but failed")
-            print(" + You sure that this post exist on the blog.")
-            print("Error was : {0}".format(e))
+            logging.debug("[DEBUG] I was trying to update but failed")
+            logging.debug(" + You sure that this post exist on the blog.")
+            logging.debug("Error was : {0}".format(e))
         return
     
     def writeContent(self, fH, content, format):
         if format == "html":
-            fH.write(content)
+            content = formatter.htmlToHtml(content) 
         elif format in ["markdown", "md"]:
-            p = subprocess.Popen(["pandoc", "-f", "html", "-t", "markdown"]
-                , stdin=subprocess.PIPE
-                , stdout=fH
-                )
-            p.communicate(content)
+            content = formatter.htmlToMarkdown(content, "pandoc")
+        fH.write(content)
     
     
     def writePosts(self, posts, format="markdown"):
         """ Fetch all posts in list posts.
         """
-        global blogDir
-        for post in posts :
-            assert int(post.id.strip()) > 0, "Post must have an id"
-            title = post.title.encode('utf-8')
-            terms = post.terms
-            print(("[I] : Downloading : {0}".format(title)))
-            content = post.content.encode('utf-8') 
-            postDir = self.titleToBlogDir(title)
-            # Create directory for this filename in blogDir.
-            if not os.path.isdir(postDir):
-                os.makedirs(postDir)
-    
-            # Good now for this post, we have directory. Download its content in
-            # content.md file.
-            fileName = os.path.join(postDir, 'content.md')
-            f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
-            f.write("~~~~ \n")
-            f.write("title: ")
-            f.write(title)
-            f.write("\ntype: " + post.post_type)
-            f.write("\nstatus: " + post.post_status)
-            f.write("\nid: " + post.id)
-            cats = []
-            tags = []
-            for t in terms :
-                if t.taxonomy == 'post_tag':
-                    tags.append(t.name)
-                elif t.taxonomy == 'category':
-                    cats.append(t.name)
-                else:
-                    cats.append(t.name)
-            if tags:
-                for t in tags:
-                    f.write('\ntag: {0}'.format(t)) 
-            if cats:
-                for c in cats:
-                    f.write('\ncategory: {0}'.format(c))
-            f.write('\n')
-            f.write("~~~~\n\n")
-            # TODO: Get links from the post
-            # Write content to file.
-            self.writeContent(f, content, format)
-            f.close()
+        [self.writePost(post, format) for post in posts]
+
+    def writePost(self, post, format):
+        """
+        Fetch a single post and write it to file.
+        """
+        assert int(post.id.strip()) > 0, "Post must have an id"
+
+        title = post.title.encode('utf-8')
+        terms = post.terms
+        logging.debug("Downloading : {0}".format(title))
+
+        content = post.content.encode('utf-8') 
+        postDir = self.titleToBlogDir(title)
+
+        # Create directory for this filename in blogDir.
+        if not os.path.isdir(postDir):
+            os.makedirs(postDir)
+
+        # Good now for this post, we have directory. Download its content in
+        # content.md file.
+        fileName = os.path.join(postDir, 'content.md')
+        fileHtml2 = os.path.join(postDir, 'content.html')
+
+        f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
+        htmlF = codecs.open(fileHtml2, "w", encoding='utf-8', errors='ignore')
+
+        f.write("~~~~ \n")
+        f.write("title: ")
+        f.write(title)
+        f.write("\ntype: " + post.post_type)
+        f.write("\nstatus: " + post.post_status)
+        f.write("\nid: " + post.id)
+        cats = []
+        tags = []
+        for t in terms :
+            if t.taxonomy == 'post_tag':
+                tags.append(t.name)
+            elif t.taxonomy == 'category':
+                cats.append(t.name)
+            else:
+                cats.append(t.name)
+        if tags:
+            for t in tags:
+                f.write('\ntag: {0}'.format(t)) 
+        if cats:
+            for c in cats:
+                f.write('\ncategory: {0}'.format(c))
+        f.write('\n')
+        f.write("~~~~\n\n")
+        # TODO: Get links from the post
+        # Write content to file.
+        self.writeContent(f, content, format)
+        self.writeContent(htmlF, content, "html")
+
+        f.close()
+        htmlF.close()
     
     def run(self, args):
         # Getting command line arguments   

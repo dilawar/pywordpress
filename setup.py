@@ -20,7 +20,11 @@ setup(
         , author = 'Dilawar Singh'
         , author_email = 'dilawars@iitb.ac.in'
         , requires = ['pandoc', 'Python (>=2.6)']
-        , packages=['wordpress', 'wordpress_xmlrpc', 'wordpress_xmlrpc.methods']
+        , packages=['wordpress'
+            , 'wordpress_xmlrpc'
+            , 'wordpress_xmlrpc.methods'
+            , 'text'
+            ]
         , include_package_data = True
         , classifiers = [
             'Development Status :: 5 - Production/Stable',
