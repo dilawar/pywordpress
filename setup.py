@@ -8,9 +8,9 @@ def read(*paths):
         return f.read()
 
 setup(
-        name='pywordpress'
+        name='twordpress'
         , version='0.1.0'
-        , description='Client to manage your wordpress.org blog'
+        , description='A terminal client to manage your wordpress.org blog'
         , long_description=(
             read('README.rst') + '\n\n' +
             read('HISTORY.rst') + '\n\n' +
