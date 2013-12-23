@@ -19,9 +19,9 @@ setup(
         , licence = 'GNU-GPL'
         , author = 'Dilawar Singh'
         , author_email = 'dilawars@iitb.ac.in'
-        , py_modules=['pywordpress']
+        , requires = ['pandoc', 'Python (>=2.6)']
+        , packages=['wordpress', 'wordpress_xmlrpc', 'wordpress_xmlrpc.methods']
         , include_package_data = True
-        , packages=find_packages(exclude=['tests'])
         , classifiers = [
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Wordpress Users',
