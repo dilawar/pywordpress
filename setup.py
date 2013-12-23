@@ -9,10 +9,11 @@ def read(*paths):
 
 setup(
         name='twordpress'
-        , version='0.1.1'
+        , version='0.1.2'
         , description='A command-line tool to manage your blogs on wordpress.'
         , long_description=(
             read('info.html') 
+            )
         , url = 'https://github.com/dilawar/pywordpress'
         , author = 'Dilawar Singh'
         , author_email = 'dilawars@iitb.ac.in'
