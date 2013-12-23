@@ -17,21 +17,21 @@ from wordpress_xmlrpc.methods import media, posts
 import argparse
 import os
 import re
-import codecs
 import errno
 import difflib 
 import subprocess
 import logging
 import text.formatter as formatter
+from debug import printDebug
 
 class Wordpress:
     def __init__(self):
         self.blogDir = ''
         self.wp = None
-        logging.basicConfig(filename='wordpress.log',level=logging.DEBUG)
+        logging.basicConfig(filname='.wordpress.log')
     
     def newPostToWordpress(self, postName):
-        print("-> You are going to create a new post!")
+        printDebug("STEP", "You are going to create a new post!")
         post = WordPressPost()
         post.id = self.wp.call(NewPost(post))
         ## get the text of new post
@@ -45,11 +45,12 @@ class Wordpress:
             logging.debug("Error was {0}".format(e))
 
         logging.info('Post is sent successfully')
+        printDebug("INFO", "Post sent successfully")
 
         # Now download the sent post and save it.
         postNew = self.wp.call(GetPost(post.id))
         self.writePosts([postNew])
-        print("= You should now delete : {0}.".format(postName))
+        printDebug("ADVICE", "You should now delete : {0}.".format(postName))
         return 0
     
     def fetchWpPosts(self, postsToFetch):
@@ -232,6 +233,7 @@ class Wordpress:
         title = post.title.encode('utf-8')
         terms = post.terms
         logging.debug("Downloading : {0}".format(title))
+        printDebug("INFO", "Downloading {0}".format(title))
 
         content = post.content.encode('utf-8') 
         postDir = self.titleToBlogDir(title)
@@ -245,39 +247,36 @@ class Wordpress:
         fileName = os.path.join(postDir, 'content.md')
         fileHtml2 = os.path.join(postDir, 'content.html')
 
-        f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
-        htmlF = codecs.open(fileHtml2, "w", encoding='utf-8', errors='ignore')
+        with open(fileName, "w") as f:
+            f.write("~~~~ \n")
+            f.write("title: ")
+            f.write(title)
+            f.write("\ntype: " + post.post_type)
+            f.write("\nstatus: " + post.post_status)
+            f.write("\nid: " + post.id)
+            cats = []
+            tags = []
+            for t in terms :
+                if t.taxonomy == 'post_tag':
+                    tags.append(t.name)
+                elif t.taxonomy == 'category':
+                    cats.append(t.name)
+                else:
+                    cats.append(t.name)
+            if tags:
+                for t in tags:
+                    f.write('\ntag: {0}'.format(t)) 
+            if cats:
+                for c in cats:
+                    f.write('\ncategory: {0}'.format(c))
+            f.write('\n')
+            f.write("~~~~\n\n")
+            # TODO: Get links from the post
+            # Write content to file.
+            self.writeContent(f, content, format)
 
-        f.write("~~~~ \n")
-        f.write("title: ")
-        f.write(title)
-        f.write("\ntype: " + post.post_type)
-        f.write("\nstatus: " + post.post_status)
-        f.write("\nid: " + post.id)
-        cats = []
-        tags = []
-        for t in terms :
-            if t.taxonomy == 'post_tag':
-                tags.append(t.name)
-            elif t.taxonomy == 'category':
-                cats.append(t.name)
-            else:
-                cats.append(t.name)
-        if tags:
-            for t in tags:
-                f.write('\ntag: {0}'.format(t)) 
-        if cats:
-            for c in cats:
-                f.write('\ncategory: {0}'.format(c))
-        f.write('\n')
-        f.write("~~~~\n\n")
-        # TODO: Get links from the post
-        # Write content to file.
-        self.writeContent(f, content, format)
-        self.writeContent(htmlF, content, "html")
-
-        f.close()
-        htmlF.close()
+        with open(fileHtml2, "w") as f:
+            self.writeContent(f, content, "html")
     
     def run(self, args):
         # Getting command line arguments   
