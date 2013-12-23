@@ -19,7 +19,10 @@ setup(
         , licence = 'GNU-GPL'
         , author = 'Dilawar Singh'
         , author_email = 'dilawars@iitb.ac.in'
-        , requires = ['pandoc', 'Python (>=2.6)']
+        , requires = ['Python (>=2.6)']
+        , extra_requires = {
+            'markdown' : ["pandoc", "markdown"]
+            }
         , packages=['wordpress'
             , 'wordpress_xmlrpc'
             , 'wordpress_xmlrpc.methods'
