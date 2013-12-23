@@ -216,7 +216,7 @@ class Wordpress:
         elif format in ["markdown", "md"]:
             logging.info("Writing markdown format")
             content = formatter.htmlToMarkdown(content)
-        fH.write(content)
+        fH.write(content.encode('utf-8'))
     
     
     def writePosts(self, posts, format="markdown"):

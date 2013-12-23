@@ -6,7 +6,7 @@ import html2text
 # check if pandoc exists
 panDoc = True
 try:
-    subprocess.call(["pandoc", '--version'], shell=False
+    subprocess.call(["pandoc1", '--version'], shell=False
             , stdout=subprocess.PIPE
             , stdin=subprocess.PIPE
             )
@@ -16,6 +16,9 @@ except OSError:
 if not panDoc:
     import text.html2text as html2text
     import markdown 
+
+def decodeText(text):
+    return text.decode('utf-8')
 
 def markdownToHtml(content, convertor='pandoc'):
     global panDoc
@@ -27,11 +30,12 @@ def markdownToHtml(content, convertor='pandoc'):
                 )
         p.stdin.write(content)
         content = p.communicate()[0]
-        return content
+        return decodeText(content)
     # else use inbuild html2text.py 
     else:
         h = html2text.HTML2Text()
-        return h.handle(content)
+        content = h.handle(content)
+        return decodeText(content)
 
 
 def htmlToMarkdown(content, convertor='pandoc'):
@@ -44,10 +48,10 @@ def htmlToMarkdown(content, convertor='pandoc'):
                 )
         p.stdin.write(content)
         content = p.communicate()[0]
-        return content
+        return decodeText(content)
     # Use markdown package to convert markdown to html
     else:
-        return markdown.markdown(content)
+        return markdown.markdown(decodeText(content))
 
 def htmlToHtml(html):
-    return html
+    return decodeText(html)
