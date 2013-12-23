@@ -2,6 +2,7 @@ import subprocess
 import os 
 import sys
 import html2text 
+import logging
 
 # check if pandoc exists
 panDoc = True
@@ -11,6 +12,7 @@ try:
             , stdin=subprocess.PIPE
             )
 except OSError:
+    logging.debug("Pandoc not found")
     panDoc = False
     
 if not panDoc:
@@ -23,6 +25,7 @@ def decodeText(text):
 def markdownToHtml(content, convertor='pandoc'):
     global panDoc
     if panDoc:
+        logging.debug("Using pandoc for markdown -> html")
         cmd = ["pandoc", "-f", "markdown", "-t", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
@@ -33,14 +36,14 @@ def markdownToHtml(content, convertor='pandoc'):
         return decodeText(content)
     # else use inbuild html2text.py 
     else:
-        h = html2text.HTML2Text()
-        content = h.handle(content)
-        return decodeText(content)
+        logging.debug("Using python-markdown for html -> markdown")
+        return markdown.markdown(decodeText(content))
 
 
 def htmlToMarkdown(content, convertor='pandoc'):
     global panDoc
-    if panDoc:
+    if panDoc and convertor == 'pandoc':
+        logging.debug("using pandoc for html -> markdown")
         cmd = ["pandoc", "-t", "markdown", "-f", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
@@ -51,7 +54,10 @@ def htmlToMarkdown(content, convertor='pandoc'):
         return decodeText(content)
     # Use markdown package to convert markdown to html
     else:
-        return markdown.markdown(decodeText(content))
+        logging.debug("Using html2text for html -> markdown")
+        h = html2text.HTML2Text()
+        content = h.handle(decodeText(content))
+        return content
 
 def htmlToHtml(html):
     return decodeText(html)

@@ -210,6 +210,8 @@ class Wordpress:
         return
     
     def writeContent(self, fH, content, format):
+        """Write content to file.
+        """
         if format == "html":
             logging.info("Writing html content")
             content = formatter.htmlToHtml(content) 
@@ -237,7 +239,7 @@ class Wordpress:
                 , title
                 )
 
-        content = post.content.encode('utf-8') 
+        content = post.content.encode('utf-8')
         postDir = self.titleToBlogDir(title)
 
         # Create directory for this filename in blogDir.
