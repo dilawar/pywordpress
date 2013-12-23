@@ -1,0 +1,373 @@
+DEBUG:root:Downloading : Managing wordpress blog with python inside terminal
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Managing music using mpd/mpc
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : How much cheating students do in their assignments? Some data from Electrical Department, IIT Bombay, India
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : A Negative Impossibility Theorem
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Experiences with Linux based Operating Systems 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Downloading applications in NCBS Bangalore 
+INFO:root:Writing markdown format
+DEBUG:root:Downloading : Managing wordpress blog with python inside terminal
+INFO:root:Writing markdown format
+DEBUG:root:Downloading : Managing wordpress blog with python inside terminal
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Managing music using mpd/mpc
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : How much cheating students do in their assignments? Some data from Electrical Department, IIT Bombay, India
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : A Negative Impossibility Theorem
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Experiences with Linux based Operating Systems 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Downloading applications in NCBS Bangalore 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Notes on Synapses 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Python front-end for Noweb literate tool 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Moving these notes to dilawar.github.io 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Hangman in Haskell
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Declarative languages and biological systems 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : The game of "Bulls and Cows" : A python implementation 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Mail server info of National Center for Biological Sciences (NCBS) Bangalore
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Lobbying for Haskell 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Cuts in graph 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Some of my faviorite terminal based applications
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Calculating max-flow using push-relabel method
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Notes on boost::graph library
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Ranger : A great terminal based file-browser 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Configuring mutt to display 'attachment missing warning'
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : A wordpress client to post and update blogs from command line
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Calculate the gcd of more than two numbers 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Scripts to setup transparent proxies (authentication with http) inside IIT Bombay 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Pass Notes : VHDL
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Permanently deleting large files from git repository
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Tired and irritant eyes while programming : Looking for an eye drop 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Using networking effectively inside IIT Bombay : Setting up a private git repository
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Using networking effectively inside IIT 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Using networking effectively inside IIT Bombay : SSHing to hostel room 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Search users on iitb-ldap 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Solving PDE's with electrical circuit analogy 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Easiest way (the command line way) to record your desktop (screencast) in linux 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Debugging : A case for ncurses-based console 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Disable gpg GUI asking for paraphrase
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : A simple parser in python-ply 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Partial inductance 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : log4cxx: No appender could be found for logger (somelogger) 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : CMake with Flex and Bison (Yacc) : ADD_CUSTOM_COMMAND
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Getting caught in a loop while traversing a (directed acyclic) graph
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : LD_LIBRARY_PATH is not working in Makefile
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Processing XML files 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : IIT Bombay DC-Hub Network and Hub's IP Address
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Lambda function is a great way to define a function inside a function in C++
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Delete a file or directory completely from git repository
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Mutt with gmail like labelling
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Can't solve 'no medium found on /dev/sr0' ?
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Quine McClusky algorithm in Haskell
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Some theorems of boolean algebra 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Essay on Sir Chimanlala Setalvad
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Clean up mess in terminal after ncurses crashes
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : A circuit containing multiplexer drawn using tikz (pgf)
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Some notes on matroids 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Python like string split in Haskell
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Snakes : Python library for petri nets
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Checking plagiarism in assignment (tested with VHDL language)
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Using Python to download submitted assignments from Moodle
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Problem with vector of pointers to struct in C++
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Problem with vector of pointers to struct in C++
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Debugger Insight (gdb) having problems with tcl/tk ?
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Djikestra Shortest Path Algorithm : LEDA performance 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Djikestra Shortest Path Algorithm : LEDA performance 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Djikestra Shortest Path Algorithm : LEDA performance 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Djikestra Shortest Path Algorithm : LEDA performance 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Langford pairs in Haskell
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Learning Lamda Terms Reduction Using a Tool
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Hangman game in Haskell
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Circuit drawing using Tikz (pgf)
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Check Primality of a number in Haskell
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : A very primitive implementation of two basic Binary decision diagrams
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : International Math Olympiad 2011 - Problem 05
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : getmail4 problem : invalid syntax in multidestination
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : A small note in group theory
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Parallel Computation in Haskell
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Objects in Python : Some Notes
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Floating point Arithmetic Disasters 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Biological systems and State machine
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : CLISP : Reading a file
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : CLISP in Batch Mode
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Lossless Transmission Lines
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Barrel Shifter in VHDL
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Open source resources on Verilog
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Lobbying for Logarithms
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Existence of universal gates (operation)
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Lobbying for Logarithms
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Brief history of complex poles
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Simulation and ghdl
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Emails with terminal - Mutt with getmail and msmtp
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Use getmail to read only new messages
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Looking for collaboration 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Testing memories for faults
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Notes : Graph and Linear Systems in Laplacian Matrix 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Presentation : Formal Methods and VLSI
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : VLSI Verification - Some notes on Present and Future
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Binary Decision Diagrams and VLSI Verification
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Dynamic Programming : Few remarks
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Combinational circuits - Equivalence checking
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Why so little uniqueness?
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Some Question and Answers on Algorithms
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Binary Decision Diagrams and Combinatorial Circuits 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Test path for delays
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Kernel and Daemon
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Enumerate path in a circuit
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Operating System ?
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Read WAV file using C/C++
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Simulation of PN junction at equilibrium in Scilab
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Linear Feedback Shift Register : C++ implementation
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : A Simple Circuit Simulator in Scilab
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Elementary Data Structures
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Overview of Faults in VLSI
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : 
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Natural Numbers : Definition
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Temporary-Post-Used-For-Style-Detection-Title-571171033
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : My Other Blogs
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : My favourite poems
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : Village Life
+INFO:root:Writing markdown format
+INFO:root:Writing html content
+DEBUG:root:Downloading : About
+INFO:root:Writing markdown format
+INFO:root:Writing html content
