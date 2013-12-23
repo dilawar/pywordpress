@@ -36,7 +36,7 @@ setup(
             ],
         entry_points="""
         [console_scripts]
-        twordpress=wordpress:main
+        twordpress=wordpress.main:main
         """
         )
 

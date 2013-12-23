@@ -293,8 +293,7 @@ def run(args):
         fetchPosts(posts, wp)
         
 
-
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="Wordpress client")
     parser.add_argument('--config', metavar="config"
         , default = os.environ['HOME'] + "/.wordpressrc"
@@ -320,3 +319,7 @@ if __name__ == "__main__":
         )
     args = parser.parse_args()
     run(args) 
+
+if __name__ == "__main__":
+    main()
+
