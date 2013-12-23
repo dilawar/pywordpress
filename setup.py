@@ -1,6 +1,6 @@
 import os
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 def read(*paths):
     """Build a file path from *paths* and return the contents."""
@@ -9,7 +9,7 @@ def read(*paths):
 
 setup(
         name='twordpress'
-        , version='0.1.0'
+        , version='0.1.1'
         , description='A terminal client to manage your wordpress.org blog'
         , long_description=(
             read('README.rst') + '\n\n' +

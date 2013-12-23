@@ -29,7 +29,6 @@ def main():
     args = parser.parse_args()
     wpObj = Wordpress()
     wpObj.run(args)
-
 if __name__ == "__main__":
     main()
 

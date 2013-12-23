@@ -28,6 +28,7 @@ class Wordpress:
     def __init__(self):
         self.blogDir = ''
         self.wp = None
+        logging.basicConfig(filename='wordpress.log',level=logging.DEBUG)
     
     def newPostToWordpress(self, postName):
         print("-> You are going to create a new post!")
@@ -209,8 +210,10 @@ class Wordpress:
     
     def writeContent(self, fH, content, format):
         if format == "html":
+            logging.info("Writing html content")
             content = formatter.htmlToHtml(content) 
         elif format in ["markdown", "md"]:
+            logging.info("Writing markdown format")
             content = formatter.htmlToMarkdown(content, "pandoc")
         fH.write(content)
     
@@ -294,7 +297,7 @@ class Wordpress:
          ## Now cleate a client 
         p = os.environ.get('http_proxy')
         if p is not None:
-            print("[INFO] Using http_proxy")
+            print("+ Using http_proxy")
             if 'http://' in p :
                 p = p.replace('http://', '')
             else:pass
