@@ -9,7 +9,7 @@ def read(*paths):
 
 setup(
         name='twordpress'
-        , version='0.1.2'
+        , version='0.1.3'
         , description='A command-line tool to manage your blogs on wordpress.'
         , long_description=(
             read('README.rst') 
