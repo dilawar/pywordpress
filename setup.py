@@ -10,17 +10,14 @@ def read(*paths):
 setup(
         name='twordpress'
         , version='0.1.1'
-        , description='A terminal client to manage your wordpress.org blog'
+        , description='A command-line tool to manage your blogs on wordpress.'
         , long_description=(
-            read('README.rst') + '\n\n' +
-            read('HISTORY.rst') + '\n\n' +
-            read('AUTHORS.rst'))
+            read('info.html') 
         , url = 'https://github.com/dilawar/pywordpress'
-        , licence = 'GNU-GPL'
         , author = 'Dilawar Singh'
         , author_email = 'dilawars@iitb.ac.in'
         , requires = ['Python (>=2.6)']
-        , extra_requires = {
+        , extras_require = {
             'markdown' : ["pandoc", "markdown"]
             }
         , packages=['wordpress'
@@ -31,7 +28,7 @@ setup(
         , include_package_data = True
         , classifiers = [
             'Development Status :: 5 - Production/Stable',
-            'Intended Audience :: Wordpress Users',
+            'Intended Audience :: Developers',
             'Natural Language :: English',
             'License :: OSI Approved :: MIT License',
             'Operating System :: OS Independent',

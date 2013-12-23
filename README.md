@@ -1,7 +1,7 @@
 twordpress
 ===========
 
-A command line client to manage your blogs on ``wordpress.com``.
+A command line tool to manage your blogs on ``wordpress.com``.
 
 1. Configuration file 
 ---------------------
