@@ -12,11 +12,12 @@ setup(
         , version='0.1.2'
         , description='A command-line tool to manage your blogs on wordpress.'
         , long_description=(
-            read('info.html') 
+            read('README.rst') 
             )
         , url = 'https://github.com/dilawar/pywordpress'
         , author = 'Dilawar Singh'
         , author_email = 'dilawars@iitb.ac.in'
+        , 
         , requires = ['Python (>=2.6)']
         , extras_require = {
             'markdown' : ["pandoc", "markdown"]
