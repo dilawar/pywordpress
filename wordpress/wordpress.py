@@ -23,12 +23,12 @@ import subprocess
 import logging
 import text.formatter as formatter
 from debug import printDebug
+logging.basicConfig(filname='.wordpress.log')
 
 class Wordpress:
     def __init__(self):
         self.blogDir = ''
         self.wp = None
-        logging.basicConfig(filname='.wordpress.log')
     
     def newPostToWordpress(self, postName):
         printDebug("STEP", "You are going to create a new post!")
@@ -175,12 +175,15 @@ class Wordpress:
     
     def updatePost(self, post, txt, format="markdown") :
         # Check if there is no id.
+
         pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
         metadata = pat.search(txt).group('metadata')
         content = re.sub(pat, "", txt)
         assert len(metadata) > 0
     
         post = self.appendMetadataToPost(metadata, post)
+
+        printDebug("STEP", "Updating post", post.title)
         assert post.post_type
         # content 
         if content :
@@ -194,7 +197,7 @@ class Wordpress:
         if format == "html":
             pass
         elif format in ["markdown", "md"]:
-            content = formatter.htmlToMarkdown(content)
+            content = formatter.markdownToHtml(content)
             post.content = content
         else:
             post.content = content
@@ -207,7 +210,7 @@ class Wordpress:
             logging.debug("[DEBUG] I was trying to update but failed")
             logging.debug(" + You sure that this post exist on the blog.")
             logging.debug("Error was : {0}".format(e))
-        return
+            raise UserWarning, "Failed to update post", e
     
     def writeContent(self, fH, content, format):
         """Write content to file.

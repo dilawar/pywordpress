@@ -7,7 +7,7 @@ import logging
 # check if pandoc exists
 panDoc = True
 try:
-    subprocess.call(["pandoc1", '--version'], shell=False
+    subprocess.call(["pandoc", '--version']
             , stdout=subprocess.PIPE
             , stdin=subprocess.PIPE
             )
@@ -55,6 +55,7 @@ def htmlToMarkdown(content, convertor='pandoc'):
     # Use markdown package to convert markdown to html
     else:
         logging.debug("Using html2text for html -> markdown")
+        printDebug("INFO", "html2text for html -> markdown")
         h = html2text.HTML2Text()
         content = h.handle(decodeText(content))
         return content
