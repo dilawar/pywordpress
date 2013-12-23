@@ -15,9 +15,11 @@ setup(
             read('README.rst') 
             )
         , url = 'https://github.com/dilawar/pywordpress'
+        , licence = 'GNU-GPL'
         , author = 'Dilawar Singh'
         , author_email = 'dilawars@iitb.ac.in'
-        , 
+        , maintainer = 'Dilawar Singh'
+        , maintainer_email = 'dilawars@iitb.ac.in'
         , requires = ['Python (>=2.6)']
         , extras_require = {
             'markdown' : ["pandoc", "markdown"]
@@ -31,14 +33,11 @@ setup(
         , classifiers = [
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Developers',
-            'Natural Language :: English',
-            'License :: OSI Approved :: MIT License',
-            'Operating System :: OS Independent',
+            'Environment :: Console',
             'Programming Language :: Python',
             'Programming Language :: Python :: 2',
             'Programming Language :: Python :: 2.6',
             'Programming Language :: Python :: 2.7',
-            'Topic :: Software Development :: Libraries :: Python Modules',
             ],
         entry_points="""
         [console_scripts]
