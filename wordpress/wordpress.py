@@ -265,8 +265,11 @@ def run(args):
     password = cfg.get(blogId, 'password')
      ## Now cleate a client 
     p = os.environ.get('http_proxy')
-    if p is not None and 'http://' in p :
-        p = p.replace('http://', '')
+    if p is not None:
+        print("[INFO] Using http_proxy")
+        if 'http://' in p :
+            p = p.replace('http://', '')
+        else:pass
         wp = Client(blog, user, password, proxy=p)
     else:
         wp = Client(blog, user, password)
