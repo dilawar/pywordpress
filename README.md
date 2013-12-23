@@ -1,68 +1,74 @@
-pywordpress
+twordpress
 ===========
 
-A command line Wordpress client to post and edit posts
+A command line client to manage your blogs on ``wordpress.com``.
 
 1. Configuration file 
 ---------------------
 Create a file ~/.wordpressrc with following entry 
 
     # This file must be saved as ~/.wordpressrc 
-    [blog]
+    [blog0]
     # Url of blog. 
     url=dilawarnotes.wordpress.com
     # Wordpress username
     username=dilawars
     password=mypassword
+    [blog1]
+    url=blog2.wordpress.com
+    username=gabbar
+    password=thakur_ke_per_katne_the
 
 2. Dependencies 
 ----------------
 
-  [Download and install this
+  [A fork of this
   library](https://github.com/maxcutler/python-wordpress-xmlrpc/blob/master/docs/index.rst).
-  It may be available on most of the linux distributions. It does not work when
-  networks are behind proxy (such as mine at IIT Bombay). You can set-up
-  transparent-proxies (one of my repository have scripts) to overcome this.
-  Author of this library has indicated that he will support proxies in
-  next release. 
+  is included in this version. You need ``pandoc`` installed. This application
+  turn ``html`` to ``markdown`` format and vice-versa. I am planning to replace
+  pandoc with something more pythonic.
+
+  Proxy support is added recently to ``python-wordpress-xmlrcp``. It reads
+  environment variable ``http_proxy``. If you are behind proxied network, then
+  export ``http_proxy`` variable in your bash and we are good to go.
+  
 
 3. Fetch posts 
 --------------
   
-    $./wordpress.py --fech all 
+    $twordpress --blog 1 --fetch all 
+    $twordpress --blog 0 --fetch "Python is awesome"
 
-  And wait while it downloades all of your blogs.
+First command will download all posts and pages from ``blog1``. And second will
+download all posts which matches the given query from ``blog0``. Currently it
+does not download media.
   
-  It will create a directory named after your blog and save all posts
-  in that directory. Formatting is creepy. Open a file and see if you like it.
-
-  You can fetch only one blog also. Pass the name of blog to script 
-    
-    $./wordpress.py --fetch "My post with awesome title"
-
-  It will fetch all posts which are similar to this title. Note that, fetching a
-  single post or all of them takes same time. We only filter once all posts are
-  fetched. 
+Each post gets its own directory and a file ``conetent.md`` is created. Edit
+this file and run the following command to update the post.
 
 4. Updating post 
 ----------------
 
-  You can edit file and send it back to Wordpress :
+    $twordpress --blog blog_id_in_int --update path_to_new_content.md 
 
-    $./wordpress.py --update filename.blog 
-
-5. Creat or update a post 
+5. Create new post 
 ----------------------
+    
+    $twordpress --blog 1 --post new_blog.md 
 
-  You have to write a file in similar format as the blogs you got after fetch.
-  You can discard the <ID> </ID> field. It will append a <ID> </ID> line to your
-  blog and save it in the same directory in which you have downloaded other
-  blogs. 
+The new blog is written in markdown format but a meta-data has to be prefixed.
+This is how your blog file should look like.
 
-    $./wordpress.py --post file.blog 
+     ~~~~~
+     title: This is title of my awesome post
+     status: publish
+     tags: some awesome tag
+     category:
+     ~~~~~~
 
-  You can now delete file.blog .
+     Here is content of blog in markdown format.
+
+     Too much has already been written. This ends my blog.
 
 
-See repo for some poorly written blogs fetched from by blog.
 
