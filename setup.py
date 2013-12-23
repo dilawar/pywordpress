@@ -34,6 +34,10 @@ setup(
             'Programming Language :: Python :: 2.7',
             'Topic :: Software Development :: Libraries :: Python Modules',
             ],
+        entry_points="""
+        [console_scripts]
+        twordpress=wordpress:main
+        """
         )
 
 
