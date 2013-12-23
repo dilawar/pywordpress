@@ -3,7 +3,7 @@
 __version__ = "3.200.3"
 __author__ = "Aaron Swartz (me@aaronsw.com)"
 __copyright__ = "(C) 2004-2008 Aaron Swartz. GNU GPL 3."
-__contributors__ = ["Martin 'Joey' Schulze", "Ricardo Reyes", "Kevin Jay North"]
+__contributors__ = ["Dilawar Singh", "Martin 'Joey' Schulze", "Ricardo Reyes", "Kevin Jay North"]
 
 # TODO:
 #   Support decoded entities with unifiable.

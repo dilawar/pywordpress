@@ -24,273 +24,284 @@ import subprocess
 
 blogDir = "./blogs"
 
-def newPostToWordpress(wp, postName):
-    print("[I] You are going to create a new post ...")
-    post = WordPressPost()
-    post.id = wp.call(NewPost(post))
-    ## get the text of new post
-    fileName = postName
-    with open(fileName, "r") as f :
-        txt = f.read()
-    updatePost(post, wp, txt) 
-    postNew = wp.call(GetPost(post.id))
-    fetchPosts([postNew], wp)
-    print("== You should now delete : {0}.".format(postName))
-    return 0
-
-def fetchWpPosts(wp, postsToFetch):
-    """
-    Fetch given posts from wordpress.
-    """
-     
-    # Create blog directory if not exists.
-    try :
-        os.makedirs(blogDir)
-    except OSError as exception :
-        if exception.errno != errno.EEXIST :
-            raise 
+class Wordpress:
+    def __init__(self):
+        self.blogDir = ''
+        self.wp = None
     
-    posts = wp.call(GetPosts( {'number': 200, 'offset': 0}))
-    pages = wp.call(GetPosts({'post_type' : 'page'}))
-    if  postsToFetch == "all" :
-        fetchPosts(posts, wp)
-        fetchPosts(pages, wp)
-    elif len(postsToFetch) > 2 :
-        # search for a post with similar titles.
-        matchedPosts = list()
-        for post in posts :
-            title = post.title 
-            match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
-            if match > 0.65 :
-                matchedPosts.append(post)
-        fetchPosts(matchedPosts, wp)
-        # Why not pages.
-        matchedPages = list()
-        for page in pages :
-            title = page.title 
-            match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
-            if match > 0.65 :
-                matchedPages.append(post)
-        fetchPosts(matchedPages,  wp)
-  
-
-def getTitle(txt):
-    titleRegex = re.compile("title:(?P<title>.+)", re.IGNORECASE)
-    m = titleRegex.search(txt)
-    if m :
-        title = m.groupdict()['title']
-    else :
-        print("[W] Empty title!")
-        title = ""
-        
-    return title.strip()
-  
-def titleToBlogDir(title):
-    global blogDir
-    fileName = title.replace(" ","_").replace(':', '-').replace('(', '')
-    fileName = fileName.replace("/", "_").replace(')', '')
-    fileName = os.path.join(blogDir, fileName)
-    return fileName
-  
-def appendMetadataToPost(metadata, post):
-    """
-    Append metadata to post.
-    """
-    try:
-        id = post.id 
-    except AttributeError:
-        idregex = re.compile(r'id:(?P<id>.+)', re.IGNORECASE)
-        m = idregex.search(metadata) 
-        if not m :
-            raise UserWarning, "[Warning] This looks like a new post, use --post option"
-        id = m.group('id').strip()
-
-    post.id = id
-    title = getTitle(metadata)
-    post.title = title.strip()
-
-    # type wordpress.
-    pat = re.compile(r'type:(?P<type>.+)', re.IGNORECASE)
-    m = pat.search(metadata)
-    if not m:
-        print("Warnng. This post has no type. Assuming post")
-        post.post_type = 'post'
-    else:
-        post.post_type = m.group('type').strip()
-
-    # status 
-    statusRegex = re.compile("status:(?P<status>.+)", re.IGNORECASE) 
-    m = statusRegex.search(metadata)
-    if m :
-        status = m.groupdict()['status']
-        post.post_status = status.strip()
-    else :
-        print("[W] Post with uncertain status. Default to publish")
-        post.post_status = "publish"
-    termsAndCats = dict()
-
-    # tags 
-    tagRegex = re.compile("tag:(?P<name>.+)", re.IGNORECASE)
-    ms = tagRegex.findall(metadata)
-    tags = list()
-    for m in ms :
-        name = m.strip()
-        tags.append(name)
-    termsAndCats['post_tag'] = tags 
-  
-    # categories
-    catRegex = re.compile("category:(?P<cat>.+)", re.DOTALL)
-    mm = catRegex.findall(metadata)
-    cats = list()
-    for m in mm :
-        cat = m.strip()
-        cats.append(cat)
-    termsAndCats['category'] = cats
-    post.terms_names = termsAndCats 
-    return post
-
-def updatePost(post, wp, txt, format="markdown") :
-    # Check if there is no id.
-    pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
-    metadata = pat.search(txt).group('metadata')
-    content = re.sub(pat, "", txt)
-    assert len(metadata) > 0
-
-    post = appendMetadataToPost(metadata, post)
-    assert post.post_type
-    # content 
-    if content :
-        if len(content.strip()) == 0 :
-            print("[E] : No content in file.")
-            return 
-    else :
-        print("[W] : Post with empty content.")
-        content = ""
-
-    if format == "html":
-        pass
-    elif format in ["markdown", "md"]:
-        cmd = ["pandoc", "-f", "markdown", "-t", "html"]
-        p = subprocess.Popen(cmd
-                , stdin = subprocess.PIPE
-                , stdout = subprocess.PIPE
-                )
-        p.stdin.write(content)
-        post.content = p.communicate()[0]
-    else:
-        post.content = content
-
-    print(("[I] Sending post : {0} : {1}.".format(post.id, post.title)))
-    try:
-        wp.call(EditPost(post.id, post))
-    except Exception as e:
-        print("[DEBUG] I was trying to update but failed")
-        print(" + You sure that this post exist on the blog.")
-        print("Error was : {0}".format(e))
-    return
-
-def writeContent(fH, content, format):
-    if format == "html":
-        fH.write(content)
-    elif format in ["markdown", "md"]:
-        p = subprocess.Popen(["pandoc", "-f", "html", "-t", "markdown"]
-            , stdin=subprocess.PIPE
-            , stdout=fH
-            )
-        p.communicate(content)
-
-
-def fetchPosts(posts, wp, format="markdown"):
-    """ Fetch all posts in list posts.
-    """
-    global blogDir
-    for post in posts :
-        assert int(post.id.strip()) > 0, "Post must have an id"
-        title = post.title.encode('utf-8')
-        terms = post.terms
-        print(("[I] : Downloading : {0}".format(title)))
-        content = post.content.encode('utf-8') 
-        postDir = titleToBlogDir(title)
-        # Create directory for this filename in blogDir.
-        if not os.path.isdir(postDir):
-            os.makedirs(postDir)
-
-        # Good now for this post, we have directory. Download its content in
-        # content.md file.
-        fileName = os.path.join(postDir, 'content.md')
-        f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
-        f.write("~~~~ \n")
-        f.write("title: ")
-        f.write(title)
-        f.write("\ntype: " + post.post_type)
-        f.write("\nstatus: " + post.post_status)
-        f.write("\nid: " + post.id)
-        cats = []
-        tags = []
-        for t in terms :
-            if t.taxonomy == 'post_tag':
-                tags.append(t.name)
-            elif t.taxonomy == 'category':
-                cats.append(t.name)
-            else:
-                cats.append(t.name)
-        if tags:
-            for t in tags:
-                f.write('\ntag: {0}'.format(t)) 
-        if cats:
-            for c in cats:
-                f.write('\ncategory: {0}'.format(c))
-        f.write('\n')
-        f.write("~~~~\n\n")
-        # TODO: Get links from the post
-        # Write content to file.
-        writeContent(f, content, format)
-        f.close()
-
-def run(args):
-    # Getting command line arguments   
-    global blogDir 
-    configFilePath = args.config
-    cfg = RawConfigParser()
-    with open(configFilePath, "r") as configFile :
-        cfg.readfp(configFile)
-    blogId = "blog"+str(args.blog)
-    blog = cfg.get(blogId, 'url')
-    blog = blog.replace("www.", "")
-    blog = blog.replace("http://", "")
-    blogDir = blog.replace(".", "DOT")
-    blog = blog.replace("/xmlrpc.php", "")
-    blog = "http://"+blog+"/xmlrpc.php"
-    user = cfg.get(blogId,'username')
-    password = cfg.get(blogId, 'password')
-     ## Now cleate a client 
-    p = os.environ.get('http_proxy')
-    if p is not None:
-        print("[INFO] Using http_proxy")
-        if 'http://' in p :
-            p = p.replace('http://', '')
-        else:pass
-        wp = Client(blog, user, password, proxy=p)
-    else:
-        wp = Client(blog, user, password)
-    # Send a file to wordpress.
-    if args.update :
-        fileName = args.update
-        if not os.path.exists(fileName):
-            print(("File {0} doesn't exists.. Existing...".format(fileName)))
-            return 
-        # Open the file.
-        with open(fileName, "r") as f:
-            txt = f.read()
+    def newPostToWordpress(self, postName):
+        print("[I] You are going to create a new post ...")
         post = WordPressPost()
-        assert post is not None
-        updatePost(post, wp, txt, format="markdown") 
-    elif args.post :
-        newPostToWordpress(wp, args.post)
-    # Fetch blogs from wordpress.
-    elif args.fetch :
-        # Get all posts 
-        fetchWpPosts(wp, args.fetch)
-    else : # get recent posts 
-        posts = wp.call(GetPosts( {'post_status': 'publish'}))
-        fetchPosts(posts, wp)
+        post.id = self.wp.call(NewPost(post))
+        ## get the text of new post
+        fileName = postName
+        with open(fileName, "r") as f :
+            txt = f.read()
+        self.updatePost(post, wp, txt) 
+        postNew = self.wp.call(GetPost(post.id))
+        self.writePosts([postNew], wp)
+        print("= You should now delete : {0}.".format(postName))
+        return 0
+    
+    def fetchWpPosts(self, postsToFetch):
+        """
+        Fetch given posts from wordpress.
+        """
+         
+        # Create blog directory if not exists.
+        try :
+            os.makedirs(blogDir)
+        except OSError as exception :
+            if exception.errno != errno.EEXIST :
+                raise 
+        
+        posts = self.wp.call(GetPosts( {'number': 200, 'offset': 0}))
+        pages = self.wp.call(GetPosts({'post_type' : 'page'}))
+        if  postsToFetch == "all" :
+            self.writePosts(posts)
+            self.writePosts(pages)
+        elif len(postsToFetch) > 2 :
+            # search for a post with similar titles.
+            matchedPosts = list()
+            for post in posts :
+                title = post.title 
+                match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
+                if match > 0.65 :
+                    matchedPosts.append(post)
+            self.writePosts(matchedPosts)
+            # Why not pages.
+            matchedPages = list()
+            for page in pages :
+                title = page.title 
+                match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
+                if match > 0.65 :
+                    matchedPages.append(post)
+            self.writePosts(matchedPages)
+            
+    def getTitle(self, txt):
+        titleRegex = re.compile("title:(?P<title>.+)", re.IGNORECASE)
+        m = titleRegex.search(txt)
+        if m :
+            title = m.groupdict()['title']
+        else :
+            print("[W] Empty title!")
+            title = ""
+        return title.strip()
+      
+    def titleToBlogDir(self, title):
+        fileName = title.replace(" ","_").replace(':', '-').replace('(', '')
+        fileName = fileName.replace("/", "_").replace(')', '')
+        fileName = os.path.join(self.blogDir, fileName)
+        return fileName
+      
+    def appendMetadataToPost(self, metadata, post):
+        """
+        Append metadata to post.
+        """
+        try:
+            id = post.id 
+        except AttributeError:
+            idregex = re.compile(r'id:(?P<id>.+)', re.IGNORECASE)
+            m = idregex.search(metadata) 
+            if not m :
+                raise UserWarning, "[Warning] This looks like a new post, use --post option"
+            id = m.group('id').strip()
+    
+        post.id = id
+        title = self.getTitle(metadata)
+        post.title = title.strip()
+    
+        self.attachType(metadata, post)
+        self.attachStatus(metadata, post)
+        
+        termsAndCats = dict()
+        self.attachTags(metadata, post, termsAndCats)
+        self.attachCategories(metadata, post, termsAndCats)
+        return post
+    
+    def attachType(self, metadata, post):
+        # type wordpress.
+        pat = re.compile(r'type:(?P<type>.+)', re.IGNORECASE)
+        m = pat.search(metadata)
+        if not m:
+            print("Warnng. This post has no type. Assuming post")
+            post.post_type = 'post'
+        else:
+            post.post_type = m.group('type').strip()
+    
+    def attachStatus(self, metadata, post):
+        # status 
+        statusRegex = re.compile("status:(?P<status>.+)", re.IGNORECASE) 
+        m = statusRegex.search(metadata)
+        if m :
+            status = m.groupdict()['status']
+            post.post_status = status.strip()
+        else :
+            print("[W] Post with uncertain status. Default to publish")
+            post.post_status = "publish"
+    
+    def attachTags(self, metadata, post, termsAndCats):
+        # tags 
+        tagRegex = re.compile("tag:(?P<name>.+)", re.IGNORECASE)
+        ms = tagRegex.findall(metadata)
+        tags = list()
+        for m in ms :
+            name = m.strip()
+            tags.append(name)
+        termsAndCats['post_tag'] = tags 
+    
+    def attachCategories(self, metadata, post):
+        # categories
+        catRegex = re.compile("category:(?P<cat>.+)", re.DOTALL)
+        mm = catRegex.findall(metadata)
+        cats = list()
+        for m in mm :
+            cat = m.strip()
+            cats.append(cat)
+        termsAndCats['category'] = cats
+        post.terms_names = termsAndCats 
+    
+    def updatePost(self, post, txt, format="markdown") :
+        # Check if there is no id.
+        pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
+        metadata = pat.search(txt).group('metadata')
+        content = re.sub(pat, "", txt)
+        assert len(metadata) > 0
+    
+        post = self.appendMetadataToPost(metadata, post)
+        assert post.post_type
+        # content 
+        if content :
+            if len(content.strip()) == 0 :
+                print("[E] : No content in file.")
+                return 
+        else :
+            print("[W] : Post with empty content.")
+            content = ""
+    
+        if format == "html":
+            pass
+        elif format in ["markdown", "md"]:
+            cmd = ["pandoc", "-f", "markdown", "-t", "html"]
+            p = subprocess.Popen(cmd
+                    , stdin = subprocess.PIPE
+                    , stdout = subprocess.PIPE
+                    )
+            p.stdin.write(content)
+            post.content = p.communicate()[0]
+        else:
+            post.content = content
+    
+        print(("[I] Sending post : {0} : {1}.".format(post.id, post.title)))
+        try:
+            self.wp.call(EditPost(post.id, post))
+        except Exception as e:
+            print("[DEBUG] I was trying to update but failed")
+            print(" + You sure that this post exist on the blog.")
+            print("Error was : {0}".format(e))
+        return
+    
+    def writeContent(self, fH, content, format):
+        if format == "html":
+            fH.write(content)
+        elif format in ["markdown", "md"]:
+            p = subprocess.Popen(["pandoc", "-f", "html", "-t", "markdown"]
+                , stdin=subprocess.PIPE
+                , stdout=fH
+                )
+            p.communicate(content)
+    
+    
+    def writePosts(self, posts, format="markdown"):
+        """ Fetch all posts in list posts.
+        """
+        global blogDir
+        for post in posts :
+            assert int(post.id.strip()) > 0, "Post must have an id"
+            title = post.title.encode('utf-8')
+            terms = post.terms
+            print(("[I] : Downloading : {0}".format(title)))
+            content = post.content.encode('utf-8') 
+            postDir = self.titleToBlogDir(title)
+            # Create directory for this filename in blogDir.
+            if not os.path.isdir(postDir):
+                os.makedirs(postDir)
+    
+            # Good now for this post, we have directory. Download its content in
+            # content.md file.
+            fileName = os.path.join(postDir, 'content.md')
+            f = codecs.open(fileName, "w", encoding="utf-8", errors="ignore")
+            f.write("~~~~ \n")
+            f.write("title: ")
+            f.write(title)
+            f.write("\ntype: " + post.post_type)
+            f.write("\nstatus: " + post.post_status)
+            f.write("\nid: " + post.id)
+            cats = []
+            tags = []
+            for t in terms :
+                if t.taxonomy == 'post_tag':
+                    tags.append(t.name)
+                elif t.taxonomy == 'category':
+                    cats.append(t.name)
+                else:
+                    cats.append(t.name)
+            if tags:
+                for t in tags:
+                    f.write('\ntag: {0}'.format(t)) 
+            if cats:
+                for c in cats:
+                    f.write('\ncategory: {0}'.format(c))
+            f.write('\n')
+            f.write("~~~~\n\n")
+            # TODO: Get links from the post
+            # Write content to file.
+            self.writeContent(f, content, format)
+            f.close()
+    
+    def run(self, args):
+        # Getting command line arguments   
+        configFilePath = args.config
+        cfg = RawConfigParser()
+        with open(configFilePath, "r") as configFile :
+            cfg.readfp(configFile)
+        blogId = "blog"+str(args.blog)
+        blog = cfg.get(blogId, 'url')
+        blog = blog.replace("www.", "")
+        blog = blog.replace("http://", "")
+        self.blogDir = blog.replace(".", "DOT")
+        blog = blog.replace("/xmlrpc.php", "")
+        blog = "http://"+blog+"/xmlrpc.php"
+        user = cfg.get(blogId,'username')
+        password = cfg.get(blogId, 'password')
+         ## Now cleate a client 
+        p = os.environ.get('http_proxy')
+        if p is not None:
+            print("[INFO] Using http_proxy")
+            if 'http://' in p :
+                p = p.replace('http://', '')
+            else:pass
+            self.wp = Client(blog, user, password, proxy=p)
+        else:
+            self.wp = Client(blog, user, password)
+        # Send a file to wordpress.
+        if args.update :
+            fileName = args.update
+            if not os.path.exists(fileName):
+                print(("File {0} doesn't exists.. Existing...".format(fileName)))
+                return 
+            # Open the file.
+            with open(fileName, "r") as f:
+                txt = f.read()
+            post = WordPressPost()
+            assert post is not None
+            self.updatePost(post, txt, format="markdown") 
+        elif args.post :
+            self.newPostToWordpress(args.post)
+        # Fetch blogs from wordpress.
+        elif args.fetch :
+            # Get all posts 
+            self.fetchWpPosts(args.fetch)
+        else : # get recent posts 
+            posts = self.wp.call(GetPosts( {'post_status': 'publish'}))
+            self.writePosts(posts)

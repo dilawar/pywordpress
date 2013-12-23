@@ -1,4 +1,6 @@
-from wordpress import *
+import argparse
+import os 
+from wordpress import Wordpress
 
 def main():
     parser = argparse.ArgumentParser(description="Wordpress client")
@@ -25,7 +27,8 @@ def main():
         , help="New post or page"
         )
     args = parser.parse_args()
-    run(args) 
+    wpObj = Wordpress()
+    wpObj.run(args)
 
 if __name__ == "__main__":
     main()
