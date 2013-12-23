@@ -298,7 +298,7 @@ class Wordpress:
          ## Now cleate a client 
         p = os.environ.get('http_proxy')
         if p is not None:
-            print("+ Using http_proxy")
+            printDebug("DEBUG", "Using http_proxy evvironment variable")
             if 'http://' in p :
                 p = p.replace('http://', '')
             else:pass
@@ -309,20 +309,23 @@ class Wordpress:
         if args.update :
             fileName = args.update
             if not os.path.exists(fileName):
-                print(("File {0} doesn't exists.. Existing...".format(fileName)))
-                return 
+                raise IOError, "File %s does not exists" % fileName
             # Open the file.
             with open(fileName, "r") as f:
                 txt = f.read()
             post = WordPressPost()
             assert post is not None
             self.updatePost(post, txt, format="markdown") 
+
         elif args.post :
             self.newPostToWordpress(args.post)
+
         # Fetch blogs from wordpress.
         elif args.fetch :
             # Get all posts 
             self.fetchWpPosts(args.fetch)
+
         else : # get recent posts 
+            printDebug("STEP", "Getting recent posts")
             posts = self.wp.call(GetPosts( {'post_status': 'publish'}))
             self.writePosts(posts)
