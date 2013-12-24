@@ -173,7 +173,7 @@ class Wordpress:
         termsAndCats['category'] = cats
         return termsAndCats
     
-    def updatePost(self, post, txt, format="markdown") :
+    def updatePost(self, post, txt, format) :
         # Check if there is no id.
 
         pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
@@ -195,12 +195,13 @@ class Wordpress:
             content = ""
     
         if format == "html":
-            pass
-        elif format in ["markdown", "md"]:
+            content = formatter.htmlToHtml(content)
+        elif format == "markdown":
             content = formatter.markdownToHtml(content)
             post.content = content
         else:
             post.content = content
+
         logging.debug(
                 "[I] Sending post : {0} : {1}.".format(post.id, post.title)
                 )
@@ -315,12 +316,21 @@ class Wordpress:
             fileName = args.update
             if not os.path.exists(fileName):
                 raise IOError, "File %s does not exists" % fileName
+            # Check the format of file.
+            format = os.path.splitext(fileName)[1].lower()
+            if format in ["htm", "html", "xhtml"]:
+                format = "html"
+            elif format in ["md", "markdown"]:
+                format = "markdown"
+            else:
+                format = "markdown"
+
             # Open the file.
             with open(fileName, "r") as f:
                 txt = f.read()
             post = WordPressPost()
             assert post is not None
-            self.updatePost(post, txt, format="markdown") 
+            self.updatePost(post, txt, format) 
 
         elif args.post :
             self.newPostToWordpress(args.post)
