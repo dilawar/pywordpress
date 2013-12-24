@@ -255,36 +255,45 @@ class Wordpress:
         fileName = os.path.join(postDir, 'content.md')
         fileHtml2 = os.path.join(postDir, 'content.html')
 
-        with open(fileName, "w") as f:
-            f.write("~~~~ \n")
-            f.write("title: ")
-            f.write(title)
-            f.write("\ntype: " + post.post_type)
-            f.write("\nstatus: " + post.post_status)
-            f.write("\nid: " + post.id)
-            cats = []
-            tags = []
-            for t in terms :
-                if t.taxonomy == 'post_tag':
-                    tags.append(t.name)
-                elif t.taxonomy == 'category':
-                    cats.append(t.name)
-                else:
-                    cats.append(t.name)
-            if tags:
-                for t in tags:
-                    f.write('\ntag: {0}'.format(t)) 
-            if cats:
-                for c in cats:
-                    f.write('\ncategory: {0}'.format(c))
-            f.write('\n')
-            f.write("~~~~\n\n")
-            # TODO: Get links from the post
-            # Write content to file.
-            self.writeContent(f, content, format)
+        with open(fileHtml2, "w") as ff:
+            with open(fileName, "w") as f:
+                f.write("~~~~ \n")
+                f.write("title: ")
+                f.write(title)
+                f.write("\ntype: " + post.post_type)
+                f.write("\nstatus: " + post.post_status)
+                f.write("\nid: " + post.id)
+                ff.write("~~~~ \n")
+                ff.write("title: ")
+                ff.write(title)
+                ff.write("\ntype: " + post.post_type)
+                ff.write("\nstatus: " + post.post_status)
+                ff.write("\nid: " + post.id)
+                cats = []
+                tags = []
+                for t in terms :
+                    if t.taxonomy == 'post_tag':
+                        tags.append(t.name)
+                    elif t.taxonomy == 'category':
+                        cats.append(t.name)
+                    else:
+                        cats.append(t.name)
+                if tags:
+                    for t in tags:
+                        f.write('\ntag: {0}'.format(t)) 
+                if cats:
+                    for c in cats:
+                        f.write('\ncategory: {0}'.format(c))
+                f.write('\n')
+                ff.write('\n')
 
-        with open(fileHtml2, "w") as f:
-            self.writeContent(f, content, "html")
+                f.write("~~~~\n\n")
+                ff.write("~~~~\n\n")
+
+                # TODO: Get links from the post
+                # Write content to file.
+                self.writeContent(f, content, format)
+                self.writeContent(ff, content, "html")
     
     def run(self, args):
         # Getting command line arguments   
