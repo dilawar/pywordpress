@@ -93,8 +93,12 @@ def getMetadata(txt):
    Get metadata out of a txt
    """
    pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
-   metadata = pat.search(txt).group('metadata')
-   return metadata 
+   m = pat.search(txt)
+   if m:
+       return m.group('metadata')
+   else:
+       printDebug("ERROR", "No metadata found in text")
+       sys.exit(0)
 
 def getContent(txt):
     """ 
