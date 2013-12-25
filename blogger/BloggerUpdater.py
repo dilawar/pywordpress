@@ -27,6 +27,7 @@ class BloggerUpdater:
         self.blogger_service.service = 'blogger'
         self.blogger_service.account_type = 'GOOGLE'
         self.blogger_service.server = 'www.blogger.com'
+        self.scheme = "http://www.blogger.com/atom/ns#"
         # Let's protect connection
         self.blogger_service.ssl = True                             
         printDebug("INFO"
@@ -124,8 +125,11 @@ class BloggerUpdater:
         printDebug("INFO", "Updating", postEntry.title.text)
         postEntry.title = atom.Title('html', mdict.get('title')[0])
         postEntry.content = atom.Content(content_type='html',text=newContent)
+        postEntry.category = []
         for t in mdict.get('tag'):
-            postEntry.category.append(atom.Category(term=t))
+            postEntry.category.append(atom.Category(term=t
+                , scheme =  self.scheme
+                , label=t))
         if mdict.get('status')[0] == 'draft':
             control = atom.Control()
             control.draft = atom.Draft(text='yes')
