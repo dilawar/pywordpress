@@ -20,10 +20,8 @@ from lxml.etree import tostring
 class Blogger:
 
     def __init__(self, args):
-        username = args.user
-        password = args.password
-        blog = args.title
-        self.initBlogger()
+        blog = args.blog
+        self.initBlogger(args.user, args.password)
         if args.fetch :
             printDebug("INFO", "Fetching the post : {0}".format(args.fetch))
             self.fetchBlogPost(args.fetch)
@@ -47,13 +45,13 @@ class Blogger:
             printDebug("WARN", "Unsupported option {0}")
 
 
-    def initBlogger(self):
+    def initBlogger(self, user, password):
         """Initialize the blogger client.
         """
         try:
             self.updater = BloggerUpdater.BloggerUpdater(user, password)
         except Exception as e:
-            debugPrint("ERR", "Failed to communicate with blogger")
+            printDebug("ERR", "Failed to communicate with blogger")
             print("Error was {0}".format(e))
             sys.exit(-1)
         self.blog = self.updater.GetBlogByTitle(blog)

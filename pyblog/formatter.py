@@ -61,10 +61,10 @@ def htmlToMarkdown(content, convertor='pandoc'):
         content = h.handle(decodeText(content))
         return content
  
-def titleToBlogDir(title):
+def titleToBlogDir(title, blogDir):
     fileName = title.replace(" ","_").replace(':', '-').replace('(', '')
     fileName = fileName.replace("/", "_").replace(')', '')
-    fileName = os.path.join(self.blogDir, fileName)
+    fileName = os.path.join(blogDir, fileName)
     return fileName
   
 

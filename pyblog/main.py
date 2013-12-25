@@ -3,6 +3,33 @@ import os
 from wordpress.wordpress import Wordpress
 from blogger.blogger import Blogger
 
+import sys
+if sys.version_info < (3, 0) :
+  from ConfigParser import RawConfigParser
+else :
+  from configparser import RawConfigParser 
+
+def parseConfigFile(args):
+    # Getting command line arguments   
+    configFilePath = args.config
+    cfg = RawConfigParser()
+    with open(configFilePath, "r") as configFile :
+        cfg.readfp(configFile)
+    blogId = "blog"+str(args.blog)
+    blog = cfg.get(blogId, 'name')
+    if "wordpress" in blog:
+        args.server = "wordpress"
+        blog = blog.replace("www.", "")
+        blog = blog.replace("http://", "")
+        blog = blog.replace("/xmlrpc.php", "")
+        args.blog = "http://"+blog+"/xmlrpc.php"
+    else:
+        args.blog = blog
+        args.server = "blogger"
+    args.user = cfg.get(blogId,'username')
+    args.password = cfg.get(blogId, 'password')
+    return args
+
 def main():
     parser = argparse.ArgumentParser(description="Wordpress client")
     parser.add_argument('--config', metavar="config"
@@ -28,9 +55,14 @@ def main():
         , help="New post or page"
         )
     args = parser.parse_args()
-    wpObj = Wordpress()
-    print args
-    #wpObj.run(args)
+    args = parseConfigFile(args)
+    if args.server == "wordpress":
+        wpObj = Wordpress()
+        wpObj.run(args)
+    elif args.server == "blogger":
+        bgObj = Blogger(args)
+
 if __name__ == "__main__":
     main()
+
 

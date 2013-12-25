@@ -3,12 +3,6 @@
 import argparse
 import os 
 
-import sys
-if sys.version_info < (3, 0) :
-  from ConfigParser import RawConfigParser
-else :
-  from configparser import RawConfigParser 
-
 from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc.methods.posts import GetPosts, GetPost, NewPost, EditPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
@@ -241,7 +235,7 @@ class Wordpress:
                 )
 
         content = post.content.encode('utf-8')
-        postDir = formatter.titleToBlogDir(title)
+        postDir = formatter.titleToBlogDir(title, self.blogDir)
 
         # Create directory for this filename in blogDir.
         if not os.path.isdir(postDir):
@@ -293,30 +287,16 @@ class Wordpress:
                 self.writeContent(ff, content, "html")
     
     def run(self, args):
-        # Getting command line arguments   
-        configFilePath = args.config
-        cfg = RawConfigParser()
-        with open(configFilePath, "r") as configFile :
-            cfg.readfp(configFile)
-        blogId = "blog"+str(args.blog)
-        blog = cfg.get(blogId, 'url')
-        blog = blog.replace("www.", "")
-        blog = blog.replace("http://", "")
-        self.blogDir = blog.replace(".", "DOT")
-        blog = blog.replace("/xmlrpc.php", "")
-        blog = "http://"+blog+"/xmlrpc.php"
-        user = cfg.get(blogId,'username')
-        password = cfg.get(blogId, 'password')
-         ## Now cleate a client 
         p = os.environ.get('http_proxy')
         if p is not None:
             printDebug("DEBUG", "Using http_proxy evvironment variable")
             if 'http://' in p :
                 p = p.replace('http://', '')
             else:pass
-            self.wp = Client(blog, user, password, proxy=p)
+            print args
+            self.wp = Client(args.blog, args.user, args.password, proxy=p)
         else:
-            self.wp = Client(blog, user, password)
+            self.wp = Client(args.blog, args.user, args.password)
         # Send a file to wordpress.
         if args.update :
             fileName = args.update
