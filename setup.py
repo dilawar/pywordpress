@@ -20,7 +20,7 @@ setup(
         , author_email = 'dilawars@iitb.ac.in'
         , maintainer = 'Dilawar Singh'
         , maintainer_email = 'dilawars@iitb.ac.in'
-        , requires = ['Python (>=2.6)']
+        , requires = ['Python (>=2.6)', 'python-gdata']
         , extras_require = {
             'markdown' : ["pandoc", "markdown"]
             }
