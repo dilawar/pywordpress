@@ -237,7 +237,7 @@ class Wordpress:
                 )
 
         content = post.content.encode('utf-8')
-        postDir = formatter.titleToBlogDir(title, self.blogDir)
+        postDir = formatter.titleToFilePath(title, self.blogDir)
 
         # Create directory for this filename in blogDir.
         if not os.path.isdir(postDir):

@@ -138,7 +138,7 @@ class Blogger:
         if post.__dict__['category']:
             for c in post.__dict__['category']:
                 metadata.append("tag: {0}".format(c.term))
-        metadata.append("~~~~~~")
+        metadata.append("~~~~~~\n\n")
         metadata = "\n".join(metadata)
 
         with open(filedir+"/content.md", 'w') as md:
