@@ -94,19 +94,28 @@ class Blogger:
 
     def updatePost(self, txt):
         content = formatter.getContent(txt)
-        if self.format == "html":
-            content = formatter.htmlToHtml(content)
-        elif self.format == "markdown":
-            content = formatter.markdownToHtml(content)
-        else:
-            raise UserError, "Format not supported"
-
         mdict = formatter.metadataDict(txt)
         title = mdict['title'][0]
         # Getting post entry
         title = title.strip()
         postEntry = self.updater.GetPostByTitle(title)
+        if len(postEntry) == 0:
+            printDebug("WARN", "I can't update a non-existing post.")
+            printDebug("WARN", " - You better use --post option")
+            return 
+
+        # Format is accordingly.
+        if len(postEntry) > 1:
+            printDebug("WARN", "More then one post found with matching title")
+            printDebug("WARN", "Using the last one.")
+          
         postEntry = postEntry.pop()
+        if self.format == "html":
+            content = formatter.htmlToHtml(content)
+        elif self.format == "markdown":
+            content = formatter.markdownToHtml(content)
+        else:
+            raise UserWarning, "Format not supported"
         printDebug("USER", "Updating. Format %s" % self.format)
         # Updating post with new content
         resultEntry = self.updater.UpdatePost(postEntry, content)
