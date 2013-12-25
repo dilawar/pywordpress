@@ -20,7 +20,7 @@ from lxml.etree import tostring
 class Blogger:
 
     def __init__(self, args):
-        self.blogName = args.blog
+        self.blogName = args.blogName
         self.initBlogger(args.user, args.password)
         if args.fetch :
             printDebug("INFO", "Fetching the post : {0}".format(args.fetch))
@@ -56,12 +56,12 @@ class Blogger:
             sys.exit(-1)
         self.blog = self.updater.GetBlogByTitle(self.blogName)
         if self.blog is None:
-            printDebug("ERR", "Unable to find requested blog: " + blog) 
+            printDebug("ERR", "Unable to find requested blog: " + self.blogName) 
             sys.exit(1)
         printDebug("DEBUG"
                 , "Requested blog found: {0}".format(self.blog.title.text)
             )
-        self.blogDir = formatter.titleToBlogDir(self.blogName)
+        self.blogDir = self.blogName
         if not os.path.isdir(self.blogDir):
             os.makedirs(self.blogDir)
         else: pass
@@ -70,32 +70,31 @@ class Blogger:
     def createNewPost(self, txt):
         """ Create a new post on blogger
         """
-        medadata = formattter.getMetadata(txt)
-        content = formattter.getContent(txt)
-        mdict = formatter.metadataDict(metadata)
+        content = formatter.getContent(txt)
+        mdict = formatter.metadataDict(txt)
         title = mdict['title'][0]
         # Getting post entry
         title = title.strip()
-        postEntry = updater.GetPostByTitle(title)
+        postEntry = self.updater.GetPostByTitle(title)
         if len(postEntry) == 0:
-            printDebug("Creating a new post")
-            newpost = updater.CreatePost(title, content)
+            printDebug("USER", "Creating a new post")
+            newpost = self.updater.CreatePost(title, content)
             printDebug("INFO", "New post created with title : {0}".format(title))
         else :
             printDebug("WARN"
                     , "A post with the same title exists." +
                     " Use --update option to update it."
                     )
-        return 
+        return 0 
 
     def updatePost(self, txt):
-        medadata = formattter.getMetadata(txt)
-        content = formattter.getContent(txt)
+        metadata = formatter.getMetadata(txt)
+        content = formatter.getContent(txt)
         mdict = formatter.metadataDict(metadata)
         title = mdict['title'][0]
         # Getting post entry
         title = title.strip()
-        postEntry = updater.GetPostByTitle(title)
+        postEntry = self.updater.GetPostByTitle(title)
         postEntry = postEntry.pop()
         printDebug("INFO"
             , "Requested post found: {0}. Last update: {1}. Updating..".format(
@@ -104,7 +103,7 @@ class Blogger:
                 )
             )
         # Updating post with new content
-        resultEntry = updater.UpdatePost(postEntry, content)
+        resultEntry = self.updater.UpdatePost(postEntry, content)
         printDebug("USER"
                 , "Successfully updated: {0}. Last update: {1}. Done!".format(
                     resultEntry.title.text
@@ -123,7 +122,7 @@ class Blogger:
         """
         Write a fetched post to directory
         """
-        filename = formatter.titleToFilePath(title)
+        filename = formatter.titleToFilePath(title, self.blogDir)
         filePath = os.path.join(self.blogdir, filename)
         if not os.path.isdir(filePath):
             os.makedirs(filePath)

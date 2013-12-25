@@ -17,7 +17,11 @@ def parseConfigFile(args):
         cfg.readfp(configFile)
     blogId = "blog{0}".format(args.blog)
     args.blogName = cfg.get(blogId, 'name')
-    blog = cfg.get(blogId, 'url')
+    try:
+        blog = cfg.get(blogId, 'url')
+    except:
+        blog = "No url given for blog."
+
     if "wordpress" in blog:
         args.server = "wordpress"
         blog = blog.replace("www.", "")
@@ -26,7 +30,6 @@ def parseConfigFile(args):
         args.blogUrl = "http://%s/xmlrpc.php" % blog
     else:
         # Blogger uses blog name rather than url.
-        args.blogName = blogName
         args.server = "blogger"
     args.user = cfg.get(blogId,'user')
     args.password = cfg.get(blogId, 'password')

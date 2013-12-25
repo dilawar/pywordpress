@@ -82,7 +82,7 @@ def metadataDict(txt):
     mdict = collections.defaultdict(list)
     md = getMetadata(txt)
     for c in ["title", "status", "id", "category", "tag"]:
-        pat = re.compile(r'{0}:\s*(?<name>.+?)', re.INGNORECASE)
+        pat = re.compile(r'{0}:\s*(?<name>.+?)', re.IGNORECASE)
         m = pat.finall(txt)
         for i in m:
             mdict[c].append(i.group('name'))
@@ -92,6 +92,11 @@ def getMetadata(txt):
    """
    Get metadata out of a txt
    """
+   if not "~~~" in txt:
+       printDebug("ERROR", "The text does not contain any metadata header")
+       print txt
+       sys.exit(1)
+
    pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
    m = pat.search(txt)
    if m:
