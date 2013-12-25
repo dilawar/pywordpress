@@ -130,6 +130,8 @@ class Blogger:
         """
         Write a fetched post to directory
         """
+        for c  in post.category:
+            print c
         filedir = formatter.titleToFilePath(post.title.text, self.blogDir)
         if not os.path.isdir(filedir):
             os.makedirs(filedir)

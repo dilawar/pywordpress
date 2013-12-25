@@ -121,10 +121,11 @@ class BloggerUpdater:
     def UpdatePost(self, postEntry, newContent, mdict):
         """ Update the give n post.
         """
+        printDebug("INFO", "Updating", postEntry.title.text)
         postEntry.title = atom.Title('html', mdict.get('title')[0])
         postEntry.content = atom.Content(content_type='html',text=newContent)
         for t in mdict.get('tag'):
-            postEntry.category.append(atom.Category(t))
+            postEntry.category.append(atom.Category(term=t))
         if mdict.get('status')[0] == 'draft':
             control = atom.Control()
             control.draft = atom.Draft(text='yes')
@@ -138,10 +139,11 @@ class BloggerUpdater:
 
     """ Create a new post """
     def CreatePost(self, title, content, mdict) :
+        printDebug("USER", "Creating a new post: {0}".format(title))
         entry = GDataEntry()
         entry.title = atom.Title('xhtml', title)
         for t in mdict.get('tag'):
-            entry.category.append(atom.Category(t))
+            entry.category.append(atom.Category(term=t))
         if mdict.get('status')[0] == 'draft':
             control = atom.Control()
             control.draft = atom.Draft(text='yes')
