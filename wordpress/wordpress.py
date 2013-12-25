@@ -14,6 +14,8 @@ from wordpress_xmlrpc.methods.posts import GetPosts, GetPost, NewPost, EditPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
 from wordpress_xmlrpc.methods import media, posts 
 
+from blogger.BloggerUpdater import BloggerUpdater
+
 import argparse
 import os
 import re
@@ -22,7 +24,8 @@ import difflib
 import subprocess
 import logging
 import text.formatter as formatter
-from debug import printDebug
+from text.colored_print import printDebug
+
 logging.basicConfig(filname='.wordpress.log')
 
 class Wordpress:
@@ -96,13 +99,7 @@ class Wordpress:
             print("[W] Empty title!")
             title = ""
         return title.strip()
-      
-    def titleToBlogDir(self, title):
-        fileName = title.replace(" ","_").replace(':', '-').replace('(', '')
-        fileName = fileName.replace("/", "_").replace(')', '')
-        fileName = os.path.join(self.blogDir, fileName)
-        return fileName
-      
+
     def appendMetadataToPost(self, metadata, post):
         """
         Append metadata to post.
@@ -132,7 +129,7 @@ class Wordpress:
     
     def attachType(self, metadata, post):
         # type wordpress.
-        pat = re.compile(r'type:(?P<type>.+)', re.IGNORECASE)
+        pat = re.compile(r'type:\s*(?P<type>.+)', re.IGNORECASE)
         m = pat.search(metadata)
         if not m:
             print("Warnng. This post has no type. Assuming post")
@@ -142,7 +139,7 @@ class Wordpress:
     
     def attachStatus(self, metadata, post):
         # status 
-        statusRegex = re.compile("status:(?P<status>.+)", re.IGNORECASE) 
+        statusRegex = re.compile("status:\s*(?P<status>.+)", re.IGNORECASE) 
         m = statusRegex.search(metadata)
         if m :
             status = m.groupdict()['status']
@@ -153,7 +150,7 @@ class Wordpress:
     
     def attachTags(self, metadata, post, termsAndCats):
         # tags 
-        tagRegex = re.compile("tag:(?P<name>.+)", re.IGNORECASE)
+        tagRegex = re.compile("tag:\*(?P<name>.+)", re.IGNORECASE)
         ms = tagRegex.findall(metadata)
         tags = list()
         for m in ms :
@@ -164,7 +161,7 @@ class Wordpress:
     
     def attachCategories(self, metadata, post, termsAndCats):
         # categories
-        catRegex = re.compile("category:(?P<cat>.+)", re.DOTALL)
+        catRegex = re.compile("category:\*(?P<cat>.+)", re.DOTALL)
         mm = catRegex.findall(metadata)
         cats = list()
         for m in mm :
@@ -244,7 +241,7 @@ class Wordpress:
                 )
 
         content = post.content.encode('utf-8')
-        postDir = self.titleToBlogDir(title)
+        postDir = formatter.titleToBlogDir(title)
 
         # Create directory for this filename in blogDir.
         if not os.path.isdir(postDir):

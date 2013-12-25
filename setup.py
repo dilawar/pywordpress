@@ -27,6 +27,7 @@ setup(
         , packages=['wordpress'
             , 'wordpress_xmlrpc'
             , 'wordpress_xmlrpc.methods'
+            , 'blogger'
             , 'text'
             ]
         , include_package_data = True

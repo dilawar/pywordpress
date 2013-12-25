@@ -3,6 +3,7 @@ import os
 import sys
 import html2text 
 import logging
+import collections
 
 # check if pandoc exists
 panDoc = True
@@ -59,6 +60,39 @@ def htmlToMarkdown(content, convertor='pandoc'):
         h = html2text.HTML2Text()
         content = h.handle(decodeText(content))
         return content
+ 
+def titleToBlogDir(title):
+    fileName = title.replace(" ","_").replace(':', '-').replace('(', '')
+    fileName = fileName.replace("/", "_").replace(')', '')
+    fileName = os.path.join(self.blogDir, fileName)
+    return fileName
+  
 
 def htmlToHtml(html):
     return decodeText(html)
+
+def metadataDict(txt):
+    mdict = collections.defaultdict(list)
+    md = getMetadata(txt)
+    for c in ["title", "status", "id", "category", "tag"]:
+        pat = re.compile(r'{0}:\s*(?<name>.+?)', re.INGNORECASE)
+        m = pat.finall(txt)
+        for i in m:
+            mdict[c].append(i.group('name'))
+    return mdict
+
+def getMetadata(txt):
+   """
+   Get metadata out of a txt
+   """
+   pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
+   metadata = pat.search(txt).group('metadata')
+
+def getContent(txt):
+    """ 
+    Return only text of the post.
+    """
+    pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
+    return re.sub(pat, "", txt)
+
+

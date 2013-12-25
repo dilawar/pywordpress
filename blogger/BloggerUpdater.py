@@ -10,8 +10,7 @@ from gdata import service, GDataEntry
 import atom
 import sys
 import time
-from text.print import printDebug
-import 
+from text.colored_print import printDebug
 
 """Simple class for updating posts on www.blogger.com service"""
 
