@@ -50,7 +50,6 @@ class BloggerUpdater:
         printDebug("ERR", "Can't find blog with title : {0}".format(title))
         sys.exit(0)
     
-    """This will get post entry by it's title (name)"""
     def GetPostByTitle(self, title):
       ''' Fetch a single post which matches the title most. If "all" or
       "recent" are given then fetches all or recents posts. 
@@ -65,7 +64,7 @@ class BloggerUpdater:
               if title != "recent" :
                 match = difflib.SequenceMatcher(None, entry.title.text 
                   ,title).ratio()
-                if match > 0.7 :
+                if match > 0.6 :
                   printDebug("INFO"
                           , "Found with title : {0} ".format(entry.title.text)
                           )
@@ -86,8 +85,7 @@ class BloggerUpdater:
           feed = self.blogger_service.Get(query.ToUri())
 
           printDebug("INFO"
-                  , feed.title.text 
-                  + " posts between " 
+                  , " Fetching posts between " 
                   + query.published_min + " and " 
                   + query.published_max
                   )

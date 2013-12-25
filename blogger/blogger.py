@@ -26,11 +26,13 @@ class Blogger:
             printDebug("INFO", "Fetching the post : {0}".format(args.fetch))
             self.fetchBlogPost(args.fetch)
         else:
-            fileName = args.post
-            txt = self.readFile(fileName)
             if args.post:
+                fileName = args.post
+                txt = self.readFile(fileName)
                 self.createNewPost(txt)
             elif args.update:
+                fileName = args.update
+                txt = self.readFile(fileName)
                 self.updatePost(txt)
             else:
                 printDebug("WARN", "Unsupported option")
@@ -111,28 +113,36 @@ class Blogger:
         """Fetch the given blog with a title
         """
         posts = self.updater.GetPostByTitle(title)
+        print "Total post found %s "  % len(posts)
         [self.writePost(post, title) for post in posts]
 
     def writePost(self, post, title):
         """
         Write a fetched post to directory
         """
-        filename = formatter.titleToFilePath(title, self.blogDir)
-        filePath = os.path.join(self.blogDir, filename)
-        if not os.path.isdir(filePath):
-            os.makedirs(filePath)
+        filedir = formatter.titleToFilePath(post.title.text, self.blogDir)
+        if not os.path.isdir(filedir):
+            os.makedirs(filedir)
+        print "Saving to %s" % filedir
 
         metadata = []
         metadata.append("~~~~~")
         metadata.append("title: {0}".format(post.title.text))
-        metadata.append("status: {0}".format(post.status))
-        metadata.append("id: {0}".format(post.id))
-        metadata.append("tahs: {0}".format(post.labels))
+        if post.control is not None:
+            if post.control.__dict__['draft'].text == "yes":
+                metadata.append("status: draft")
+            else:
+                metadata.append("status: published")
+        else:
+            metadata.append("status: published")
+        if post.__dict__['category']:
+            for c in post.__dict__['category']:
+                metadata.append("tag: {0}".format(c.term))
         metadata.append("~~~~~~")
         metadata = "\n".join(metadata)
 
-        with open(filePath+"/content.md", 'w') as md:
-            with open(filePath+"/content.html", "w") as html:
+        with open(filedir+"/content.md", 'w') as md:
+            with open(filedir+"/content.html", "w") as html:
                 md.write(metadata)
                 html.write(metadata)
                 content = post.content.text 

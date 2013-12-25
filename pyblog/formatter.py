@@ -112,12 +112,14 @@ def getContent(txt):
     pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
     return re.sub(pat, "", txt)
 
-def readInputFile(filePath):
+def readInputFile(fileName):
     """
     read file and return its format. html or markdown
     """
+    assert fileName
     if not os.path.exists(fileName):
         raise IOError, "File %s does not exists" % fileName
+
     # Check the format of file.
     format = os.path.splitext(fileName)[1].lower()
     if format in ["htm", "html", "xhtml"]:
