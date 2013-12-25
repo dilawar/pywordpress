@@ -1,9 +1,11 @@
 import subprocess
+import re
 import os 
 import sys
 import html2text 
 import logging
 import collections
+from pyblog.colored_print import printDebug
 
 # check if pandoc exists
 panDoc = True
@@ -60,8 +62,13 @@ def htmlToMarkdown(content, convertor='pandoc'):
         h = html2text.HTML2Text()
         content = h.handle(decodeText(content))
         return content
- 
-def titleToBlogDir(title, blogDir):
+  
+def titleToBlogDir(title):
+    blogDir = title.replace(" ","_").replace(':', '-').replace('(', '')
+    blogDir = blogDir.replace('/', '').replace('\\', '').replace('`', '')
+    return blogDir
+
+def titleToFilePath(title, blogDir):
     fileName = title.replace(" ","_").replace(':', '-').replace('(', '')
     fileName = fileName.replace("/", "_").replace(')', '')
     fileName = os.path.join(blogDir, fileName)
@@ -87,6 +94,7 @@ def getMetadata(txt):
    """
    pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
    metadata = pat.search(txt).group('metadata')
+   return metadata 
 
 def getContent(txt):
     """ 
