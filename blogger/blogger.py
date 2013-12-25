@@ -70,13 +70,13 @@ class Blogger:
     def createNewPost(self, txt):
         """ Create a new post on blogger
         """
-        content = getFormattedContent(txt, self.format)
+        content = formatter.formatContent(txt, self.format)
 
         mdict = formatter.metadataDict(txt)
         title = mdict['title'][0]
         # Getting post entry
         title = title.strip()
-        postEntry = self.updater.GetPostByTitle(title)
+        postEntry = self.updater.GetPostsByTitle(title)
         if len(postEntry) == 0:
             printDebug("USER", "Creating a new post. In format %s" % self.format)
             newpost = self.updater.CreatePost(title, content)
@@ -95,7 +95,7 @@ class Blogger:
         title = mdict['title'][0]
         # Getting post entry
         title = title.strip()
-        postEntry = self.updater.GetPostByTitle(title)
+        postEntry = self.updater.GetPostsByTitle(title)
         if len(postEntry) == 0:
             printDebug("WARN", "I can't update a non-existing post.")
             printDebug("WARN", " - You better use --post option")
@@ -107,16 +107,17 @@ class Blogger:
             printDebug("WARN", "Using the last one.")
           
         postEntry = postEntry.pop()
-        content = getFormattedContent(txt, self.format)
+        content = formatter.formatContent(txt, self.format)
 
         printDebug("USER", "Updating. Format %s" % self.format)
+
         # Updating post with new content
         resultEntry = self.updater.UpdatePost(postEntry, content)
             
     def fetchBlogPost(self, title):
         """Fetch the given blog with a title
         """
-        posts = self.updater.GetPostByTitle(title)
+        posts = self.updater.GetPostsByTitle(title)
         print "Total post found %s "  % len(posts)
         [self.writePost(post, title) for post in posts]
 
@@ -135,8 +136,11 @@ class Blogger:
                 metadata.append("status: draft")
             else:
                 metadata.append("status: published")
+                metadata.append("published: {0}".format(post.published.text))
         else:
             metadata.append("status: published")
+            metadata.append("published: {0}".format(post.published.text))
+
         if post.__dict__['category']:
             for c in post.__dict__['category']:
                 metadata.append("tag: {0}".format(c.term))

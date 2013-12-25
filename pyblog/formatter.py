@@ -130,7 +130,7 @@ def readInputFile(fileName):
     txt = open(fileName, 'r').read()   
     return (fmt, txt)
 
-def getFormattedContent(txt, fmt):
+def formatContent(txt, fmt):
     """
     Format the content as per fmt.
     """

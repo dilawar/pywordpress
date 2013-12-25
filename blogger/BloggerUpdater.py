@@ -50,7 +50,7 @@ class BloggerUpdater:
         printDebug("ERR", "Can't find blog with title : {0}".format(title))
         sys.exit(0)
     
-    def GetPostByTitle(self, title):
+    def GetPostsByTitle(self, title):
       ''' Fetch a single post which matches the title most. If "all" or
       "recent" are given then fetches all or recents posts. 
       '''
