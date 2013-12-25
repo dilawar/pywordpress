@@ -70,11 +70,7 @@ class Blogger:
     def createNewPost(self, txt):
         """ Create a new post on blogger
         """
-        content = formatter.getContent(txt)
-        if self.format == "html":
-            content = formatter.htmlToHtml(content)
-        elif self.format == "makrdown":
-            content = formatter.markdownToHtml(content)
+        content = getFormattedContent(txt, self.format)
 
         mdict = formatter.metadataDict(txt)
         title = mdict['title'][0]
@@ -82,7 +78,7 @@ class Blogger:
         title = title.strip()
         postEntry = self.updater.GetPostByTitle(title)
         if len(postEntry) == 0:
-            printDebug("USER", "Creating a new post. In format %s" % format)
+            printDebug("USER", "Creating a new post. In format %s" % self.format)
             newpost = self.updater.CreatePost(title, content)
             printDebug("INFO", "New post created with title : {0}".format(title))
         else :
@@ -93,7 +89,8 @@ class Blogger:
         return 0 
 
     def updatePost(self, txt):
-        content = formatter.getContent(txt)
+        """Update an existing post
+        """
         mdict = formatter.metadataDict(txt)
         title = mdict['title'][0]
         # Getting post entry
@@ -110,12 +107,8 @@ class Blogger:
             printDebug("WARN", "Using the last one.")
           
         postEntry = postEntry.pop()
-        if self.format == "html":
-            content = formatter.htmlToHtml(content)
-        elif self.format == "markdown":
-            content = formatter.markdownToHtml(content)
-        else:
-            raise UserWarning, "Format not supported"
+        content = getFormattedContent(txt, self.format)
+
         printDebug("USER", "Updating. Format %s" % self.format)
         # Updating post with new content
         resultEntry = self.updater.UpdatePost(postEntry, content)

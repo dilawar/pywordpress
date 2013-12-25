@@ -130,4 +130,19 @@ def readInputFile(fileName):
     txt = open(fileName, 'r').read()   
     return (fmt, txt)
 
+def getFormattedContent(txt, fmt):
+    """
+    Format the content as per fmt.
+    """
+    content = getContent(txt)
+    if fmt == "html":
+        content = htmlToHtml(content)
+    elif fmt == "markdown":
+        content = markdownToHtml(content)
+    else:
+        printDebug("WARN", "Unsupported format %s " % fmt)
+        printDebug("WARN", " - Assuming markdown")
+        content = markdownToHtml(content)
+    return content
+
 
