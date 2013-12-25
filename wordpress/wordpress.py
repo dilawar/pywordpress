@@ -293,7 +293,6 @@ class Wordpress:
             if 'http://' in p :
                 p = p.replace('http://', '')
             else:pass
-            print args
             self.wp = Client(args.blog, args.user, args.password, proxy=p)
         else:
             self.wp = Client(args.blog, args.user, args.password)

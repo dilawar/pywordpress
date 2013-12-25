@@ -26,14 +26,14 @@ def parseConfigFile(args):
     else:
         args.blog = blog
         args.server = "blogger"
-    args.user = cfg.get(blogId,'username')
+    args.user = cfg.get(blogId,'user')
     args.password = cfg.get(blogId, 'password')
     return args
 
 def main():
     parser = argparse.ArgumentParser(description="Wordpress client")
     parser.add_argument('--config', metavar="config"
-        , default = os.environ['HOME'] + "/.wordpressrc"
+        , default = os.environ['HOME'] + "/.config/pyblogrc"
         , help = "Config file containing setting. Default ~/.wordpressrc"
         )
     parser.add_argument('--blog', metavar="blog index in config file eg. 0, 1"

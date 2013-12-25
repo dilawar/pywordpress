@@ -20,7 +20,7 @@ from lxml.etree import tostring
 class Blogger:
 
     def __init__(self, args):
-        blog = args.blog
+        self.blogName = args.blog
         self.initBlogger(args.user, args.password)
         if args.fetch :
             printDebug("INFO", "Fetching the post : {0}".format(args.fetch))
@@ -54,18 +54,17 @@ class Blogger:
             printDebug("ERR", "Failed to communicate with blogger")
             print("Error was {0}".format(e))
             sys.exit(-1)
-        self.blog = self.updater.GetBlogByTitle(blog)
+        self.blog = self.updater.GetBlogByTitle(self.blogName)
         if self.blog is None:
             printDebug("ERR", "Unable to find requested blog: " + blog) 
             sys.exit(1)
-        debugPrint("DEBUG"
-                , "Requested blog found: {0}".format(blogEntry.title.text)
+        printDebug("DEBUG"
+                , "Requested blog found: {0}".format(self.blog.title.text)
             )
-        blog = formatter.titleToBlogDir(blog)
-        if not os.path.exists(blog):
-            os.mkdirs(blog)
+        self.blogDir = formatter.titleToBlogDir(self.blogName)
+        if not os.path.isdir(self.blogDir):
+            os.makedirs(self.blogDir)
         else: pass
-        self.blogdir = blog
    
  
     def createNewPost(self, txt):

@@ -85,7 +85,8 @@ class BloggerUpdater:
           query.published_max = time.strftime('%Y-%m-%d')
           feed = self.blogger_service.Get(query.ToUri())
 
-          printDebug(feed.title.text 
+          printDebug("INFO"
+                  , feed.title.text 
                   + " posts between " 
                   + query.published_min + " and " 
                   + query.published_max
