@@ -1,6 +1,7 @@
 import argparse
 import os 
-from wordpress import Wordpress
+from wordpress.wordpress import Wordpress
+from blogger.blogger import Blogger
 
 def main():
     parser = argparse.ArgumentParser(description="Wordpress client")
@@ -28,7 +29,8 @@ def main():
         )
     args = parser.parse_args()
     wpObj = Wordpress()
-    wpObj.run(args)
+    print args
+    #wpObj.run(args)
 if __name__ == "__main__":
     main()
 

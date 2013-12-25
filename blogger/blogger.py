@@ -11,8 +11,8 @@ import sys
 import getopt
 import re
 import BloggerUpdater as BloggerUpdater
-from text.colored_print import printDebug
-import text.formatter as formatter
+from pyblog.colored_print import printDebug
+import pyblog.formatter as formatter
 import pprint
 import lxml.html as lh
 from lxml.etree import tostring
@@ -30,11 +30,23 @@ class Blogger:
         elif args.post :  
             file = args.post
             if not os.path.exists(file) :
-                print("File {0} does not exists".format(src))
+                print("File {0} does not exists".format(file))
                 return
             # Opening source HTML for reading
             txt = open(file, 'r').read()   
             self.createNewPost(txt)
+        elif args.update:
+            file = args.update
+            if not os.path.exists(file) :
+                print("File {0} does not exists".format(file))
+                return
+            # Opening source HTML for reading
+            txt = open(file, 'r').read()   
+            self.updatePost(txt)
+        else:
+            printDebug("WARN", "Unsupported option {0}")
+
+
     def initBlogger(self):
         """Initialize the blogger client.
         """
@@ -124,7 +136,7 @@ class Blogger:
         metadata.append("title: {0}".format(post.title.text))
         metadata.append("status: {0}".format(post.status))
         metadata.append("id: {0}".format(post.id))
-        metadata.append("tahs: {0}".format(post.labels[]))
+        metadata.append("tahs: {0}".format(post.labels))
         metadata.append("~~~~~~")
         metadata = "\n".join(metadata)
 
@@ -147,4 +159,4 @@ if __name__ == '__main__':
       , help="Update a post."
       )
   args = parser.parse_args()
-  main(args)
+  p = Blogger(args)

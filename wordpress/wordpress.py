@@ -23,8 +23,8 @@ import errno
 import difflib 
 import subprocess
 import logging
-import text.formatter as formatter
-from text.colored_print import printDebug
+import pyblog.formatter as formatter
+from pyblog.colored_print import printDebug
 
 logging.basicConfig(filname='.wordpress.log')
 
