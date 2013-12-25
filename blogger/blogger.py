@@ -25,26 +25,24 @@ class Blogger:
         if args.fetch :
             printDebug("INFO", "Fetching the post : {0}".format(args.fetch))
             self.fetchBlogPost(args.fetch)
-        elif args.post :  
-            file = args.post
-            if not os.path.exists(file) :
-                print("File {0} does not exists".format(file))
-                return
-            # Opening source HTML for reading
-            txt = open(file, 'r').read()   
-            self.createNewPost(txt)
-        elif args.update:
-            file = args.update
-            if not os.path.exists(file) :
-                print("File {0} does not exists".format(file))
-                return
-            # Opening source HTML for reading
-            txt = open(file, 'r').read()   
-            self.updatePost(txt)
         else:
-            printDebug("WARN", "Unsupported option {0}")
+            fileName = args.post
+            txt = self.readFile(fileName)
+            if args.post:
+                self.createNewPost(txt)
+            elif args.update:
+                self.updatePost(txt)
+            else:
+                printDebug("WARN", "Unsupported option")
 
 
+    def readFile(self, filePath):
+        """ read text from file and set the format accordingly
+        """
+        fmt, txt = formatter.readInputFile(filePath)
+        self.format = fmt
+        return txt
+        
     def initBlogger(self, user, password):
         """Initialize the blogger client.
         """
@@ -71,13 +69,18 @@ class Blogger:
         """ Create a new post on blogger
         """
         content = formatter.getContent(txt)
+        if self.format == "html":
+            content = formatter.htmlToHtml(content)
+        elif self.format == "makrdown":
+            content = formatter.markdownToHtml(content)
+
         mdict = formatter.metadataDict(txt)
         title = mdict['title'][0]
         # Getting post entry
         title = title.strip()
         postEntry = self.updater.GetPostByTitle(title)
         if len(postEntry) == 0:
-            printDebug("USER", "Creating a new post")
+            printDebug("USER", "Creating a new post. In format %s" % format)
             newpost = self.updater.CreatePost(title, content)
             printDebug("INFO", "New post created with title : {0}".format(title))
         else :
@@ -89,27 +92,20 @@ class Blogger:
 
     def updatePost(self, txt):
         content = formatter.getContent(txt)
+        if self.format == "html":
+            content = formatter.htmlToHtml(content)
+        elif self.format == "makrdown":
+            content = formatter.markdownToHtml(content)
+
         mdict = formatter.metadataDict(txt)
         title = mdict['title'][0]
         # Getting post entry
         title = title.strip()
         postEntry = self.updater.GetPostByTitle(title)
         postEntry = postEntry.pop()
-        printDebug("INFO"
-            , "Requested post found: {0}. Last update: {1}. Updating..".format(
-                postEntry.title.text
-                , postEntry.updated.text
-                )
-            )
+        printDebug("USER", "Updating. Format %s" % format)
         # Updating post with new content
         resultEntry = self.updater.UpdatePost(postEntry, content)
-        printDebug("USER"
-                , "Successfully updated: {0}. Last update: {1}. Done!".format(
-                    resultEntry.title.text
-                    , resultEntry.updated.text
-                    )
-                ) 
-        return 
             
     def fetchBlogPost(self, title):
         """Fetch the given blog with a title
@@ -122,7 +118,7 @@ class Blogger:
         Write a fetched post to directory
         """
         filename = formatter.titleToFilePath(title, self.blogDir)
-        filePath = os.path.join(self.blogdir, filename)
+        filePath = os.path.join(self.blogDir, filename)
         if not os.path.isdir(filePath):
             os.makedirs(filePath)
 
