@@ -23,9 +23,19 @@ from pyblog.colored_print import printDebug
 logging.basicConfig(filname='.wordpress.log')
 
 class Wordpress:
-    def __init__(self):
-        self.blogDir = ''
+    def __init__(self, args):
+        self.blogDir = args.blogName
+        self.blog = args.blogUrl
         self.wp = None
+        # Create blog directory if not exists.
+        try :
+            if len(self.blogDir.strip()) > 0:
+                os.makedirs(self.blogDir)
+        except OSError as exception :
+            if exception.errno != errno.EEXIST :
+                raise 
+        self.run(args)
+        
     
     def newPostToWordpress(self, postName):
         printDebug("STEP", "You are going to create a new post!")
@@ -54,14 +64,6 @@ class Wordpress:
         """
         Fetch given posts from wordpress.
         """
-         
-        # Create blog directory if not exists.
-        try :
-            os.makedirs(self.blogDir)
-        except OSError as exception :
-            if exception.errno != errno.EEXIST :
-                raise 
-        
         posts = self.wp.call(GetPosts( {'number': 200, 'offset': 0}))
         pages = self.wp.call(GetPosts({'post_type' : 'page'}))
         if  postsToFetch == "all" :
@@ -293,9 +295,9 @@ class Wordpress:
             if 'http://' in p :
                 p = p.replace('http://', '')
             else:pass
-            self.wp = Client(args.blog, args.user, args.password, proxy=p)
+            self.wp = Client(self.blog, args.user, args.password, proxy=p)
         else:
-            self.wp = Client(args.blog, args.user, args.password)
+            self.wp = Client(self.blog, args.user, args.password)
         # Send a file to wordpress.
         if args.update :
             fileName = args.update

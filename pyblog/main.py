@@ -15,16 +15,18 @@ def parseConfigFile(args):
     cfg = RawConfigParser()
     with open(configFilePath, "r") as configFile :
         cfg.readfp(configFile)
-    blogId = "blog"+str(args.blog)
-    blog = cfg.get(blogId, 'name')
+    blogId = "blog{0}".format(args.blog)
+    args.blogName = cfg.get(blogId, 'name')
+    blog = cfg.get(blogId, 'url')
     if "wordpress" in blog:
         args.server = "wordpress"
         blog = blog.replace("www.", "")
         blog = blog.replace("http://", "")
         blog = blog.replace("/xmlrpc.php", "")
-        args.blog = "http://"+blog+"/xmlrpc.php"
+        args.blogUrl = "http://%s/xmlrpc.php" % blog
     else:
-        args.blog = blog
+        # Blogger uses blog name rather than url.
+        args.blogName = blogName
         args.server = "blogger"
     args.user = cfg.get(blogId,'user')
     args.password = cfg.get(blogId, 'password')
@@ -57,8 +59,7 @@ def main():
     args = parser.parse_args()
     args = parseConfigFile(args)
     if args.server == "wordpress":
-        wpObj = Wordpress()
-        wpObj.run(args)
+        wpObj = Wordpress(args)
     elif args.server == "blogger":
         bgObj = Blogger(args)
 
