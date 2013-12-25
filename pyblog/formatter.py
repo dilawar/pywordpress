@@ -29,7 +29,7 @@ def markdownToHtml(content, convertor='pandoc'):
     global panDoc
     if panDoc:
         printDebug("DEBUG", "Using pandoc for markdown -> html")
-        cmd = ["pandoc", "-f", "markdown", "-t", "html"]
+        cmd = ["pandoc", "-f", "markdown", "-s", "-t", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
                 , stdout = subprocess.PIPE
@@ -64,12 +64,18 @@ def htmlToMarkdown(content, convertor='pandoc'):
         return content
   
 def titleToBlogDir(title):
+    if title is None:
+        return ''
+    if len(title.strip()) == 0:
+        return ''
     blogDir = title.replace(" ","_").replace(':', '-').replace('(', '')
     blogDir = blogDir.replace('/', '').replace('\\', '').replace('`', '')
     blogDir = blogDir.replace(')', '').replace("'", '').replace('"', '')
     return blogDir
 
 def titleToFilePath(title, blogDir):
+    if len(blogDir.strip()) == 0:
+        return ''
     fileName = os.path.join(blogDir, titleToBlogDir(title))
     return fileName
   
@@ -80,7 +86,7 @@ def htmlToHtml(html):
 def metadataDict(txt):
     mdict = collections.defaultdict(list)
     md = getMetadata(txt)
-    for c in ["title", "status", "id", "category", "tag"]:
+    for c in ["title", "status", "id", "published", "category", "tag"]:
         pat = re.compile(r'{0}\:\s*(?P<name>.+)'.format(c), re.IGNORECASE)
         m = pat.findall(txt)
         for i in m:

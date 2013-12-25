@@ -10,6 +10,7 @@ import os
 import sys
 import getopt
 import re
+import atom
 import BloggerUpdater as BloggerUpdater
 from pyblog.colored_print import printDebug
 import pyblog.formatter as formatter
@@ -61,7 +62,8 @@ class Blogger:
         printDebug("DEBUG"
                 , "Requested blog found: {0}".format(self.blog.title.text)
             )
-        self.blogDir = self.blogName
+        print "Blog name", self.blogName
+        self.blogDir = formatter.titleToBlogDir(self.blogName)
         if not os.path.isdir(self.blogDir):
             os.makedirs(self.blogDir)
         else: pass
@@ -79,7 +81,8 @@ class Blogger:
         postEntry = self.updater.GetPostsByTitle(title)
         if len(postEntry) == 0:
             printDebug("USER", "Creating a new post. In format %s" % self.format)
-            newpost = self.updater.CreatePost(title, content)
+            newpost = self.updater.CreatePost(title, content, mdict)
+            self.writePost(newpost, title)
             printDebug("INFO", "New post created with title : {0}".format(title))
         else :
             printDebug("WARN"
@@ -93,8 +96,15 @@ class Blogger:
         """
         mdict = formatter.metadataDict(txt)
         title = mdict['title'][0]
-        # Getting post entry
-        title = title.strip()
+        published_on = mdict['published'][0]
+        if published_on:
+            postEntry = self.updater.GetPostByPublishedDate(published_on)
+            if len(postEntry) == 0: pass
+            else:
+                postEntry = postEntry[0]
+                content = formatter.formatContent(txt, self.format)
+                return self.updater.UpdatePost(postEntry, content, mdict)
+
         postEntry = self.updater.GetPostsByTitle(title)
         if len(postEntry) == 0:
             printDebug("WARN", "I can't update a non-existing post.")
@@ -105,14 +115,9 @@ class Blogger:
         if len(postEntry) > 1:
             printDebug("WARN", "More then one post found with matching title")
             printDebug("WARN", "Using the last one.")
-          
-        postEntry = postEntry.pop()
+        postEntry = postEntry[0]
         content = formatter.formatContent(txt, self.format)
-
-        printDebug("USER", "Updating. Format %s" % self.format)
-
-        # Updating post with new content
-        resultEntry = self.updater.UpdatePost(postEntry, content)
+        self.updater.UpdatePost(postEntry, content, mdict)
             
     def fetchBlogPost(self, title):
         """Fetch the given blog with a title
@@ -135,11 +140,12 @@ class Blogger:
             if post.control.__dict__['draft'].text == "yes":
                 metadata.append("status: draft")
             else:
-                metadata.append("status: published")
-                metadata.append("published: {0}".format(post.published.text))
+                published_on = post.published.text
+                metadata.append("published: {0}".format(published_on))
         else:
             metadata.append("status: published")
-            metadata.append("published: {0}".format(post.published.text))
+            published_on = post.published.text
+            metadata.append("published: {0}".format(published_on))
 
         if post.__dict__['category']:
             for c in post.__dict__['category']:
