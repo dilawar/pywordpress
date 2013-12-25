@@ -61,36 +61,26 @@ class BloggerUpdater:
       "recent" are given then fetches all or recents posts. 
       '''
       posts = list()
-      if title != "all" :
-          self.feed = self.blogger_service.GetFeed(self.feed2)
-          for entry in self.feed.entry:
-            if entry.title.text :
-              if title != "recent" :
-                match = difflib.SequenceMatcher(None
-                        , entry.title.text,title
-                        ).ratio()
-                if match > 0.6 :
-                  printDebug("INFO"
-                          , "Found with title : {0} ".format(entry.title.text)
-                          )
-                  posts.append(entry) 
-                  return posts
-                else : pass 
-              else : # We want all recent posts
-                posts.append(entry)
-            else : pass # Titleless post
-          printDebug("DEBUG", "Total {0} posts fetched . ".format(len(posts)))
-          return posts
-    # fetch all
-      else : 
-          query = service.Query()
-          query.feed = self.feed2
-          frm = dt.datetime.now() - dt.timedelta(days=3650)
-          to = dt.datetime.now()
-          return self.GetPostsBetweenDates(
-                  dt.datetime.strftime(frm, self.fmt)
-                  , dt.datetime.strftime(to, self.fmt)
-                  )
+      self.feed = self.blogger_service.GetFeed(self.feed2)
+      for entry in self.feed.entry:
+        if entry.title.text :
+          if title != "all" :
+            match = difflib.SequenceMatcher(None
+                    , entry.title.text,title
+                    ).ratio()
+            if match > 0.6 :
+              printDebug("INFO"
+                      , "Found with title : "
+                      , entry.title.text
+                      )
+              posts.append(entry) 
+              return posts
+            else : pass 
+          else : # We want all recent posts
+            posts.append(entry)
+        else : pass # Titleless post
+      printDebug("DEBUG", "Total {0} posts fetched . ".format(len(posts)))
+      return posts
     
     def GetPostsBetweenDates(self, frm, to):
         """ Create a query and fetch posts
