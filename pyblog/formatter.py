@@ -28,7 +28,7 @@ def decodeText(text):
 def markdownToHtml(content, convertor='pandoc'):
     global panDoc
     if panDoc:
-        logging.debug("Using pandoc for markdown -> html")
+        printDebug("DEBUG", "Using pandoc for markdown -> html")
         cmd = ["pandoc", "-f", "markdown", "-t", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
@@ -39,7 +39,7 @@ def markdownToHtml(content, convertor='pandoc'):
         return decodeText(content)
     # else use inbuild html2text.py 
     else:
-        logging.debug("Using python-markdown for html -> markdown")
+        printDebug("DEBUG", "Using python-markdown for html -> markdown")
         return markdown.markdown(decodeText(content))
 
 
@@ -66,12 +66,11 @@ def htmlToMarkdown(content, convertor='pandoc'):
 def titleToBlogDir(title):
     blogDir = title.replace(" ","_").replace(':', '-').replace('(', '')
     blogDir = blogDir.replace('/', '').replace('\\', '').replace('`', '')
+    blogDir = blogDir.replace(')', '').replace("'", '').replace('"', '')
     return blogDir
 
 def titleToFilePath(title, blogDir):
-    fileName = title.replace(" ","_").replace(':', '-').replace('(', '')
-    fileName = fileName.replace("/", "_").replace(')', '')
-    fileName = os.path.join(blogDir, fileName)
+    fileName = os.path.join(blogDir, titleToBlogDir(title))
     return fileName
   
 
@@ -120,15 +119,15 @@ def readInputFile(fileName):
     if not os.path.exists(fileName):
         raise IOError, "File %s does not exists" % fileName
 
-    # Check the format of file.
-    format = os.path.splitext(fileName)[1].lower()
-    if format in ["htm", "html", "xhtml"]:
-        format = "html"
-    elif format in ["md", "markdown"]:
-        format = "markdown"
+    # Check the fmt of file.
+    fmt = os.path.splitext(fileName)[1].lower()
+    if fmt in ["htm", "html", "xhtml"]:
+        fmt = "html"
+    elif fmt in ["md", "markdown"]:
+        fmt = "markdown"
     else:
-        format = "markdown"
-    txt = open(file, 'r').read()   
-    return (format, txt)
+        fmt = "markdown"
+    txt = open(fileName, 'r').read()   
+    return (fmt, txt)
 
 

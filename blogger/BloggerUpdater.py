@@ -94,13 +94,10 @@ class BloggerUpdater:
                   posts.append(entry)
           return posts 
     
-    """This will update supplied post entry with new content
-    Updated post entry returned as result"""
     def UpdatePost(self, postEntry, newContent):
         """ Update the give n post.
         """
-        contentType = postEntry.content.type
-        postEntry.content = atom.Content(contentType, None, newContent)
+        postEntry.content = atom.Content(content_type='html', text=newContent)
         return self.blogger_service.Put(postEntry, postEntry.GetEditLink().href)
 
     """ Create a new post """

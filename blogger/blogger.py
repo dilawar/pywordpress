@@ -96,8 +96,10 @@ class Blogger:
         content = formatter.getContent(txt)
         if self.format == "html":
             content = formatter.htmlToHtml(content)
-        elif self.format == "makrdown":
+        elif self.format == "markdown":
             content = formatter.markdownToHtml(content)
+        else:
+            raise UserError, "Format not supported"
 
         mdict = formatter.metadataDict(txt)
         title = mdict['title'][0]
@@ -105,7 +107,7 @@ class Blogger:
         title = title.strip()
         postEntry = self.updater.GetPostByTitle(title)
         postEntry = postEntry.pop()
-        printDebug("USER", "Updating. Format %s" % format)
+        printDebug("USER", "Updating. Format %s" % self.format)
         # Updating post with new content
         resultEntry = self.updater.UpdatePost(postEntry, content)
             
@@ -123,8 +125,6 @@ class Blogger:
         filedir = formatter.titleToFilePath(post.title.text, self.blogDir)
         if not os.path.isdir(filedir):
             os.makedirs(filedir)
-        print "Saving to %s" % filedir
-
         metadata = []
         metadata.append("~~~~~")
         metadata.append("title: {0}".format(post.title.text))

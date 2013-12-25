@@ -24,7 +24,7 @@ logging.basicConfig(filname='.wordpress.log')
 
 class Wordpress:
     def __init__(self, args):
-        self.blogDir = args.blogName
+        self.blogDir = formatter.titleToBlogDir(args.blogName)
         self.blog = args.blogUrl
         self.wp = None
         # Create blog directory if not exists.
