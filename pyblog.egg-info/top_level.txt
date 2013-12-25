@@ -1,4 +1,0 @@
-wordpress_xmlrpc
-blogger
-wordpress
-pyblog
