@@ -155,7 +155,7 @@ class Wordpress:
         content = formatter.getContent(txt)
         post = self.appendMetadataToPost(mdict, post)
 
-        printDebug("STEP", "Updating post", post.title)
+        printDebug("STEP", "Updating post .. ", post.title)
         assert post.post_type
         # content 
         if content :
@@ -173,6 +173,11 @@ class Wordpress:
             post.content = content
         else:
             post.content = content
+
+        #logFile = os.path.join(self.blogDir, "sent_html") 
+        #printDebug("DEBUG", "Logging content into %s" % logFile)
+        #with open(logFile, "w") as f:
+            #f.write(post.content.encode('utf-8'))
 
         logging.debug(
                 "[I] Sending post : {0} : {1}.".format(post.id, post.title)

@@ -29,7 +29,7 @@ def markdownToHtml(content, convertor='pandoc'):
     global panDoc
     if panDoc:
         printDebug("DEBUG", "Using pandoc for markdown -> html")
-        cmd = ["pandoc", "-f", "markdown", "-s", "-t", "html"]
+        cmd = ["pandoc", "-f", "markdown", "-t", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
                 , stdout = subprocess.PIPE
@@ -86,7 +86,7 @@ def htmlToHtml(html):
 def metadataDict(txt):
     mdict = collections.defaultdict(list)
     md = getMetadata(txt)
-    for c in ["title", "layout", "status", "id", "published", "category", "tag"]:
+    for c in ["title", 'type', "layout", "status", "id", "published", "category", "tag"]:
         pat = re.compile(r'{0}\:\s*(?P<name>.+)'.format(c), re.IGNORECASE)
         m = pat.findall(txt)
         for i in m:

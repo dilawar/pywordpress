@@ -2,6 +2,7 @@ import argparse
 import os 
 from wordpress.wordpress import Wordpress
 from blogger.blogger import Blogger
+from pyblog.colored_print import printDebug
 
 import sys
 if sys.version_info < (3, 0) :
@@ -62,8 +63,10 @@ def main():
     args = parser.parse_args()
     args = parseConfigFile(args)
     if args.server == "wordpress":
+        printDebug("INFO", "Wordpress")
         wpObj = Wordpress(args)
     elif args.server == "blogger":
+        printDebug("INFO", "Blogger")
         bgObj = Blogger(args)
 
 if __name__ == "__main__":
