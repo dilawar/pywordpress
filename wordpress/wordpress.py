@@ -169,7 +169,7 @@ class Wordpress:
     def updatePost(self, post, txt, format) :
         # Check if there is no id.
 
-        pat = re.compile(r'~~~+(?P<metadata>.+?)~~~+', re.DOTALL)
+        pat = re.compile(r'\-\-\-+(?P<metadata>.+?)\-\-\-+', re.DOTALL)
         metadata = pat.search(txt).group('metadata')
         content = re.sub(pat, "", txt)
         assert len(metadata) > 0
@@ -250,16 +250,18 @@ class Wordpress:
 
         with open(fileHtml2, "w") as ff:
             with open(fileName, "w") as f:
-                f.write("~~~~ \n")
+                f.write("---- \n")
                 f.write("title: ")
                 f.write(title)
                 f.write("\ntype: " + post.post_type)
+                f.write("\nlayout: " + post.post_type)
                 f.write("\nstatus: " + post.post_status)
                 f.write("\nid: " + post.id)
-                ff.write("~~~~ \n")
+                ff.write("---- \n")
                 ff.write("title: ")
                 ff.write(title)
                 ff.write("\ntype: " + post.post_type)
+                ff.write("\nlayout: " + post.post_type)
                 ff.write("\nstatus: " + post.post_status)
                 ff.write("\nid: " + post.id)
                 cats = []
@@ -274,14 +276,16 @@ class Wordpress:
                 if tags:
                     for t in tags:
                         f.write('\ntag: {0}'.format(t)) 
+                        ff.write('\ntag: {0}'.format(t)) 
                 if cats:
                     for c in cats:
                         f.write('\ncategory: {0}'.format(c))
+                        ff.write('\ncategory: {0}'.format(c))
                 f.write('\n')
                 ff.write('\n')
 
-                f.write("~~~~\n\n")
-                ff.write("~~~~\n\n")
+                f.write("----\n\n")
+                ff.write("----\n\n")
 
                 # TODO: Get links from the post
                 # Write content to file.

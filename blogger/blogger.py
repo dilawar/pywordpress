@@ -136,7 +136,7 @@ class Blogger:
         if not os.path.isdir(filedir):
             os.makedirs(filedir)
         metadata = []
-        metadata.append("~~~~~")
+        metadata.append("----")
         metadata.append("title: {0}".format(post.title.text))
         if post.control is not None:
             if post.control.__dict__['draft'].text == "yes":
@@ -152,7 +152,7 @@ class Blogger:
         if post.__dict__['category']:
             for c in post.__dict__['category']:
                 metadata.append("tag: {0}".format(c.term))
-        metadata.append("~~~~~~\n\n")
+        metadata.append("----\n\n")
         metadata = "\n".join(metadata)
 
         with open(filedir+"/content.md", 'w') as md:
