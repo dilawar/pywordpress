@@ -43,10 +43,10 @@ class Wordpress:
         post.id = self.wp.call(NewPost(post))
         ## get the text of new post
         fileName = postName
-        with open(fileName, "r") as f :
-            txt = f.read()
+        fmt, txt = formatter.readInputFile(fileName)
+        self.format = fmt
         try:
-            self.updatePost(post, txt) 
+            self.updatePost(post, txt)
         except Exception as e:
             logging.warning("Failed to send post to wordpress")
             logging.debug("Error was {0}".format(e))
@@ -96,85 +96,64 @@ class Wordpress:
             title = ""
         return title.strip()
 
-    def appendMetadataToPost(self, metadata, post):
+    def appendMetadataToPost(self, mdict, post):
         """
         Append metadata to post.
         """
         try:
             id = post.id 
         except AttributeError:
-            idregex = re.compile(r'id:(?P<id>.+)', re.IGNORECASE)
-            m = idregex.search(metadata) 
-            if not m :
+            id = mdict.get('id')
+            if not id :
                 raise UserWarning, "[Warning] This looks like a new post, use --post option"
-            id = m.group('id').strip()
-    
+            id = id[0]
         post.id = id
-        title = self.getTitle(metadata)
+        title = ' '.join(mdict['title'])
         post.title = title.strip()
     
-        self.attachType(metadata, post)
-        self.attachStatus(metadata, post)
+        self.attachType(mdict, post)
+        self.attachStatus(mdict, post)
         
         termsAndCats = dict()
-        termsAndCats = self.attachTags(metadata, post, termsAndCats)
-        termsAndCats = self.attachCategories(metadata, post, termsAndCats)
+        termsAndCats = self.attachTags(mdict, post, termsAndCats)
+        termsAndCats = self.attachCategories(mdict, post, termsAndCats)
         post.terms_names = termsAndCats 
 
         return post
     
-    def attachType(self, metadata, post):
+    def attachType(self, mdict, post):
         # type wordpress.
-        pat = re.compile(r'type:\s*(?P<type>.+)', re.IGNORECASE)
-        m = pat.search(metadata)
-        if not m:
+        if not mdict.get('type'):
             print("Warnng. This post has no type. Assuming post")
             post.post_type = 'post'
         else:
-            post.post_type = m.group('type').strip()
+            post.post_type = mdict.get('type').pop()
     
-    def attachStatus(self, metadata, post):
+    def attachStatus(self, mdict, post):
         # status 
-        statusRegex = re.compile("status:\s*(?P<status>.+)", re.IGNORECASE) 
-        m = statusRegex.search(metadata)
-        if m :
-            status = m.groupdict()['status']
+        if mdict.get('status') :
+            status = mdict['status'].pop()
             post.post_status = status.strip()
         else :
             print("[W] Post with uncertain status. Default to publish")
             post.post_status = "publish"
     
-    def attachTags(self, metadata, post, termsAndCats):
+    def attachTags(self, mdict, post, termsAndCats):
         # tags 
-        tagRegex = re.compile("tag:\*(?P<name>.+)", re.IGNORECASE)
-        ms = tagRegex.findall(metadata)
-        tags = list()
-        for m in ms :
-            name = m.strip()
-            tags.append(name)
-        termsAndCats['post_tag'] = tags 
+        termsAndCats['post_tag'] = mdict['tag']
         return termsAndCats
     
-    def attachCategories(self, metadata, post, termsAndCats):
+    def attachCategories(self, mdict, post, termsAndCats):
         # categories
-        catRegex = re.compile("category:\*(?P<cat>.+)", re.DOTALL)
-        mm = catRegex.findall(metadata)
-        cats = list()
-        for m in mm :
-            cat = m.strip()
-            cats.append(cat)
-        termsAndCats['category'] = cats
+        termsAndCats['category'] = mdict.get('category')
         return termsAndCats
     
-    def updatePost(self, post, txt, format) :
+    def updatePost(self, post, txt) :
         # Check if there is no id.
 
-        pat = re.compile(r'\-\-\-+(?P<metadata>.+?)\-\-\-+', re.DOTALL)
-        metadata = pat.search(txt).group('metadata')
-        content = re.sub(pat, "", txt)
-        assert len(metadata) > 0
-    
-        post = self.appendMetadataToPost(metadata, post)
+        mdict = formatter.metadataDict(txt)
+        content = formatter.getContent(txt)
+        post = self.appendMetadataToPost(mdict, post)
 
         printDebug("STEP", "Updating post", post.title)
         assert post.post_type
@@ -187,9 +166,9 @@ class Wordpress:
             print("[W] : Post with empty content.")
             content = ""
     
-        if format == "html":
+        if self.format == "html":
             content = formatter.htmlToHtml(content)
-        elif format == "markdown":
+        elif self.format == "markdown":
             content = formatter.markdownToHtml(content)
             post.content = content
         else:
@@ -307,21 +286,11 @@ class Wordpress:
             fileName = args.update
             if not os.path.exists(fileName):
                 raise IOError, "File %s does not exists" % fileName
-            # Check the format of file.
-            format = os.path.splitext(fileName)[1].lower()
-            if format in ["htm", "html", "xhtml"]:
-                format = "html"
-            elif format in ["md", "markdown"]:
-                format = "markdown"
-            else:
-                format = "markdown"
-
-            # Open the file.
-            with open(fileName, "r") as f:
-                txt = f.read()
+            fmt, txt = formatter.readInputFile(fileName)
+            self.format = fmt
             post = WordPressPost()
             assert post is not None
-            self.updatePost(post, txt, format) 
+            self.updatePost(post, txt) 
 
         elif args.post :
             self.newPostToWordpress(args.post)
