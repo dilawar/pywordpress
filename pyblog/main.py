@@ -1,7 +1,6 @@
 import argparse
 import os 
 from wordpress.wordpress import Wordpress
-from blogger.blogger import Blogger
 from pyblog.colored_print import printDebug
 
 import sys
@@ -22,16 +21,14 @@ def parseConfigFile(args):
         blog = cfg.get(blogId, 'url')
     except:
         blog = "No url given for blog."
+        raise UserWarning(blog)
 
-    if "wordpress" in blog:
-        args.server = "wordpress"
-        blog = blog.replace("www.", "")
-        blog = blog.replace("http://", "")
-        blog = blog.replace("/xmlrpc.php", "")
-        args.blogUrl = "http://%s/xmlrpc.php" % blog
-    else:
-        # Blogger uses blog name rather than url.
-        args.server = "blogger"
+    args.server = "wordpress"
+    blog = blog.replace("www.", "")
+    blog = blog.replace("http://", "")
+    blog = blog.replace("/xmlrpc.php", "")
+    args.blogUrl = "http://%s/xmlrpc.php" % blog
+    args.server = "blogger"
     args.user = cfg.get(blogId,'user')
     args.password = cfg.get(blogId, 'password')
     return args
@@ -50,14 +47,14 @@ def main():
         , help = "Setup proxy information.")
   
     parser.add_argument('--fetch', metavar="[all|post_name]"
-        , help="Fetch a post with similar looking name. If 'recent' is given, it  \
-            fetch and save recent posts. If 'all' is given then it fetches all\
-            posts "
+        , help="Fetch a post with similar looking name. \
+                If 'all' is given then it fetches all\
+                posts "
         )
     parser.add_argument('--update', metavar='blog_file'
         , help="Update a post."
         )
-    parser.add_argument('--post', metavar='blog_file'
+    parser.add_argument('--new', metavar='blog_file'
         , help="New post or page"
         )
     args = parser.parse_args()
@@ -65,9 +62,11 @@ def main():
     if args.server == "wordpress":
         printDebug("INFO", "Wordpress")
         wpObj = Wordpress(args)
-    elif args.server == "blogger":
-        printDebug("INFO", "Blogger")
-        bgObj = Blogger(args)
+    else:
+        printDebug("WARN", "It does not look like a wordpress: {}".format(
+            args.server
+            )
+
 
 if __name__ == "__main__":
     main()

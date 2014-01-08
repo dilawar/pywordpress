@@ -8,9 +8,9 @@ def read(*paths):
         return f.read()
 
 setup(
-        name='pyblog'
+        name='twordpress'
         , version='0.9.0'
-        , description='A command-line tool to manage your blogs on wordpress and blogger'
+        , description='A command-line tool to manage your blogs on wordpress'
         , long_description=(
             read('README.rst') 
             )
@@ -20,15 +20,13 @@ setup(
         , author_email = 'dilawars@iitb.ac.in'
         , maintainer = 'Dilawar Singh'
         , maintainer_email = 'dilawars@iitb.ac.in'
-        , requires = ['Python (>=2.6)', 'gdata']
+        , requires = ['Python (>=2.6)']
         , extras_require = {
             'markdown' : ["pandoc", "markdown"]
             }
         , packages=['wordpress'
             , 'wordpress_xmlrpc'
             , 'wordpress_xmlrpc.methods'
-            , 'blogger'
-            , 'pyblog'
             ]
         , include_package_data = True
         , classifiers = [
@@ -42,7 +40,7 @@ setup(
             ],
         entry_points="""
         [console_scripts]
-        pyblog=pyblog.main:main
+        twordpress=pyblog.main:main
         """
         )
 

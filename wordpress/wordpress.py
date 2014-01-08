@@ -74,7 +74,7 @@ class Wordpress:
             for post in posts :
                 title = post.title 
                 match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
-                if match > 0.65 :
+                if match > 0.60 :
                     matchedPosts.append(post)
             self.writePosts(matchedPosts)
             # Why not pages.
@@ -297,8 +297,8 @@ class Wordpress:
             assert post is not None
             self.updatePost(post, txt) 
 
-        elif args.post :
-            self.newPostToWordpress(args.post)
+        elif args.new :
+            self.newPostToWordpress(args.new)
 
         # Fetch blogs from wordpress.
         elif args.fetch :
