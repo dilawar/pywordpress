@@ -24,9 +24,11 @@ Dependencies
 
 A fork of the library
 https://github.com/maxcutler/python-wordpress-xmlrpc/blob/master/docs/index.rst
-is included in this version. You need ``pandoc`` installed. This application
-turn ``html`` to ``markdown`` format and vice-versa. I am planning to replace
-pandoc with something more pythonic.
+is included in this version. 
+
+You can install ``pandoc``. This application turn ``html`` to ``markdown``
+format and vice-versa. I can do more but this is what we need. If ``pandoc`` is
+not available then it uses a python script to turn html to text.
 
 Proxy support is added recently to ``python-wordpress-xmlrcp``. It reads
 environment variable ``http_proxy``. If you are behind proxied network, then
@@ -62,17 +64,17 @@ Following command update the blog. ::
 ------------------
 This command post a new post::
     
-    $twordpress --blog 1 --post new_blog.md
+    $twordpress --blog 1 --new new_blog.md
 
 The new blog is written in markdown format but a meta-data has to be prefixed.
 This is how your blog file should look like.::
 
-     ~~~~~
+    -----
      title: This is title of my awesome post
      status: publish
      tags: some awesome tag
      category: some_category
-     ~~~~~~
+     ----
 
      Here is content of blog in markdown format.
 
