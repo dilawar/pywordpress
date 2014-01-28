@@ -13,6 +13,10 @@ def parseConfigFile(args):
     # Getting command line arguments   
     configFilePath = args.config
     cfg = RawConfigParser()
+    if not os.path.isfile(configFilePath):
+        print("Config file {} does not exists".format(configFilePath))
+        print("Create this file and retry...")
+        sys.exit()
     with open(configFilePath, "r") as configFile :
         cfg.readfp(configFile)
     blogId = "blog{0}".format(args.blog)
@@ -28,7 +32,6 @@ def parseConfigFile(args):
     blog = blog.replace("http://", "")
     blog = blog.replace("/xmlrpc.php", "")
     args.blogUrl = "http://%s/xmlrpc.php" % blog
-    args.server = "blogger"
     args.user = cfg.get(blogId,'user')
     args.password = cfg.get(blogId, 'password')
     return args
@@ -36,8 +39,8 @@ def parseConfigFile(args):
 def main():
     parser = argparse.ArgumentParser(description="Wordpress client")
     parser.add_argument('--config', metavar="config"
-        , default = os.environ['HOME'] + "/.config/pyblogrc"
-        , help = "Config file containing setting. Default ~/.wordpressrc"
+        , default = os.environ['HOME'] + "/.config/twordpressrc"
+        , help = "Config file containing settings: ~/.config/twordpressrc"
         )
     parser.add_argument('--blog', metavar="blog index in config file eg. 0, 1"
         , default = "0"

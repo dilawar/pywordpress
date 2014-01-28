@@ -5,7 +5,7 @@ A command line tool to manage your blogs on ``wordpress.com``.
 Configuration file 
 ------------------
 
-Create a file ``~/.wordpressrc`` with following entry::
+Create configuration file ``~/.config/twordpressrc`` with following entry::
 
     # This file must be saved as ~/.wordpressrc 
     [blog0]
@@ -18,6 +18,9 @@ Create a file ``~/.wordpressrc`` with following entry::
     url=blog2.wordpress.com
     username=gabbar
     password=thakur_ke_per_katne_the
+
+If you choose to store this file to some other location then you should pass
+``--config path/to/twordpressrc`` like option to the ``twordpress`` command.
 
 Dependencies
 ------------ 
