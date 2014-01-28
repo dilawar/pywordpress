@@ -82,3 +82,5 @@ This is how your blog file should look like.::
      Here is content of blog in markdown format.
 
      Too much has already been written. This ends my blog.
+
+- End 
