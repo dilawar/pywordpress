@@ -8,8 +8,6 @@ from wordpress_xmlrpc.methods.posts import GetPosts, GetPost, NewPost, EditPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
 from wordpress_xmlrpc.methods import media, posts 
 
-from blogger.BloggerUpdater import BloggerUpdater
-
 import argparse
 import os
 import re
@@ -251,6 +249,7 @@ class Wordpress:
                 cats = []
                 tags = []
                 for t in terms :
+                    t = t.decode('utf-8')
                     if t.taxonomy == 'post_tag':
                         tags.append(t.name)
                     elif t.taxonomy == 'category':
@@ -259,6 +258,7 @@ class Wordpress:
                         cats.append(t.name)
                 if tags:
                     for t in tags:
+                        t = t.decode('utf-8')
                         f.write('\ntag: {0}'.format(t)) 
                         ff.write('\ntag: {0}'.format(t)) 
                 if cats:

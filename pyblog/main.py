@@ -64,7 +64,8 @@ def main():
         wpObj = Wordpress(args)
     else:
         printDebug("WARN", "It does not look like a wordpress: {}".format(
-            args.server
+                args.server
+                )
             )
 
 
