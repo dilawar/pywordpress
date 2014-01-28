@@ -25,6 +25,7 @@ setup(
         , packages=['wordpress'
             , 'wordpress_xmlrpc'
             , 'wordpress_xmlrpc.methods'
+            , 'pyblog'
             ]
         , include_package_data = True
         , classifiers = [
