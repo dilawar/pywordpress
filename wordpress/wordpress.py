@@ -10,6 +10,7 @@ from wordpress_xmlrpc.methods import media, posts
 
 import argparse
 import os
+import sys
 import re
 import errno
 import difflib 
@@ -54,9 +55,7 @@ class Wordpress:
             logging.warning("Failed to send post to wordpress")
             logging.debug("Error was {0}".format(e))
 
-        logging.info('Post is sent successfully')
         printDebug("INFO", "Post sent successfully")
-
         # Now download the sent post and save it.
         postNew = self.wp.call(GetPost(post.id))
         self.writePosts([postNew])
@@ -108,7 +107,10 @@ class Wordpress:
         except AttributeError:
             id = mdict.get('id')
             if not id :
-                raise UserWarning, "[Warning] This looks like a new post, use --post option"
+                printDebug("ERROR"
+                        , "This looks like a new post, use --post option"
+                        )
+                sys.exit(0)
             id = id[0]
         post.id = id
         title = ' '.join(mdict['title'])
@@ -130,12 +132,12 @@ class Wordpress:
             print("Warnng. This post has no type. Assuming post")
             post.post_type = 'post'
         else:
-            post.post_type = mdict.get('type').pop()
+            post.post_type = mdict.get('type')
     
     def attachStatus(self, mdict, post):
         # status 
         if mdict.get('status') :
-            status = mdict['status'].pop()
+            status = mdict['status']
             post.post_status = status.strip()
         else :
             print("[W] Post with uncertain status. Default to publish")
@@ -143,12 +145,16 @@ class Wordpress:
     
     def attachTags(self, mdict, post, termsAndCats):
         # tags 
-        termsAndCats['post_tag'] = mdict['tag']
+        tagList = mdict['tags'].translate(None, '[]').split(', ')
+        termsAndCats['post_tag'] = tagList
         return termsAndCats
     
     def attachCategories(self, mdict, post, termsAndCats):
         # categories
-        termsAndCats['category'] = mdict.get('category')
+        catList = mdict.get('categories')
+        if catList:
+            catList = catList.translate(None, '][').split(', ')
+            termsAndCats['category'] = catList
         return termsAndCats
     
     def updatePost(self, post, txt) :
@@ -166,7 +172,7 @@ class Wordpress:
                 print("[E] : No content in file.")
                 return 
         else :
-            print("[W] : Post with empty content.")
+            printDebug("WARN", "Post with empty content.")
             content = ""
     
         if self.format == "html":

@@ -84,13 +84,14 @@ def htmlToHtml(html):
     return decodeText(html)
 
 def metadataDict(txt):
-    mdict = collections.defaultdict(list)
+    mdict = dict()
     md = getMetadata(txt)
-    for c in ["title", 'type', "layout", "status", "id", "published", "category", "tag"]:
+    for c in ["title", 'type', "layout", "status", "id", "published"
+                , "categories", "tags"]:
         pat = re.compile(r'{0}\s*:\s*(?P<name>.+)'.format(c), re.IGNORECASE)
-        m = pat.findall(txt)
+        m = pat.find(txt)
         for i in m:
-            mdict[c].append(i)
+            mdict[c] = i
     return mdict
 
 def getMetadata(txt):

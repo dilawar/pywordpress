@@ -80,12 +80,12 @@ Description: twordpress
         The new blog is written in markdown format but a meta-data has to be prefixed.
         This is how your blog file should look like.::
         
-            -----
+             ---
              title: This is title of my awesome post
              status: publish
-             tags: some awesome tag
-             category: some_category
-             ----
+             tags: [some awesome tag, tag2]
+             categories: [catA, some_category]
+             ---
         
              Here is content of blog in markdown format.
         
@@ -99,7 +99,11 @@ Description: twordpress
         - The default file path for configuration file is ``.config/twordpressrc`` 
         - Fix a bug. It was causing utf encode error.
         
-        This ends changes.
+        Wed 29 Jan 2014 05:53:58 PM IST
+        
+        - The YAML front matter in post is closely match with jekyll. Same post can be
+          uploaded to github page.
+        
         
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
