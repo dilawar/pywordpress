@@ -262,14 +262,14 @@ class Wordpress:
                     else:
                         cats.append(t.name)
                 if tags:
-                    tags = [t.encode('utf-8') for t in tags]
-                    tagLine = 'tags: [{}]'.format(', '.format(tags)) 
+                    tags = filter(None, [t.encode('utf-8') for t in tags])
+                    tagLine = 'tags: [{}]'.format(', '.join(tags)) 
                     f.write('\n{}'.format(tagLine)) 
                     ff.write('\n{0}'.format(tagLine)) 
                 if cats:
-                    cats = [c.encode('utf-8') for c in cats]
-                    f.write('\ncategories: {0}'.format(', '.join(cats)))
-                    ff.write('\ncategories: {0}'.format(', '.join(cats)))
+                    cats = filter(None, [c.encode('utf-8') for c in cats])
+                    f.write('\ncategories: [{0}]'.format(', '.join(cats)))
+                    ff.write('\ncategories: [{0}]'.format(', '.join(cats)))
                 f.write('\n')
                 ff.write('\n')
                 f.write("{}\n\n".format(deliminator))

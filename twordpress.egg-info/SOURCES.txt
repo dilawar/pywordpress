@@ -5,6 +5,7 @@ pyblog/colored_print.py
 pyblog/formatter.py
 pyblog/html2text.py
 pyblog/main.py
+pyblog/zemanta.py
 twordpress.egg-info/PKG-INFO
 twordpress.egg-info/SOURCES.txt
 twordpress.egg-info/dependency_links.txt

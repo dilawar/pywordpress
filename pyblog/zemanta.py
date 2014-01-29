@@ -23,7 +23,7 @@ def getZemantaSuggestion(key, text):
     gateway = 'http://api.zemanta.com/services/rest/0.0/'
     args = {'method': 'zemanta.suggest',
             'api_key': '{}'.format(key),
-             'text' : '{}'.format(text)
+             'text' : '{}'.format(text),
             'return_categories': 'dmoz',
             'format': 'json'}            
     args_enc = urllib.urlencode(args)

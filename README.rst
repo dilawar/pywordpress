@@ -72,12 +72,12 @@ This command post a new post::
 The new blog is written in markdown format but a meta-data has to be prefixed.
 This is how your blog file should look like.::
 
-    -----
+     ---
      title: This is title of my awesome post
      status: publish
-     tags: some awesome tag
-     category: some_category
-     ----
+     tags: [some awesome tag, tag2]
+     categories: [catA, some_category]
+     ---
 
      Here is content of blog in markdown format.
 
