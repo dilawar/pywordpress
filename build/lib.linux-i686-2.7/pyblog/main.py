@@ -60,9 +60,6 @@ def main():
     parser.add_argument('--new', metavar='blog_file'
         , help="New post or page"
         )
-    parser.add_argument('--zemanta', metavar='zemanta'
-            , help="Zemanta suggestion to embed in post"
-            )
     args = parser.parse_args()
     args = parseConfigFile(args)
     if args.server == "wordpress":

@@ -1,0 +1,4 @@
+
+        [console_scripts]
+        twordpress=pyblog.main:main
+        

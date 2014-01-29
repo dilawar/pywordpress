@@ -20,12 +20,7 @@ from pyblog.colored_print import printDebug
 
 logging.basicConfig(filname='.wordpress.log')
 
-
-deliminator = '---'
-
 class Wordpress:
-    ''' Wordpress classs'''
-
     def __init__(self, args):
         self.blogDir = formatter.titleToBlogDir(args.blogName)
         self.blog = args.blogUrl
@@ -67,7 +62,7 @@ class Wordpress:
         """
         Fetch given posts from wordpress.
         """
-        posts = self.wp.call(GetPosts( {'number': 2000, 'offset': 0}))
+        posts = self.wp.call(GetPosts( {'number': 200, 'offset': 0}))
         pages = self.wp.call(GetPosts({'post_type' : 'page'}))
         if  postsToFetch == "all" :
             self.writePosts(posts + pages)
@@ -85,12 +80,12 @@ class Wordpress:
             for page in pages :
                 title = page.title 
                 match = difflib.SequenceMatcher(None, title, postsToFetch).ratio()
-                if match > 0.60 :
+                if match > 0.65 :
                     matchedPages.append(post)
             self.writePosts(matchedPages)
             
     def getTitle(self, txt):
-        titleRegex = re.compile("title\s*:\*(?P<title>.+)", re.IGNORECASE)
+        titleRegex = re.compile("title:(?P<title>.+)", re.IGNORECASE)
         m = titleRegex.search(txt)
         if m :
             title = m.groupdict()['title']
@@ -237,15 +232,14 @@ class Wordpress:
 
         with open(fileHtml2, "w") as ff:
             with open(fileName, "w") as f:
-                f.write("{}\n".format(deliminator))
+                f.write("---- \n")
                 f.write("title: ")
                 f.write(title)
-                f.write("\ncomments: true")
                 f.write("\ntype: " + post.post_type)
                 f.write("\nlayout: " + post.post_type)
                 f.write("\nstatus: " + post.post_status)
                 f.write("\nid: " + post.id)
-                ff.write("{}\n".format(deliminator))
+                ff.write("---- \n")
                 ff.write("title: ")
                 ff.write(title)
                 ff.write("\ntype: " + post.post_type)
@@ -262,18 +256,19 @@ class Wordpress:
                     else:
                         cats.append(t.name)
                 if tags:
-                    tags = [t.encode('utf-8') for t in tags]
-                    tagLine = 'tags: [{}]'.format(', '.format(tags)) 
-                    f.write('\n{}'.format(tagLine)) 
-                    ff.write('\n{0}'.format(tagLine)) 
+                    for t in tags:
+                        t = t.encode('utf-8')
+                        f.write('\ntag: {0}'.format(t)) 
+                        ff.write('\ntag: {0}'.format(t)) 
                 if cats:
-                    cats = [c.encode('utf-8') for c in cats]
-                    f.write('\ncategories: {0}'.format(', '.join(cats)))
-                    ff.write('\ncategories: {0}'.format(', '.join(cats)))
+                    for c in cats:
+                        f.write('\ncategory: {0}'.format(c))
+                        ff.write('\ncategory: {0}'.format(c))
                 f.write('\n')
                 ff.write('\n')
-                f.write("{}\n\n".format(deliminator))
-                ff.write("{}\n\n".format(deliminator))
+
+                f.write("----\n\n")
+                ff.write("----\n\n")
 
                 # TODO: Get links from the post
                 # Write content to file.

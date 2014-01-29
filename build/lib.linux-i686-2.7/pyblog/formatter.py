@@ -87,7 +87,7 @@ def metadataDict(txt):
     mdict = collections.defaultdict(list)
     md = getMetadata(txt)
     for c in ["title", 'type', "layout", "status", "id", "published", "category", "tag"]:
-        pat = re.compile(r'{0}\s*:\s*(?P<name>.+)'.format(c), re.IGNORECASE)
+        pat = re.compile(r'{0}\:\s*(?P<name>.+)'.format(c), re.IGNORECASE)
         m = pat.findall(txt)
         for i in m:
             mdict[c].append(i)
