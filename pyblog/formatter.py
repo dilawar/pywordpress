@@ -29,7 +29,8 @@ def markdownToHtml(content, convertor='pandoc'):
     global panDoc
     if panDoc:
         printDebug("DEBUG", "Using pandoc for markdown -> html")
-        cmd = ["pandoc", "-f", "markdown", "-t", "html"]
+        cmd = ["pandoc", "-s", "--highlight-styles", "--pygments"
+                , "-f", "markdown+tex_math_dollars", "-t", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
                 , stdout = subprocess.PIPE
@@ -39,7 +40,7 @@ def markdownToHtml(content, convertor='pandoc'):
         return decodeText(content)
     # else use inbuild html2text.py 
     else:
-        printDebug("DEBUG", "Using python-markdown for html -> markdown")
+        printDebug("DEBUG", "Using python-markdown for markdown -> html")
         return markdown.markdown(decodeText(content))
 
 
@@ -47,7 +48,7 @@ def htmlToMarkdown(content, convertor='pandoc'):
     global panDoc
     if panDoc and convertor == 'pandoc':
         logging.debug("using pandoc for html -> markdown")
-        cmd = ["pandoc", "-t", "markdown", "-f", "html"]
+        cmd = ["pandoc", "-t", "markdown+tex_math_dollars", "-f", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
                 , stdout = subprocess.PIPE
@@ -57,7 +58,6 @@ def htmlToMarkdown(content, convertor='pandoc'):
         return decodeText(content)
     # Use markdown package to convert markdown to html
     else:
-        logging.debug("Using html2text for html -> markdown")
         printDebug("INFO", "html2text for html -> markdown")
         h = html2text.HTML2Text()
         content = h.handle(decodeText(content))
@@ -89,9 +89,9 @@ def metadataDict(txt):
     for c in ["title", 'type', "layout", "status", "id", "published"
                 , "categories", "tags"]:
         pat = re.compile(r'{0}\s*:\s*(?P<name>.+)'.format(c), re.IGNORECASE)
-        m = pat.find(txt)
-        for i in m:
-            mdict[c] = i
+        m = pat.search(txt)
+        if m:
+            mdict[c] = m.group('name')
     return mdict
 
 def getMetadata(txt):

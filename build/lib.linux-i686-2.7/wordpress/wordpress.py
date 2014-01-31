@@ -106,15 +106,14 @@ class Wordpress:
         try:
             id = post.id 
         except AttributeError:
-            id = mdict.get('id')
-            if not id :
+            id = mdict.get('id', None)
+            if not id:
                 printDebug("ERROR"
                         , "This looks like a new post, use --post option"
                         )
                 sys.exit(0)
-            id = id[0]
         post.id = id
-        title = ' '.join(mdict['title'])
+        title = mdict['title']
         post.title = title.strip()
     
         self.attachType(mdict, post)

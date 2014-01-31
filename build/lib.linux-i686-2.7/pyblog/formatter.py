@@ -90,8 +90,8 @@ def metadataDict(txt):
                 , "categories", "tags"]:
         pat = re.compile(r'{0}\s*:\s*(?P<name>.+)'.format(c), re.IGNORECASE)
         m = pat.search(txt)
-        for i in m:
-            mdict[c] = i
+        if m:
+            mdict[c] = m.group('name')
     return mdict
 
 def getMetadata(txt):
