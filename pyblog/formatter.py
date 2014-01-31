@@ -9,6 +9,8 @@ from pyblog.colored_print import printDebug
 
 # check if pandoc exists
 panDoc = True
+pandocFmt = '+tex_math_dollars'+'+raw_tex'+'latex_macros'
+
 try:
     subprocess.call(["pandoc", '--version']
             , stdout=subprocess.PIPE
@@ -27,10 +29,11 @@ def decodeText(text):
 
 def markdownToHtml(content, convertor='pandoc'):
     global panDoc
+    global pandocFmt
     if panDoc:
         printDebug("DEBUG", "Using pandoc for markdown -> html")
         cmd = ["pandoc", "-s", "--highlight-styles", "--pygments"
-                , "-f", "markdown+tex_math_dollars", "-t", "html"]
+                , "-f", pandocFmt, "-t", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
                 , stdout = subprocess.PIPE
@@ -46,9 +49,10 @@ def markdownToHtml(content, convertor='pandoc'):
 
 def htmlToMarkdown(content, convertor='pandoc'):
     global panDoc
+    global pandocFmt
     if panDoc and convertor == 'pandoc':
         logging.debug("using pandoc for html -> markdown")
-        cmd = ["pandoc", "-t", "markdown+tex_math_dollars", "-f", "html"]
+        cmd = ["pandoc", "-t", pandocFmt, "-f", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
                 , stdout = subprocess.PIPE
