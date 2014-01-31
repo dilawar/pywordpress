@@ -52,8 +52,9 @@ class Wordpress:
         try:
             self.updatePost(post, txt)
         except Exception as e:
-            logging.warning("Failed to send post to wordpress")
-            logging.debug("Error was {0}".format(e))
+            printDebug("WARN", "Failed to send post to wordpress")
+            printDebug("DEBUG", "Error was {0}".format(e))
+            return 
 
         printDebug("INFO", "Post sent successfully")
         # Now download the sent post and save it.
