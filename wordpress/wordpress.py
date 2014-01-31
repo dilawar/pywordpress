@@ -19,7 +19,7 @@ import logging
 import pyblog.formatter as formatter
 from pyblog.colored_print import printDebug
 
-logging.basicConfig(filname='.wordpress.log')
+logging.basicConfig(filname=os.environ['HOME']+'.wordpress.log')
 
 
 deliminator = '---'
@@ -179,25 +179,27 @@ class Wordpress:
             content = formatter.htmlToHtml(content)
         elif self.format == "markdown":
             content = formatter.markdownToHtml(content)
-            post.content = content
+            post.content = content.encode('utf-8')
         else:
-            post.content = content
+            post.content = content.encode('utf-8')
 
         #logFile = os.path.join(self.blogDir, "sent_html") 
         #printDebug("DEBUG", "Logging content into %s" % logFile)
         #with open(logFile, "w") as f:
             #f.write(post.content.encode('utf-8'))
 
-        logging.debug(
-                "[I] Sending post : {0} : {1}.".format(post.id, post.title)
+        printDebug("STEP"
+                , "Sending post : {0} : {1}.".format(post.id, post.title)
                 )
         try:
             self.wp.call(EditPost(post.id, post))
         except Exception as e:
-            logging.debug("[DEBUG] I was trying to update but failed")
-            logging.debug(" + You sure that this post exist on the blog.")
-            logging.debug("Error was : {0}".format(e))
-            raise UserWarning, "Failed to update post", e
+            printDebug("DEBUG", "I was trying to update but failed")
+            printDebug("INFO", "Error was : {0}".format(e))
+            printDebug("DEBUG", "Content of post was written to log.txt file")
+            with open("log.txt", "w") as f:
+                f.write(post.content)
+            sys.exit(0)
     
     def writeContent(self, fH, content, format):
         """Write content to file.
