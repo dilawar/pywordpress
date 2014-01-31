@@ -9,6 +9,8 @@ from pyblog.colored_print import printDebug
 
 # check if pandoc exists
 panDoc = True
+pandocFmt = '+tex_math_dollars'+'+raw_tex'+'+latex_macros'
+
 try:
     subprocess.call(["pandoc", '--version']
             , stdout=subprocess.PIPE
@@ -27,17 +29,28 @@ def decodeText(text):
 
 def markdownToHtml(content, convertor='pandoc'):
     global panDoc
+    global pandocFmt
+    logging.debug(content)
+    if len(content) < 1:
+        debugPrint("WANR", "No content to convert using pandoc")
+        return None 
+
     if panDoc:
         printDebug("DEBUG", "Using pandoc for markdown -> html")
-        cmd = ["pandoc", "-s", "--highlight-styles", "--pygments"
-                , "-f", "markdown+tex_math_dollars", "-t", "html"]
+        cmd = ["pandoc", "--highlight-style=pygments"
+                , "-f", 'markdown'+pandocFmt, "-t", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
                 , stdout = subprocess.PIPE
                 )
         p.stdin.write(content)
-        content = p.communicate()[0]
-        return decodeText(content)
+        c = p.communicate()[0]
+        if len(c) < 2:
+            printDebug("WARN", "Seems like pandoc failed to work")
+            print(c)
+            return None
+        logging.debug("\n\n Converted text \n {}".format(c))
+        return decodeText(c)
     # else use inbuild html2text.py 
     else:
         printDebug("DEBUG", "Using python-markdown for markdown -> html")
@@ -46,9 +59,10 @@ def markdownToHtml(content, convertor='pandoc'):
 
 def htmlToMarkdown(content, convertor='pandoc'):
     global panDoc
+    global pandocFmt
     if panDoc and convertor == 'pandoc':
         logging.debug("using pandoc for html -> markdown")
-        cmd = ["pandoc", "-t", "markdown+tex_math_dollars", "-f", "html"]
+        cmd = ["pandoc", "-t", 'markdown'+pandocFmt, "-f", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
                 , stdout = subprocess.PIPE
