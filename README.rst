@@ -5,9 +5,8 @@ A command line tool to manage your blogs on ``wordpress.com``.
 Configuration file 
 ------------------
 
-Create configuration file ``~/.config/twordpressrc`` with following entry::
+Create configuration file ``~/.config/twordpress/config`` with following entry::
 
-    # This file must be saved as ~/.wordpressrc 
     [blog0]
     # Url of blog. 
     url=dilawarnotes.wordpress.com
