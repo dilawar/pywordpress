@@ -179,6 +179,13 @@ class Wordpress:
             content = formatter.htmlToHtml(content)
         elif self.format == "markdown":
             content = formatter.markdownToHtml(content)
+            # Fix the math class 
+            pat = re.compile(r'\<span\s+class\=\"math\"\>\\\((.+?)\\\)\<\/span\>'
+                    , re.DOTALL)
+            for m in pat.findall(content):
+                printDebug("INFO", "Latex expression: ", m) 
+            content = pat.sub(r'$latex \1$', content)
+                
             post.content = content.encode('utf-8')
         else:
             post.content = content.encode('utf-8')

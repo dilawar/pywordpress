@@ -39,8 +39,8 @@ def parseConfigFile(args):
 def main():
     parser = argparse.ArgumentParser(description="Wordpress client")
     parser.add_argument('--config', metavar="config"
-        , default = os.environ['HOME'] + "/.config/twordpressrc"
-        , help = "Config file containing settings: ~/.config/twordpressrc"
+        , default = os.environ['HOME'] + "/.config/twordpress/config"
+        , help = "Config file containing settings: ~/.config/twordpress/config"
         )
     parser.add_argument('--blog', metavar="blog index in config file eg. 0, 1"
         , default = "0"

@@ -9,7 +9,7 @@ from pyblog.colored_print import printDebug
 
 # check if pandoc exists
 panDoc = True
-pandocFmt = '-tex_math_dollars'+'+raw_tex'+'+latex_macros'
+pandocFmt = '+tex_math_dollars'+'+raw_tex'+'+latex_macros'
 
 try:
     subprocess.call(["pandoc", '--version']
@@ -31,17 +31,13 @@ def markdownToHtml(content, convertor='pandoc'):
     global panDoc
     global pandocFmt
 
-    # Convert $$ text $$ to $latex text $.
-    pat = re.compile(r'\$\$(.+?)\$\$', re.DOTALL)
-    content = pat.sub(r'$latex \1 $', r'{}'.format(content))
-
     if len(content) < 1:
         printDebug("WARN", "No content to convert using pandoc")
         return None 
 
     if panDoc:
         printDebug("DEBUG", "Using pandoc for markdown -> html")
-        cmd = ["pandoc", "--highlight-style=pygments"
+        cmd = ["pandoc", "--mathjax", "--highlight-style=pygments"
                 , "-f", 'markdown'+pandocFmt, "-t", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
@@ -51,9 +47,8 @@ def markdownToHtml(content, convertor='pandoc'):
         c = p.communicate()[0]
         if len(c) < 2:
             printDebug("WARN", "Seems like pandoc failed to work")
-            print(c)
             return None
-        logging.debug("\n\n Converted text \n {}".format(c))
+        printDebug("LOG", "\n\n Converted text \n {}".format(c))
         return decodeText(c)
     # else use inbuild html2text.py 
     else:
@@ -170,4 +165,9 @@ def formatContent(txt, fmt):
         content = markdownToHtml(content)
     return content
 
+
+if __name__ == "__main__":
+    txt = open("./tests/latex.txt", "r").read()
+    pat = re.compile(r'\$\$(.+?)\$\$', re.DOTALL)
+    print pat.sub(r'$latex \1$', txt)
 
