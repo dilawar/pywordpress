@@ -37,7 +37,7 @@ def markdownToHtml(content, convertor='pandoc'):
 
     if panDoc:
         printDebug("DEBUG", "Using pandoc for markdown -> html")
-        cmd = ["pandoc", "--highlight-style=pygments"
+        cmd = ["pandoc", "-s", "--highlight-style=pygments", "--mimetex"
                 , "-f", 'markdown'+pandocFmt, "-t", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE

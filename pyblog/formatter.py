@@ -31,13 +31,18 @@ def markdownToHtml(content, convertor='pandoc'):
     global panDoc
     global pandocFmt
     logging.debug(content)
+
+    # Convert $$ text $$ to $latex text $.
+    pat = re.compile(r'\$\$(.+)?\$\$', re.DOTALL)
+    content = pat.sub('$latex \1 $', content)
+
     if len(content) < 1:
-        debugPrint("WANR", "No content to convert using pandoc")
+        printDebug("WARN", "No content to convert using pandoc")
         return None 
 
     if panDoc:
         printDebug("DEBUG", "Using pandoc for markdown -> html")
-        cmd = ["pandoc", "--highlight-style=pygments"
+        cmd = ["pandoc", "--highlight-style=pygments", "--mimetex"
                 , "-f", 'markdown'+pandocFmt, "-t", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE
