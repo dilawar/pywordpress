@@ -278,7 +278,7 @@ class Wordpress:
                     else:
                         cats.append(tname)
                 if tags:
-                    tags = filter(None, [t.encode('utf-8') for t in tags])
+                    tags = filter(None, [t for t in tags])
                     tagLine = 'tags: [{}]'.format(', '.join(tags)) 
                     f.write('\n{}'.format(tagLine)) 
                     ff.write('\n{0}'.format(tagLine)) 
