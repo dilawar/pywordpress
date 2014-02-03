@@ -270,12 +270,13 @@ class Wordpress:
                 cats = []
                 tags = []
                 for t in terms :
+                    tname = t.name.encode('utf-8')
                     if t.taxonomy == 'post_tag':
-                        tags.append(t.name)
+                        tags.append(tname)
                     elif t.taxonomy == 'category':
-                        cats.append(t.name)
+                        cats.append(tname)
                     else:
-                        cats.append(t.name)
+                        cats.append(tname)
                 if tags:
                     tags = filter(None, [t.encode('utf-8') for t in tags])
                     tagLine = 'tags: [{}]'.format(', '.join(tags)) 
