@@ -1,7 +1,7 @@
 ---
 layout: page
 title: About
-repository_url: http://github.com/dilawar/sniffer
+repository_url: http://github.com/dilawar/pywordpress
 ---
 
 This is a python based application. You can write your posts in markdown and

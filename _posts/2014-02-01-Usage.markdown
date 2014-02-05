@@ -2,7 +2,7 @@
 layout: page
 title: Usage
 comments: true
-repository_url: http://github.com/dilawar/sniffer
+repository_url: http://github.com/dilawar/pywordpress
 ---
 
 First you need to create a configuration file `~/.config/twordpress/config`.  If
