@@ -1,0 +1,10 @@
+*.pyc
+*~
+*egg*
+*build*
+*_site*
+*dist*
+*sdist*
+*swp
+*dist*
+
