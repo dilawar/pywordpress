@@ -9,25 +9,27 @@ Post, edit update your post on [Wordpress](http://wordpress.org).
 
 ## Summary 
 
-- Fetch all posts
+- Fetch all posts.
 
 ~~~
 $ twordpress --blog 1 --fetch all
 ~~~
 
-- Fetch a post matching a tile
+- Fetch a post with a title matching the given string. This will fetch posts
+  whose title matches given after `--fetch` option.
 
 ~~~
 $ twordpress --blog 0 --fetch "Python is awesome"
 ~~~~
 
-- Update a post with given markdown format.
+- Update a post with given markdown content. See the format of file
+  [here]({{site.url}}/Format).
 
 ~~~
 $ twordpress --blog 0 --update path_to_new_content.md
 ~~~
 
-- Update a post on blog 1 given html post
+- Update a post on blog 1 with a raw html content.
 
 ~~~
 $ twordpress --blog 1 --new new_blog.html
