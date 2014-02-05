@@ -5,20 +5,79 @@ comments: true
 repository_url: http://github.com/dilawar/sniffer
 ---
 
-First you need to create a configuration file `~/.config/sniffer/config`. You
-can see a [sample file here]({{ page.repository_url }}/master/blob/snifferrc).
-If you choose to save this file at some other location, you need to specify the
-location using `--config` option at command line e.g.
+First you need to create a configuration file `~/.config/twordpress/config`.  If
+you choose to keep this file at some other location, you have to pass its path
+after `--config` option e.g. `twordpress --config ~/.twordpressrc
+other_command`. It looks like the following. 
 
-    $ code-sniffer --config ~/.snifferrc 
+{% highlight bash %}
+[blog0]
+name=Dilawar's Blog
+url=dilawarrajput.wordpress.com
+user=dilawars
+password=password1
+[blog1]
+name=Dilawar's Notes
+url=dilawarnotes.wordpress.com
+user=dilawars
+password=blah
+{% endhighlight %}
 
-Let's look at a sample. Options are explained in cofig file itself.
+Let's assume that config file is at default location. 
+
+## Proxy support 
+
+Proxy support is added recently to python-wordpress-xmlrcp. It reads environment
+variable http_proxy. If you are behind proxied network, then export
+`http_proxy=proxy.something.net:1212` in your bash. And we are good to go.
+
+## Fetch posts
+
+Following commands fetches post:
 
 ~~~
-{% include text/config %}
+twordpress --blog 1 --fetch all
+twordpress --blog 0 --fetch "Python is awesome"
+twordpress
 ~~~
 
-You will see something like following when `code-sniffer` is executed
-successfully.
+First command will download all posts and pages from blog1. And second will
+download all posts which matches the given query from blog0. Third command will
+download most recent entries from default blog (blog0). Currently it does not
+download media.
 
-![Screenshot]({{site.url}}/images/screenshot.png)
+Each post gets its own directory and two files conetent.md and content.html are
+created. Edit markdown file and run the following command to update the post.
+
+## Updating post
+
+Following command update the blog.
+
+~~~
+$twordpress --blog 0 --update path_to_new_content.md
+~~~
+
+## Create new post
+
+This command post a new post:
+
+~~~
+$twordpress --blog 1 --new new_blog.md
+~~~
+
+The new blog is written in markdown format but a meta-data has to be prefixed.
+This is how your blog file should look like.:
+
+~~~
+---
+title: This is title of my awesome post
+status: publish
+tags: [some awesome tag, tag2]
+categories: [catA, some_category]
+---
+
+Here is content of blog in markdown format.
+
+Too much has already been written. This ends my blog.
+
+~~~~
