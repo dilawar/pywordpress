@@ -17,9 +17,9 @@ category_dir: /
 # Uncomment if you are planning to run the blog in a subdirectory
 # Note - if you enable this, and attempt to view your site locally you have to use the baseurl in your local path.
 # Example, you must use http://localhost:4000/path/to/blog
-baseurl: http://dilawar.github.io/sniffer
+baseurl: http://dilawar.github.io/pywordpress
 # The URL of your actual domain. This will be used to make absolute links in the RSS feed.
-url: http://dilawar.github.io/sniffer
+url: http://dilawar.github.io/pywordpress
 
 
 
