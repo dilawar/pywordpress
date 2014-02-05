@@ -18,3 +18,5 @@ using `pandoc` for best experience.
     $ twordpress --blog 0 --update path_to_new_content.md
 - Update a post on blog 1 given html post
     $ twordpress --blog 1 --new new_blog.html
+
+We support `jekyll` post format.
