@@ -7,6 +7,8 @@ repository_url: http://github.com/dilawar/sniffer
 
 Post, edit update your post on [Wordpress](http://wordpress.org).
 
+## Summary 
+
 - Fetch all posts
 
 ~~~
