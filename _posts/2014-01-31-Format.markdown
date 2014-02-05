@@ -1,0 +1,22 @@
+---
+layout: page
+title: Format
+---
+
+If you are writing markdown, then you should write your post as following
+format.
+
+The post must start with following
+
+~~~~
+---
+title: Title of the post
+title: This is title of my awesome post
+status: publish
+tags: [some awesome tag, tag2]
+categories: [catA, some_category]
+---
+~~~~
+
+After this you should write in `pandoc` markdown format. Math can be written
+between `$$` signs. Wordpress default `$latex tex_formula $` will also work.
