@@ -11,7 +11,7 @@ setup(
         name='twordpress'
         , version='0.9.3'
         , description='A command-line tool to manage your blogs on wordpress'
-        , long_description= read('README.rst') + read('CHANGES.rst')
+        , long_description= read('README.rst') 
         , url = 'https://github.com/dilawar/pywordpress'
         , licence = 'GNU-GPL'
         , author = 'Dilawar Singh'
