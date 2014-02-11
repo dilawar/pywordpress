@@ -8,15 +8,15 @@ Configuration file
 Create configuration file ``~/.config/twordpress/config`` with following entry::
 
     [blog0]
-    # Url of blog. 
-    url=dilawarnotes.wordpress.com
-    # Wordpress username
-    username=dilawars
-    password=mypassword
+    url=dilawarrajput.wordpress.com
+    name=Dilawar's Blog
+    user=dilawars
+    password=pass
     [blog1]
-    url=blog2.wordpress.com
-    username=gabbar
-    password=thakur_ke_per_katne_the
+    name=Dilawar's Notes
+    url=dilawarnotes.wordpress.com
+    user=dilawars
+    password=abababaaati
 
 If you choose to store this file to some other location then you should pass
 ``--config path/to/twordpressrc`` like option to the ``twordpress`` command.
