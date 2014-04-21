@@ -308,6 +308,7 @@ class Wordpress:
                 printDebug("DEBUG", "Not using proxy")
                 self.wp = Client(self.blog, args.user, args.password)
         else:
+            p = p.replace('http://', '')
             self.wp = Client(self.blog, args.user, args.password, proxy=p)
 
         # Send a file to wordpress.
