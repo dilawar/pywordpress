@@ -1,8 +1,8 @@
 Metadata-Version: 1.1
 Name: twordpress
-Version: 0.9.3
+Version: 0.9.6
 Summary: A command-line tool to manage your blogs on wordpress
-Home-page: https://github.com/dilawar/pywordpress
+Home-page: https://dilawar.github.io/pywordpress
 Author: Dilawar Singh
 Author-email: dilawars@iitb.ac.in
 License: GNU-GPL
@@ -16,15 +16,15 @@ Description: twordpress
         Create configuration file ``~/.config/twordpress/config`` with following entry::
         
             [blog0]
-            # Url of blog. 
-            url=dilawarnotes.wordpress.com
-            # Wordpress username
-            username=dilawars
-            password=mypassword
+            url=dilawarrajput.wordpress.com
+            name=Dilawar's Blog
+            user=dilawars
+            password=pass
             [blog1]
-            url=blog2.wordpress.com
-            username=gabbar
-            password=thakur_ke_per_katne_the
+            name=Dilawar's Notes
+            url=dilawarnotes.wordpress.com
+            user=dilawars
+            password=abababaaati
         
         If you choose to store this file to some other location then you should pass
         ``--config path/to/twordpressrc`` like option to the ``twordpress`` command.
@@ -90,24 +90,6 @@ Description: twordpress
         
              Too much has already been written. This ends my blog.
         
-        CHANGES
-        =======
-        
-        Tue 28 Jan 2014 06:28:35 PM IST
-        
-        - The default file path for configuration file is ``.config/twordpressrc`` 
-        - Fix a bug. It was causing utf encode error.
-        
-        Wed 29 Jan 2014 05:53:58 PM IST
-        
-        - The YAML front matter in post is closely match with jekyll. Same post can be
-          uploaded to github page.
-        
-        Sat 01 Feb 2014 12:10:25 AM IST
-        
-        - The defualt config file is ``~/.config/twordpress/config``
-        - We can now post latex on wordpress. Use $latex_formulae$ to write latex in
-          markdown.
         
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable

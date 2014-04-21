@@ -66,13 +66,12 @@ def main():
     args = parser.parse_args()
     args = parseConfigFile(args)
     if args.server == "wordpress":
-        printDebug("INFO", "Wordpress")
+        printDebug("INFO", "Wordpress `{}`".format(args.blogName))
         wpObj = Wordpress(args)
     else:
-        printDebug("WARN", "It does not look like a wordpress: {}".format(
-                args.server
+        printDebug("WARN"
+                , "It does not look like a wordpress: {}".format(args.server)
                 )
-            )
 
 
 if __name__ == "__main__":

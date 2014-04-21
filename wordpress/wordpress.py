@@ -297,15 +297,19 @@ class Wordpress:
                 self.writeContent(ff, content, "html")
     
     def run(self, args):
-        p = os.environ.get('http_proxy')
-        if p is not None:
-            printDebug("DEBUG", "Using http_proxy evvironment variable")
-            if 'http://' in p :
-                p = p.replace('http://', '')
-            else:pass
-            self.wp = Client(self.blog, args.user, args.password, proxy=p)
+        p = args.proxy
+        if p is None:
+            p = os.environ.get('http_proxy')
+            if p is not None:
+                printDebug("DEBUG", "Using http_proxy evvironment variable")
+                if 'http://' in p :
+                    p = p.replace('http://', '')
+            else:
+                printDebug("DEBUG", "Not using proxy")
+                self.wp = Client(self.blog, args.user, args.password)
         else:
-            self.wp = Client(self.blog, args.user, args.password)
+            self.wp = Client(self.blog, args.user, args.password, proxy=p)
+
         # Send a file to wordpress.
         if args.update :
             fileName = args.update
