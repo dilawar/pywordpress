@@ -1,2 +1,2 @@
 #!/bin/bash
-python ../wordpress/main.py --blog 0 --fetch all
+python pyblog/main.py --blog 0 --fetch all
