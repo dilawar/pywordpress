@@ -211,12 +211,13 @@ class Wordpress:
     def writeContent(self, fH, content, format):
         """Write content to file.
         """
-        newContent = []
+        newContent = ["<p>"]
         for line in content.split('\n'):
             if len(line.strip()) == 0:
-                newContent.append("</br>")
+                newContent.append("</p>\n<p>")
             else:
                 newContent.append(line)
+        newContent.append('<\p>')
         content = '\n'.join(newContent)
 
         if format == "html":
@@ -240,12 +241,9 @@ class Wordpress:
         assert int(post.id.strip()) > 0, "Post must have an id"
 
         title = post.title.encode('utf-8')
-        terms = post.terms
-        logging.debug("Downloading : {0}".format(title))
-        printDebug("INFO", "Downloading {0}".format(post.post_type)
-                , title
-                )
+        printDebug("POST", "Downloading: `{}`".format(title))
 
+        terms = post.terms
         content = post.content.encode('utf-8')
         postDir = formatter.titleToFilePath(title, self.blogDir)
 
