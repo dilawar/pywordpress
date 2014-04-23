@@ -211,6 +211,14 @@ class Wordpress:
     def writeContent(self, fH, content, format):
         """Write content to file.
         """
+        newContent = []
+        for line in content.split('\n'):
+            if len(line.strip()) == 0:
+                newContent.append("</br>")
+            else:
+                newContent.append(line)
+        content = '\n'.join(newContent)
+
         if format == "html":
             logging.info("Writing html content")
             content = formatter.htmlToHtml(content) 
