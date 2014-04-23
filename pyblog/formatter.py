@@ -60,7 +60,7 @@ def htmlToMarkdown(content, convertor='pandoc'):
     global panDoc
     global pandocFmt
     if panDoc and convertor == 'pandoc':
-        logging.debug("using pandoc for html -> markdown")
+        printDebug("INFO", "Using pandoc for html -> markdown")
         cmd = ["pandoc", "-t", 'markdown'+pandocFmt, "-f", "html"]
         p = subprocess.Popen(cmd
                 , stdin = subprocess.PIPE

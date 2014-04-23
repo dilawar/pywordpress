@@ -247,11 +247,11 @@ class Wordpress:
 
         # Good now for this post, we have directory. Download its content in
         # content.md file.
-        fileName = os.path.join(postDir, 'content.md')
+        fileMarkDown = os.path.join(postDir, 'content.md')
         fileHtml2 = os.path.join(postDir, 'content.html')
 
         with open(fileHtml2, "w") as ff:
-            with open(fileName, "w") as f:
+            with open(fileMarkDown, "w") as f:
                 f.write("{}\n".format(deliminator))
                 f.write("title: ")
                 f.write(title)
