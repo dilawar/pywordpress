@@ -4,9 +4,10 @@ title: About
 repository_url: http://github.com/dilawar/pywordpress
 ---
 
-This is a python based application. You can write your posts in markdown and
-post it on wordpress. `Pandoc` is used to convert markdown to html but if
-`pandoc` is not installed on your system then it uses `python-markdown`
-package. You should install `python-markdown` at least. We strongly recommend
-using `pandoc` for best experience.
+This is a python based application. 
+
+You can write your posts in markdown and post it on wordpress. `Pandoc` is used
+to convert markdown to html but if `pandoc` is not installed on your system then
+it uses `python-markdown` package. You should install `python-markdown` at
+least. We strongly recommend using `pandoc` for best experience.
 

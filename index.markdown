@@ -5,7 +5,8 @@ comments: true
 repository_url: http://github.com/dilawar/sniffer
 ---
 
-Post, edit update your post on [Wordpress](http://wordpress.org).
+Create, or edit/update your post on [Wordpress](http://wordpress.org) in
+terminal.
 
 ## Summary 
 
@@ -35,4 +36,4 @@ $ twordpress --blog 0 --update path_to_new_content.md
 $ twordpress --blog 1 --new new_blog.html
 ~~~
 
-We support `jekyll` post format.
+It supports `jekyll` like post format.
