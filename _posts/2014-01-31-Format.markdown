@@ -3,10 +3,10 @@ layout: page
 title: Format
 ---
 
-If you are writing markdown, then you should write your post as following
-format.
+If you are writing your blog posts in markdown, then you need to prefix your
+post content with some metadata.
 
-The post must start with following
+The post must start with following:
 
 ~~~~
 ---
