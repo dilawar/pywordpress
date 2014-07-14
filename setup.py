@@ -9,7 +9,7 @@ def read(*paths):
 
 setup(
         name='twordpress'
-        , version='0.9.6'
+        , version='0.9.7'
         , description='A command-line tool to manage your blogs on wordpress'
         , long_description= read('README.rst') 
         , url = 'https://dilawar.github.io/pywordpress'
