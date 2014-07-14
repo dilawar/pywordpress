@@ -21,7 +21,7 @@ except OSError:
     panDoc = False
     
 if not panDoc:
-    import text.html2text as html2text
+    import html2text as html2text
     import markdown 
 
 def decodeText(text):
