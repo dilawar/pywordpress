@@ -1,6 +1,14 @@
 import os
-
+import sys
+import shutil
 from setuptools import setup
+
+configDir = os.path.join(os.environ['HOME'], '.config', 'twordpress')
+
+if not os.path.isdir(configDir):
+    os.makedirs(configDir)
+
+shutil.copy('config', configDir)
 
 def read(*paths):
     """Build a file path from *paths* and return the contents."""
@@ -9,7 +17,7 @@ def read(*paths):
 
 setup(
         name='twordpress'
-        , version='0.9.7'
+        , version='0.9.8'
         , description='A command-line tool to manage your blogs on wordpress'
         , long_description= read('README.rst') 
         , url = 'https://dilawar.github.io/pywordpress'
