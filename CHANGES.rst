@@ -16,3 +16,7 @@ Sat 01 Feb 2014 12:10:25 AM IST
 - The defualt config file is ``~/.config/twordpress/config``
 - We can now post latex on wordpress. Use $latex_formulae$ to write latex in
   markdown.
+
+Saturday 23 August 2014 11:03:56 AM IST
+
+- When installing, store a template config file as ``~/.config/twordpress/config``.
