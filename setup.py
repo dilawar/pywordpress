@@ -3,12 +3,12 @@ import sys
 import shutil
 from setuptools import setup
 
-configDir = os.path.join(os.environ['HOME'], '.config', 'twordpress')
+#configDir = os.path.join(os.environ['HOME'], '.config', 'twordpress')
 
-if not os.path.isdir(configDir):
-    os.makedirs(configDir)
+#if not os.path.isdir(configDir):
+    #os.makedirs(configDir, )
 
-shutil.copy('config', configDir)
+#shutil.copy('config', configDir)
 
 def read(*paths):
     """Build a file path from *paths* and return the contents."""
