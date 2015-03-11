@@ -308,15 +308,22 @@ class Wordpress:
             p = os.environ.get('http_proxy')
             if p is not None:
                 printDebug("DEBUG", "Using http_proxy evvironment variable")
-                if 'http://' in p :
+                if 'http://' in p:
                     p = p.replace('http://', '')
+                elif 'https://' in p:
+                    p = p.replace('https://', '')
             else:
                 printDebug("DEBUG", "Not using proxy")
                 self.wp = Client(self.blog, args.user, args.password)
         else:
-            p = p.replace('http://', '')
+            p = p.replace('https://', '')
 
-        self.wp = Client(self.blog, args.user, args.password, proxy=p)
+        try:
+            self.wp = Client(self.blog, args.user, args.password, proxy=p)
+        except Exception as e:
+            printDebug("ERROR", "Failed to connect to %s" % self.blog)
+            raise e
+
         # Send a file to wordpress.
         if args.update :
             fileName = args.update

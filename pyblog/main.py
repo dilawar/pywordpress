@@ -30,8 +30,9 @@ def parseConfigFile(args):
     args.server = "wordpress"
     blog = blog.replace("www.", "")
     blog = blog.replace("http://", "")
+    blog = blog.replace("https://", "")
     blog = blog.replace("/xmlrpc.php", "")
-    args.blogUrl = "http://%s/xmlrpc.php" % blog
+    args.blogUrl = "https://%s/xmlrpc.php" % blog
     args.user = cfg.get(blogId,'user')
     args.password = cfg.get(blogId, 'password')
     return args

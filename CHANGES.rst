@@ -20,3 +20,12 @@ Sat 01 Feb 2014 12:10:25 AM IST
 Saturday 23 August 2014 11:03:56 AM IST
 
 - When installing, store a template config file as ``~/.config/twordpress/config``.
+
+Monday 05 January 2015 10:52:59 AM IST
+
+- DO NOT create config file as ``~/.config/twordpress/config`` for it is created
+  with root permissions rather than user permissions.
+
+Wednesday 11 March 2015 11:15:47 AM IST
+
+- Fixed '301: Moved permanently' problem.
